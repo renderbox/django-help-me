@@ -49,7 +49,7 @@ class SupportRequest(CreateUpdateModelBase):
     name = models.CharField(_("Name"), max_length=50, blank=True)       # Required if user is unknown
     email = models.EmailField(_("Email"), max_length=254, blank=True)   # Required if user is unknown
     url = models.URLField(_("URL"), max_length=200, blank=True, help_text="Where the URL from which it was initiate from.")
-    app_version = models.CharField(_("Django Project Version"), max_length=50, blank=True)
+    app_version = models.CharField(_("Project Version"), max_length=50, blank=True)
     category = models.IntegerField(_("Category"), default=10, choices=SUPPORT_REQUEST_CATEGORY_CHOICES)
     status = models.IntegerField(_("Status"), default=1, choices=SUPPORT_REQUEST_STATUS_CHOICES)
 
@@ -59,6 +59,12 @@ class SupportRequest(CreateUpdateModelBase):
 
     def __str__(self):
         return "{0} - {1}".format(self.email, self.subject)
+
+    # def save(self):
+    #     return super().save()
+
+
+    # app_version
 
 #     def get_absolute_url(self):
 #         return reverse( "support_request_detail", kwargs={"uuid": self.uuid})
