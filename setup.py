@@ -34,7 +34,7 @@ package_metadata = {
 setup(
     **package_metadata,
     packages=find_packages(),
-    package_data={'helpme': ['*.html']},
+    package_data={'helpme': ['templates/helpme/*.html']},
     include_package_data=True,
     python_requires=">=3.6",
     install_requires=[
