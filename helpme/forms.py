@@ -8,33 +8,23 @@ class SupportRequestForm(ModelForm):
 
     class Meta:
         model = SupportRequest
-        fields = ['subject', 'description']
+        fields = ['subject', 'description', 'url']
 
 
-    # def __init__(self, *args, **kwargs):
-    #     super(ContactMessageForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    #     self.fields['name'].widget.attrs.update({'placeholder' : 'Name*', 'aria-required':'true'})
-    #     self.fields['email'].widget.attrs.update({'placeholder' : 'Email', 'aria-required':'true'})
-    #     self.fields['subject'].widget.attrs.update({'placeholder' : 'Subject (Optinal)', 'aria-required':'true'})
-    #     self.fields['message'].widget.attrs.update({'placeholder' : 'Message*', 'aria-required':'true'})
+        self.fields['url'].widget = forms.HiddenInput()
 
 
 class SupportRequestAnnonymousForm(ModelForm):
 
     class Meta:
         model = SupportRequest
-        fields = ['name', 'email', 'subject', 'description']
+        fields = ['name', 'email', 'subject', 'description', 'url']
 
     def __init__(self, *args, **kwargs):
-        super(SupportRequestAnnonymousForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['name'].required = True
         self.fields['email'].required = True
-    
-    # def __init__(self, *args, **kwargs):
-    #     super(ContactMessageForm, self).__init__(*args, **kwargs)
-
-    #     self.fields['name'].widget.attrs.update({'placeholder' : 'Name*', 'aria-required':'true'})
-    #     self.fields['email'].widget.attrs.update({'placeholder' : 'Email', 'aria-required':'true'})
-    #     self.fields['subject'].widget.attrs.update({'placeholder' : 'Subject (Optinal)', 'aria-required':'true'})
-    #     self.fields['message'].widget.attrs.update({'placeholder' : 'Message*', 'aria-required':'true'})
+        self.fields['url'].widget = forms.HiddenInput()
