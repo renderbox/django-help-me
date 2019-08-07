@@ -45,8 +45,8 @@ class SupportRequest(CreateUpdateModelBase):
     description = models.TextField(_("Description"))
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL, related_name="user")   # It is possible to get a request from non-logged in users.
-    assignees = models.ManyToManyField(AUTH_USER_MODEL, verbose_name=_("Asignees"), related_name="assignees")
-    name = models.CharField(_("Name"), max_length=50)                   # Required if user is unknown
+    assignees = models.ManyToManyField(AUTH_USER_MODEL, verbose_name=_("Asignees"), related_name="assignees", blank=True)
+    name = models.CharField(_("Name"), max_length=50, blank=True)       # Required if user is unknown
     email = models.EmailField(_("Email"), max_length=254, blank=True)   # Required if user is unknown
     url = models.URLField(_("URL"), max_length=200, blank=True, help_text="Where the URL from which it was initiate from.")
     app_version = models.CharField(_("Django Project Version"), max_length=50, blank=True)
