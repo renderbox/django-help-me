@@ -53,3 +53,12 @@ class SupportRequestView(CreateView):
 class SupportRequestSuccessView(TemplateView):
     template_name = "helpme/submission_successful.html"
     
+
+# class SupportDashboard(LoginRequiredMixin, ListView):
+#     model = SupportRequest
+
+#     # If you are logged in you see only your tickets
+
+#     # if you are staff, you see tickets assigned to you or unassigned
+
+#     # if you are admin, you see all tickets
