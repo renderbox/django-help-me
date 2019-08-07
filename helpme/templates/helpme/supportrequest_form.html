@@ -1,1 +1,9 @@
 {% extends "helpme/base.html" %}
+
+{% block content %}
+<form action="{% url 'helpme-submit-request' %}" method="POST">
+{% csrf_token %}
+{{ form.as_ul }}
+<input type="submit" value="Submit">
+</form>
+{% endblock %}

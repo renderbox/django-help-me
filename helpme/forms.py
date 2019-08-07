@@ -10,6 +10,7 @@ class SupportRequestForm(ModelForm):
         model = SupportRequest
         fields = ['subject', 'description']
 
+
     # def __init__(self, *args, **kwargs):
     #     super(ContactMessageForm, self).__init__(*args, **kwargs)
 
@@ -25,6 +26,11 @@ class SupportRequestAnnonymousForm(ModelForm):
         model = SupportRequest
         fields = ['name', 'email', 'subject', 'description']
 
+    def __init__(self, *args, **kwargs):
+        super(SupportRequestAnnonymousForm, self).__init__(*args, **kwargs)
+        self.fields['name'].required = True
+        self.fields['email'].required = True
+    
     # def __init__(self, *args, **kwargs):
     #     super(ContactMessageForm, self).__init__(*args, **kwargs)
 
