@@ -12,6 +12,8 @@ if AUTH_USER_MODEL == None:
     from django.contrib.auth.models import User
     AUTH_USER_MODEL = User
 
+DJANGO_PROJECT_VERSION = getattr(settings, "DJANGO_PROJECT_VERSION", None)
+
 
 ##################
 # CHOICES
@@ -60,8 +62,10 @@ class SupportRequest(CreateUpdateModelBase):
     def __str__(self):
         return "{0} - {1}".format(self.email, self.subject)
 
-    # def save(self):
-    #     return super().save()
+    def save(self):
+        if DJANGO_PROJECT_VERSION:
+            self.app_version = DJANGO_PROJECT_VERSION
+        return super().save()
 
 
     # app_version

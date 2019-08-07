@@ -1,9 +1,11 @@
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from .models import SupportRequest
 from .forms import SupportRequestForm, SupportRequestAnnonymousForm
+
 
 
 class HelpMeIndexView(TemplateView):
