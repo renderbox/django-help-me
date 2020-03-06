@@ -14,7 +14,7 @@ with open(path.join(file_path, 'README.rst'), encoding='utf-8') as f:
 
 package_metadata = {
     'name': 'django-help-me',
-    'version': '0.1.2',
+    'version': '0.1.3',
     'description': 'A simple app for providing a simple help desk for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',
