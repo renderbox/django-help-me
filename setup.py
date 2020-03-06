@@ -14,7 +14,7 @@ with open(path.join(file_path, 'README.rst'), encoding='utf-8') as f:
 
 package_metadata = {
     'name': 'django-help-me',
-    'version': '0.1.1',
+    'version': '0.1.2',
     'description': 'A simple app for providing a simple help desk for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',
@@ -38,7 +38,7 @@ setup(
     include_package_data=True,
     python_requires=">=3.6",
     install_requires=[
-        'Django>=2.2,<2.3',
+        'Django>=2.2',
     ],
     extras_require={
         'dev': [],
