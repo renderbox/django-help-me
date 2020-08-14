@@ -15,13 +15,30 @@ DJANGO_PROJECT_VERSION = getattr(settings, "DJANGO_PROJECT_VERSION", None)
 ##################
 
 # TODO: update categories
-TICKET_CATEGORY_CHOICES = ( (1, _("Comment")), (2, _("Sales")), (3, _("Help")), (4, _("Bug")) )
+class CategoryChoices(models.IntegerChoices):
+    COMMENT = 1, _("Comment")
+    SALES = 2, _("Sales")
+    HELP = 3, _("Help")
+    BUG = 4, _("Bug")
 
-TICKET_STATUS_CHOICES = ( (1, _("Open")), (10, _("Active")), (20, _("Hold")), (30, _("Closed")), (40, _("Canceled")) )
+class StatusChoices(models.IntegerChoices):
+    OPEN = 1, _("Open")
+    ACTIVE = 10, _("Active")
+    HOLD = 20, _("Hold")
+    CLOSED = 30, _("Closed")
+    CANCELED = 40, _("Canceled")
 
-TICKET_PRIORITY_CHOICES = ( (1, _("Low")), (2, _("Medium")), (3, _("High")), (4, _("Urgent")) )
+class PriorityChoices(models.IntegerChoices):
+    LOW = 1, _("Low")
+    MEDIUM = 2, _("Medium")
+    HIGH = 3, _("High")
+    URGENT = 4, _("Urgent")
 
-VISIBILITY_CHOICES = ( (1, _("Reporters")), (10, _("Support Handlers")), (15, _("Developers")), (20, _("Supervisors")) )
+class VisibilityChoices(models.IntegerChoices):
+    REPORTERS = 1, _("Reporters")
+    SUPPORT = 10, _("Support Handlers")
+    DEVELOPERS = 15, _("Developers")
+    SUPERVISORS = 20, _("Supervisors")
 
 
 ##################
@@ -49,11 +66,11 @@ class Team(models.Model):
 
 class Ticket(CreateUpdateModelBase):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    status = models.IntegerField(_("Status"), default=1, choices=TICKET_STATUS_CHOICES)
-    priority = models.IntegerField(_("Priority"), default=2, choices=TICKET_PRIORITY_CHOICES)
+    status = models.IntegerField(_("Status"), default=1, choices=StatusChoices.choices)
+    priority = models.IntegerField(_("Priority"), default=2, choices=PriorityChoices.choices)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     user_meta = JSONField(blank=True, null=True, default=dict)
-    category = models.IntegerField(_("Category"), default=3, choices=TICKET_CATEGORY_CHOICES)
+    category = models.IntegerField(_("Category"), default=3, choices=CategoryChoices.choices)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Description"))
@@ -94,4 +111,4 @@ class Comment(CreateUpdateModelBase):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     content = models.TextField(_("Content"))
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
-    visibility = models.IntegerField(_("Visibility"), default=1, choices=VISIBILITY_CHOICES)
+    visibility = models.IntegerField(_("Visibility"), default=1, choices=VisibilityChoices.choices)

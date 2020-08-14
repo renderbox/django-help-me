@@ -39,11 +39,12 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         'Django>=3.0, <3.1',
-        'psycopg2',
-        'django-allauth',
     ],
     extras_require={
-        'dev': [],
+        'dev': [
+            'psycopg2',
+            'django-allauth',
+        ],
         'test': [],
         'prod': [],
         'build': [
