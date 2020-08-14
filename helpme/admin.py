@@ -1,5 +1,8 @@
 from django.contrib import admin
 
-from helpme.models import SupportRequest
+from helpme.models import Ticket
 
-admin.site.register(SupportRequest)
+class TicketAdmin(admin.ModelAdmin):
+    readonly_fields=('created', 'updated',)
+
+admin.site.register(Ticket, TicketAdmin)
