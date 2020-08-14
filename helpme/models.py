@@ -63,7 +63,7 @@ class Ticket(CreateUpdateModelBase):
     related_to = models.ManyToManyField("self", blank=True)
 
     def __str__(self):
-        return "{0}".format(self.subject)
+        return "{0} - {1}".format(self.user.username, self.subject)
 
     def log_history_event(self, event, user=None, notes=None, isotime=None):
         '''
