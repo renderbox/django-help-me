@@ -38,10 +38,13 @@ setup(
     include_package_data=True,
     python_requires=">=3.6",
     install_requires=[
-        'Django>=2.2',
+        'Django>=3.0, <3.1',
     ],
     extras_require={
-        'dev': [],
+        'dev': [
+            'psycopg2',
+            'django-allauth',
+        ],
         'test': [],
         'prod': [],
         'build': [
