@@ -1,3 +1,4 @@
-Django==2.2.4
-pytz==2019.2
-sqlparse==0.3.0
+asgiref==3.2.10
+Django==3.0.9
+pytz==2020.1
+sqlparse==0.3.1
