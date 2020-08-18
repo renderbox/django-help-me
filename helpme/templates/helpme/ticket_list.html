@@ -1,0 +1,18 @@
+{% extends "helpme/base.html" %}
+
+{% block help_content %}
+<h1>Dashboard</h1>
+<ul>
+{% for ticket in object_list %}
+    <li>
+        <a href="{% url 'helpme-ticket-detail' ticket.uuid %}">{{ ticket }}</a>
+        <div><b>Status:</b> {{ticket.get_status_display}}</div>
+	{% if support %}
+	<div><b>Priority:</b> {{ticket.get_priority_display}}</div>
+	{% endif %}
+    </li>
+{% empty %}
+    <li>You have no tickets yet.</li>
+{% endfor %}
+</ul>
+{% endblock %}

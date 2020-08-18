@@ -20,9 +20,9 @@
       <h5 class="my-0 mr-md-auto font-weight-normal">Django Help-Me</h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/">Home</a>
-        <a class="p-2 text-dark" href="{% url 'vendor:cart' %}">Support Dashboard</a>
+        <a class="p-2 text-dark" href="{% url 'helpme-dashboard' %}">Support Dashboard</a>
       </nav>
-      <a class="btn btn-outline-primary" href="#">Sign up</a>
+      <a class="btn btn-outline-primary" href="{% url 'account_signup' %}">Sign up</a>
     </header>
 
     {% if messages %}
