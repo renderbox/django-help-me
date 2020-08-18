@@ -38,13 +38,18 @@ setup(
     include_package_data=True,
     python_requires=">=3.6",
     install_requires=[
-        'Django>=3.0, <3.2',
+        'Django>=3.1, <3.2',
+        'django-autoslug',
+        'django-extensions',
     ],
     extras_require={
         'dev': [
+            'django-allauth',
             'dj-database-url',
             'psycopg2-binary',
             'django-allauth',
+            'ipython',
+            'pylint',
         ],
         'test': [],
         'prod': [],
