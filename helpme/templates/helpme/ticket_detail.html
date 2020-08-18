@@ -7,11 +7,25 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><b>User:</b> {{ticket.user.username}}</p>
-    <p><b>User Meta:</b> {{ticket.user_meta}}</p>
-    <p><b>Created:</b> {{ticket.created}}</p>
-    <p><b>Updated:</b> {{ticket.updated}}</p>
-    <p><b>History:</b></p>
+    <p>
+        <b>User: </b>
+        {{ticket.user.username}}
+    </p>
+    <p>
+        <b>User Meta: </b>
+        {{ticket.user_meta}}
+    </p>
+    <p>
+        <b>Created: </b>
+        {{ticket.created}}
+    </p>
+    <p>
+        <b>Updated: </b>
+        {{ticket.updated}}
+    </p>
+    <p>
+        <b>History: </b>
+    </p>
     <table>
     {% for dict in ticket.history %}
         <tbody>
