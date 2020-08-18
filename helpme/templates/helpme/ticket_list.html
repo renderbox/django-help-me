@@ -5,7 +5,7 @@
 <ul>
 {% for ticket in object_list %}
     <li>
-        <a href="{% url 'helpme-ticket-detail' ticket.uuid %}">{{ ticket }}</a>
+        <a href="{% url 'helpme:ticket-detail' ticket.uuid %}">{{ ticket }}</a>
         <div>
             <b>Status: </b>
             {{ticket.get_status_display}}

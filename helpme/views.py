@@ -12,7 +12,7 @@ from .models import Ticket
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
-    success_url = reverse_lazy('helpme-success')
+    success_url = reverse_lazy('helpme:success')
     category = 3
     fields = ['subject', 'description']
 
@@ -71,7 +71,7 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
     template_name = "helpme/ticket_detail.html"
 
     def get_success_url(self):
-        return reverse_lazy('helpme-ticket-detail', args=[self.object.uuid])
+        return reverse_lazy('helpme:ticket-detail', args=[self.object.uuid])
     
     def get_object(self, queryset=None):
         if queryset is None:
