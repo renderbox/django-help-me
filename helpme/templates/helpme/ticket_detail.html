@@ -29,13 +29,13 @@
     <table>
     {% for dict in ticket.history %}
         <tbody>
-	    {% for key, value in dict.items %}  
+        {% for key, value in dict.items %}  
             <tr>
                 <td>{{key}}:</td>
-		<td>{{value}}</td>
-	    </tr>
-	    {% endfor %}
-	</tbody>
+                <td>{{value}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
         <tr><td><br><br></td></tr>
     {% endfor %}
     </table>
