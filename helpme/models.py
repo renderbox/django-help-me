@@ -4,8 +4,6 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db import models
-from django.contrib.auth import get_user_model
-from django.contrib.postgres.fields import JSONField
 
 
 DJANGO_PROJECT_VERSION = getattr(settings, "DJANGO_PROJECT_VERSION", None)
@@ -69,12 +67,12 @@ class Ticket(CreateUpdateModelBase):
     status = models.IntegerField(_("Status"), default=1, choices=StatusChoices.choices)
     priority = models.IntegerField(_("Priority"), default=2, choices=PriorityChoices.choices)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
-    user_meta = JSONField(blank=True, null=True, default=dict)
+    user_meta = models.JSONField(blank=True, null=True, default=dict)
     category = models.IntegerField(_("Category"), default=3, choices=CategoryChoices.choices)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Description"))
-    history = JSONField(blank=True, null=True, default=list)
+    history = models.JSONField(blank=True, null=True, default=list)
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)

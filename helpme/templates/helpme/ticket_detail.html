@@ -1,0 +1,47 @@
+{% extends "helpme/base.html" %}
+
+{% block help_content %}
+<h2>{{ticket.subject}}</h2>
+<p>{{ticket.description}}</p>
+{% if support %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p>
+        <b>User: </b>
+        {{ticket.user.username}}
+    </p>
+    <p>
+        <b>User Meta: </b>
+        {{ticket.user_meta}}
+    </p>
+    <p>
+        <b>Created: </b>
+        {{ticket.created}}
+    </p>
+    <p>
+        <b>Updated: </b>
+        {{ticket.updated}}
+    </p>
+    <p>
+        <b>History: </b>
+    </p>
+    <table>
+    {% for dict in ticket.history %}
+        <tbody>
+        {% for key, value in dict.items %}  
+            <tr>
+                <td>{{key}}:</td>
+                <td>{{value}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tr><td><br><br></td></tr>
+    {% endfor %}
+    </table>
+    <input type="submit" value="Update">
+</form>
+{% else %}
+<p class="text-right"><b>Status:</b> {{ticket.get_status_display}}</p>
+{% endif %}    
+{% endblock %}

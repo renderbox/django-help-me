@@ -1,7 +1,7 @@
 {% extends "helpme/base.html" %}
 
 {% block help_content %}
-<form action="{% url 'helpme-submit-request' %}" method="POST">
+<form action="{% url 'helpme:submit-request' %}" method="POST">
 {% csrf_token %}
 {{ form.as_ul }}
 <input type="submit" value="Submit">

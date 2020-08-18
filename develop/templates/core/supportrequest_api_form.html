@@ -3,7 +3,7 @@
 
 {% block content %}
 API
-<form class='help-ajax-form' method='POST' action='.' data-url='{% url "helpme-submit-request" %}'>
+<form class='help-ajax-form' method='POST' action='.' data-url='{% url "helpme:submit-request" %}'>
     {% csrf_token %}
     {{form.as_ul|safe}}
     <button type='submit'>Submit</button>
