@@ -91,7 +91,11 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True, default=os.environ.get('DATABASE_URL'))
+
+if DEBUG:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, default=os.environ.get('DATABASE_URL'))
+else:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True, default=os.environ.get('DATABASE_URL'))
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
