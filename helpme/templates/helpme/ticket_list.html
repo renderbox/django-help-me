@@ -7,13 +7,13 @@
     <li>
         <a href="{% url 'helpme-ticket-detail' ticket.uuid %}">{{ ticket }}</a>
         <div>
-	    <b>Status: </b>
-	    {{ticket.get_status_display}}
+            <b>Status: </b>
+            {{ticket.get_status_display}}
         </div>
         {% if support %}
         <div>
-	    <b>Priority: </b>
-	    {{ticket.get_priority_display}}
+            <b>Priority: </b>
+            {{ticket.get_priority_display}}
         </div>
         {% endif %}
     </li>
