@@ -43,5 +43,81 @@
 </form>
 {% else %}
 <p class="text-right"><b>Status:</b> {{ticket.get_status_display}}</p>
-{% endif %}    
+{% endif %}
+{% for comment in comments %}
+{% if comment.visibility == 10 and support or comment.visibility == 15 and developer or comment.visibility == 20 and supervisor or comment.visibility == 1 %}
+<div class="text-center comment_div" style="padding: 10px;">
+    <p class="font-weight-bold">
+        {{ comment.user.username }}
+        <span class=" text-muted font-weight-normal">
+            {% if comment.been_updated %}
+                Updated {{ comment.updated }}
+            {% else %}
+                {{ comment.created }}
+            {% endif %}
+        </span>
+    </p>
+    <div id="comment_content" class="comment_content">
+        {{ comment.content  }}
+    </div>
+    {% if comment.user == user %}
+    <form method="post" action="{% url 'helpme-api:update-comment' ticket.uuid comment.uuid  %}" class="text-center edit_form" style="display:none;">
+        {% csrf_token %}
+        <p>
+	    <textarea name="content" cols="40" rows="5" required id="id_content">{{comment.content}}</textarea>
+	</p>
+	<p>
+	    {{ comment_form.visibility.label_tag }}
+	    <select name="visibility" id="id_visibility">
+                <option value="{{comment.visibility}}" selected>
+                    {{comment.get_visibility_display}}
+                </option>      
+                <option value="1">Reporters</option>
+                <option value="10">Support Handlers</option>
+                <option value="15">Developers</option>
+                <option value="20">Supervisors</option>
+            </select>
+	</p>
+        <input type="submit" value="Update">
+    </form>
+    <p class="text-right">
+        <button class="update_button">Edit comment</button>
+    </p>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endfor %}
+<form method="post" action="{% url 'helpme-api:create-comment' ticket.uuid %}" class="text-center">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="Comment">
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Switch between the comment content and the edit comment form when a button is clicked -->
+<script>
+    var buttons = document.getElementsByClassName('update_button');
+    var num = buttons.length;
+
+    function editComment(e) {
+        var button = $(e.currentTarget);
+        var form = button.closest('.comment_div').find('.edit_form')[0];
+        var comment = button.closest('.comment_div').find('.comment_content')[0];
+      
+        if (form.style.display === 'none'){
+            form.style.display = 'block';
+            comment.style.display = 'none';
+        }
+        else{
+            form.style.display = 'none';
+            comment.style.display = 'block';
+        }
+    }
+
+    for (var i = 0; i < num; i++) {
+        buttons[i].addEventListener('click', editComment, false)
+    };
+</script>
 {% endblock %}

@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Ticket
+from .forms import CommentForm
 
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
@@ -88,14 +89,23 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['support'] = self.request.user.has_perm('see-support-tickets')
+        support = self.request.user.has_perm('see-support-tickets')
+        
+        context['support'] = support
+        context['developer'] = self.request.user.has_perm('see-developer-tickets')
+        context['supervisor'] = self.request.user.has_perm('see-all-tickets')
+
+        context['user'] = self.request.user
+        context['comment_form'] = CommentForm(support=support)
+        context['comments'] = self.object.comments.all()
         return context
 
     def form_valid(self, form):
         form.instance.log_history_event(event="updated", user=self.request.user)
         response = super().form_valid(form)
         return response
-    
+
+
 # class SupportDashboard(LoginRequiredMixin, ListView):
 #     model = SupportRequest
 

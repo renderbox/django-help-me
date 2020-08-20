@@ -47,7 +47,6 @@ setup(
             'django-allauth',
             'dj-database-url',
             'psycopg2-binary',
-            'django-allauth',
             'ipython',
             'pylint',
         ],

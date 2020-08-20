@@ -1,12 +1,11 @@
 import uuid 
+import datetime
 
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db import models
 
-
-DJANGO_PROJECT_VERSION = getattr(settings, "DJANGO_PROJECT_VERSION", None)
 
 ##################
 # CHOICES
@@ -50,7 +49,9 @@ class CreateUpdateModelBase(models.Model):
     class Meta:
         abstract = True
 
-
+    def been_updated(self):
+        return (self.updated - self.created) > datetime.timedelta(seconds=1)
+    
 ##################
 # MODELS
 ##################
@@ -110,3 +111,6 @@ class Comment(CreateUpdateModelBase):
     content = models.TextField(_("Content"))
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
     visibility = models.IntegerField(_("Visibility"), default=1, choices=VisibilityChoices.choices)
+
+    def __str__(self):
+        return "{0} - {1}".format(self.user.username, self.content)
