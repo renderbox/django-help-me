@@ -66,11 +66,11 @@ class Team(models.Model):
 
 class Ticket(CreateUpdateModelBase):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    status = models.IntegerField(_("Status"), default=1, choices=StatusChoices.choices)
-    priority = models.IntegerField(_("Priority"), default=3, choices=PriorityChoices.choices)
+    status = models.IntegerField(_("Status"), default=StatusChoices.OPEN, choices=StatusChoices.choices)
+    priority = models.IntegerField(_("Priority"), default=PriorityChoices.MEDIUM, choices=PriorityChoices.choices)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     user_meta = models.JSONField(blank=True, null=True, default=dict)
-    category = models.IntegerField(_("Category"), default=3, choices=CategoryChoices.choices)
+    category = models.IntegerField(_("Category"), default=CategoryChoices.HELP, choices=CategoryChoices.choices)
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Description"))
@@ -111,7 +111,7 @@ class Comment(CreateUpdateModelBase):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     content = models.TextField(_("Content"))
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
-    visibility = models.IntegerField(_("Visibility"), default=1, choices=VisibilityChoices.choices)
+    visibility = models.IntegerField(_("Visibility"), default=VisibilityChoices.REPORTERS, choices=VisibilityChoices.choices)
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.created)
