@@ -64,11 +64,11 @@
     <form method="post" action="{% url 'helpme-api:update-comment' ticket.uuid comment.uuid  %}" class="text-center edit_form" style="display:none;">
         {% csrf_token %}
         <p>
-	    <textarea name="content" cols="40" rows="5" required id="id_content">{{comment.content}}</textarea>
-	</p>
-	<p>
-	    {{ comment_form.visibility.label_tag }}
-	    <select name="visibility" id="id_visibility">
+	    <textarea name="content" cols="40" rows="5" required>{{comment.content}}</textarea>
+        </p>
+        <p>
+            {{ comment_form.visibility.label_tag }}
+            <select name="visibility">
                 <option value="{{comment.visibility}}" selected>
                     {{comment.get_visibility_display}}
                 </option>      
@@ -77,7 +77,7 @@
                 <option value="15">Developers</option>
                 <option value="20">Supervisors</option>
             </select>
-	</p>
+        </p>
         <input type="submit" value="Update">
     </form>
     <p class="text-right">
