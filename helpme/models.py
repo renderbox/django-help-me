@@ -26,10 +26,11 @@ class StatusChoices(models.IntegerChoices):
     CANCELED = 40, _("Canceled")
 
 class PriorityChoices(models.IntegerChoices):
-    LOW = 1, _("Low")
-    MEDIUM = 2, _("Medium")
-    HIGH = 3, _("High")
-    URGENT = 4, _("Urgent")
+    SUGGESTION = 1, _("Suggestion")
+    LOW = 2, _("Low")
+    MEDIUM = 3, _("Medium")
+    HIGH = 4, _("High")
+    URGENT = 5, _("Urgent")
 
 class VisibilityChoices(models.IntegerChoices):
     REPORTERS = 1, _("Reporters")
@@ -66,7 +67,7 @@ class Team(models.Model):
 class Ticket(CreateUpdateModelBase):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     status = models.IntegerField(_("Status"), default=1, choices=StatusChoices.choices)
-    priority = models.IntegerField(_("Priority"), default=2, choices=PriorityChoices.choices)
+    priority = models.IntegerField(_("Priority"), default=3, choices=PriorityChoices.choices)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     user_meta = models.JSONField(blank=True, null=True, default=dict)
     category = models.IntegerField(_("Category"), default=3, choices=CategoryChoices.choices)
@@ -113,4 +114,4 @@ class Comment(CreateUpdateModelBase):
     visibility = models.IntegerField(_("Visibility"), default=1, choices=VisibilityChoices.choices)
 
     def __str__(self):
-        return "{0} - {1}".format(self.user.username, self.content)
+        return "{0} - {1}".format(self.user.username, self.created)

@@ -64,7 +64,7 @@
     <form method="post" action="{% url 'helpme-api:update-comment' ticket.uuid comment.uuid  %}" class="text-center edit_form" style="display:none;">
         {% csrf_token %}
         <p>
-	    <textarea name="content" cols="40" rows="5" required>{{comment.content}}</textarea>
+            <textarea name="content" cols="40" rows="5" required>{{comment.content}}</textarea>
         </p>
         <p>
             {{ comment_form.visibility.label_tag }}
