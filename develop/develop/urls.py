@@ -19,7 +19,6 @@ from core import views
 
 urlpatterns = [
     path("", views.CoreIndexView.as_view(), name="core-index"),
-    path("api/v1/support/request", views.SupportRequestApiView.as_view(), name="helpme-submit-request-api"),
     path('api/v1/support/', include('helpme.api.urls')), 
     path('support/', include('helpme.urls')),
     path('admin/', admin.site.urls),
