@@ -5,6 +5,6 @@ from helpme.api import views
 app_name = "helpme-api"
 
 urlpatterns = [
-    path('<str:ticket_uuid>/comment/', views.CreateCommentView.as_view(), name='create-comment'),
-    path('<str:ticket_uuid>/comment/<str:comment_uuid>/', views.UpdateCommentView.as_view(), name='update-comment'),
+    path('<uuid:uuid>/comment/', views.CreateUpdateCommentAPIView.as_view(), name='create-comment'),
+    path('<uuid:ticket_uuid>/comment/<uuid:uuid>/', views.CreateUpdateCommentAPIView.as_view(), name='update-comment'),
 ]

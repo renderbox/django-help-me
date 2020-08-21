@@ -49,6 +49,7 @@ setup(
             'psycopg2-binary',
             'ipython',
             'pylint',
+            'djangorestframework',
         ],
         'test': [],
         'prod': [],

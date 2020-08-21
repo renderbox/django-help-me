@@ -66,6 +66,7 @@
         <p>
             <textarea name="content" cols="40" rows="5" required>{{comment.content}}</textarea>
         </p>
+	{% if support %}
         <p>
             {{ comment_form.visibility.label_tag }}
             <select name="visibility">
@@ -78,6 +79,7 @@
                 <option value="20">Supervisors</option>
             </select>
         </p>
+	{% endif %}
         <input type="submit" value="Update">
     </form>
     <p class="text-right">
