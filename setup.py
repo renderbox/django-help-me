@@ -41,6 +41,7 @@ setup(
         'Django>=3.1, <3.2',
         'django-autoslug',
         'django-extensions',
+        'django-crispy-forms',
     ],
     extras_require={
         'dev': [
@@ -50,6 +51,7 @@ setup(
             'ipython',
             'pylint',
             'djangorestframework',
+            'django-multiselectfield',
         ],
         'test': [],
         'prod': [],

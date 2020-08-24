@@ -1,10 +1,13 @@
 import uuid 
 import datetime
 
+from multiselectfield import MultiSelectField
+
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.db import models
+from django.contrib.sites.models import Site
 
 
 ##################
@@ -62,6 +65,11 @@ class Team(models.Model):
     name = models.CharField(max_length=30)
     global_team = models.BooleanField()
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    sites = models.ManyToManyField(Site, default=1)
+    categories = MultiSelectField(choices=CategoryChoices.choices, default=CategoryChoices.HELP)
+
+    def __str__(self):
+        return self.name
     
 
 class Ticket(CreateUpdateModelBase):
@@ -71,13 +79,17 @@ class Ticket(CreateUpdateModelBase):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     user_meta = models.JSONField(blank=True, null=True, default=dict)
     category = models.IntegerField(_("Category"), default=CategoryChoices.HELP, choices=CategoryChoices.choices)
-    team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
+    teams = models.ManyToManyField(Team, blank=True, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Description"))
     history = models.JSONField(blank=True, null=True, default=list)
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)
+    site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
+
+    class Meta:
+        permissions = (("see-support-tickets", "Access to support-level tickets"), ("see-developer-tickets", "Access to developer-level tickets"), ("see-all-tickets", "Access to all tickets"),) 
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.subject)
