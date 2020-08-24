@@ -2,6 +2,8 @@ from django.urls import path
 
 from helpme.api import views
 
+app_name = "helpme-api"
+
 urlpatterns = [
-    # path('samplemodel/list/', views.SampleModelListAPIView.as_view(), name='sample-model-list'),
+    path('<uuid:uuid>/comment/', views.CreateCommentAPIView.as_view(), name='create-comment'),
 ]
