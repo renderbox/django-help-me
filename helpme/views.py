@@ -119,7 +119,7 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
 
 
 class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'helpme.add_team'
+    permission_required = 'helpme.view_team'
     model = Team
     fields = ['name', 'global_team', 'sites', 'categories', 'members']
     success_url = reverse_lazy('helpme:team-list')
@@ -127,6 +127,8 @@ class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['teams'] = Team.objects.all()
+        context['admin'] = self.request.user.has_perm('helpme.add_team')
+        context['user_teams'] = self.request.user.team_set.all()
         return context
 
     def form_valid(self, form):
@@ -137,7 +139,7 @@ class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return response
     
 class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'helpme.change_team'
+    permission_required = 'helpme.view_team'
     model = Team
     fields = ['name', 'global_team', 'sites', 'categories', 'members']
     template_name = "helpme/team_detail.html"
@@ -164,3 +166,8 @@ class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             form.instance.sites.set(Site.objects.all())
             form.instance.save()
         return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['admin'] = self.request.user.has_perm('helpme.change_team')
+        return context
