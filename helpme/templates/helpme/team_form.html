@@ -14,8 +14,8 @@
 </ul>
 <h2>Create a new team</h2>
 <form action="{% url 'helpme:team-list' %}" method="POST">
-{% csrf_token %}
-{{ form|crispy }}
-<input type="submit" value="Submit" class="mt-3">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit" class="mt-3">
 </form>
 {% endblock %}
