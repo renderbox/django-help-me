@@ -1,0 +1,33 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block help_content %}
+{% if admin %}
+<h1>Manage Teams</h1>
+<ul>
+{% for team in teams %}
+    <li>
+        <a href="{% url 'helpme:team-detail' team.uuid %}"> {{ team }} </a>
+    </li>
+{% empty %}
+    <p>There are no teams yet.</p>
+{% endfor %}
+</ul>
+<h2>Create a new team</h2>
+<form action="{% url 'helpme:team-list' %}" method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit" class="mt-3">
+</form>
+{% else %}
+<h1>My Teams</h1>
+{% for team in user_teams %}
+    <li>
+        <a href="{% url 'helpme:team-detail' team.uuid %}"> {{ team }} </a>
+    </li>
+{% empty %}
+    <p>You don't belong to any teams yet.</p>
+{% endfor %}
+<ul>
+{% endif %}
+{% endblock %}

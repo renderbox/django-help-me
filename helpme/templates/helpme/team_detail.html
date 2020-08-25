@@ -1,0 +1,43 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block help_content %}
+{% if admin %}
+<h1>Manage {{team.name}} Team</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Update" class="mt-3">
+</form>
+{% else %}
+<h1>{{team.name}}</h1>
+<p>
+    <b>Global team: </b>
+    {{ team.global_team }}
+</p>
+<p>
+    <b>Sites: </b>
+    <ul>
+    {% for site in team.sites.all %}
+        <li>
+            {{ site }}
+        </li>
+    {% endfor %}
+    </ul>
+</p>
+<p>
+    <b>Categories: </b>
+    {{ team.categories }}
+</p>
+<p>
+    <b>Members: </b>
+    <ul>
+    {% for member in team.members.all %}
+        <li>
+            {{member}}
+        </li>
+    {% endfor %}
+    </ul>
+</p>
+{% endif %}
+{% endblock %}

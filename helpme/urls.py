@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.SupportDashboardView.as_view(), name="dashboard"),
     path("request/", views.SupportRequestView.as_view(), name="submit-request"),
     path("success/", views.SupportRequestSuccessView.as_view(), name="success"),
-    path("ticket/<str:uuid>/", views.TicketDetailView.as_view(), name="ticket-detail"),
-    # Paths for managing support requests go here...
+    path("ticket/<uuid:uuid>/", views.TicketDetailView.as_view(), name="ticket-detail"),
+    path("teams/", views.TeamCreateView.as_view(), name="team-list"),
+    path("teams/<uuid:uuid>/", views.TeamDetailView.as_view(), name="team-detail"),
 ]

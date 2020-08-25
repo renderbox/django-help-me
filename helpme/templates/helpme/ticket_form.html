@@ -1,9 +1,10 @@
 {% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block help_content %}
 <form action="{% url 'helpme:submit-request' %}" method="POST">
-{% csrf_token %}
-{{ form.as_ul }}
-<input type="submit" value="Submit">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit" class="mt-3">
 </form>
 {% endblock %}
