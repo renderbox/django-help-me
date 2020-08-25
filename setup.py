@@ -71,6 +71,7 @@ setup(
             'Sphinx',
             'sphinx-rtd-theme',
             'recommonmark',
+            'rstcheck',
         ],
     }
 )

@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to Django Help Me's documentation!
-======================================
+==========================================
 
 .. toctree::
    :maxdepth: 2
