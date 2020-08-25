@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from django_user_agents.utils import get_user_agent
 from .models import Ticket, Team
 from .forms import CommentForm
 
@@ -29,7 +28,7 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.site = Site.objects.get_current()
 
-        user_agent = get_user_agent(self.request)
+        user_agent = self.request.user_agent
         
         if user_agent.is_mobile:
             device = "Mobile",

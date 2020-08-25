@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.contrib.sites.models import Site
 
-from .app_settings import app_settings
+from .settings import app_settings
 
 
 ##################

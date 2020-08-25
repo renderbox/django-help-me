@@ -57,7 +57,6 @@ setup(
             'djangorestframework',
             'django-multiselectfield',
             'django-crispy-forms',
-            'python-memcached',
             'pyyaml',
             'ua-parser',
             'user-agents',

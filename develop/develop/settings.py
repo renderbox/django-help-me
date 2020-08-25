@@ -101,19 +101,6 @@ if DEBUG:
 else:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True, default=os.environ.get('DATABASE_URL'))
 
-    
-# Cache backend is optional, but recommended to speed up user agent parsing
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
-
-# Name of cache backend to cache user agents. If it not specified default
-# cache alias will be used. Set to `None` to disable caching.
-USER_AGENTS_CACHE = 'default'
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
