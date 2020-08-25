@@ -1,4 +1,4 @@
-![Help Me CI](https://github.com/renderbox/django-permafrost/workflows/Help%20Me%20CI/badge.svg?branch=master)
+![Help Me CI](https://github.com/renderbox/django-help-me/workflows/Help%20Me%20CI/badge.svg)
 
 ![Help Me Develop](https://github.com/renderbox/django-help-me/workflows/Help%20Me%20Develop/badge.svg?branch=develop)
 
