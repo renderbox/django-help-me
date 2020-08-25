@@ -69,10 +69,8 @@ setup(
         'docs': [
             'coverage',
             'Sphinx',
-            'sphinx-bootstrap-theme',
             'sphinx-rtd-theme',
-            'sphinx-js',
-            'm2r',
+            'recommonmark',
         ],
     }
 )
