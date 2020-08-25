@@ -59,6 +59,7 @@ setup(
             'setuptools',
             'wheel',
             'twine',
+            'm2r',
         ],
         'docs': [
             'coverage',
@@ -66,6 +67,7 @@ setup(
             'sphinx-bootstrap-theme',
             'sphinx-rtd-theme',
             'sphinx-js',
+            'm2r',
         ],
     }
 )
