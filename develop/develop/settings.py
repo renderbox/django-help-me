@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'rest_framework',
     'crispy_forms',
+    'django_user_agents',
     'helpme',
 ]
 
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'develop.urls'
@@ -98,6 +100,20 @@ if DEBUG:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, default=os.environ.get('DATABASE_URL'))
 else:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True, default=os.environ.get('DATABASE_URL'))
+
+    
+# Cache backend is optional, but recommended to speed up user agent parsing
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+# Name of cache backend to cache user agents. If it not specified default
+# cache alias will be used. Set to `None` to disable caching.
+USER_AGENTS_CACHE = 'default'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

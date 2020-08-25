@@ -9,17 +9,13 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.contrib.sites.models import Site
 
+from .app_settings import app_settings
+
 
 ##################
 # CHOICES
 ##################
 
-# TODO: update categories
-class CategoryChoices(models.IntegerChoices):
-    COMMENT = 1, _("Comment")
-    SALES = 2, _("Sales")
-    HELP = 3, _("Help")
-    BUG = 4, _("Bug")
 
 class StatusChoices(models.IntegerChoices):
     OPEN = 1, _("Open")
@@ -66,7 +62,7 @@ class Team(models.Model):
     global_team = models.BooleanField()
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     sites = models.ManyToManyField(Site, default=1)
-    categories = MultiSelectField(choices=CategoryChoices.choices, default=CategoryChoices.HELP)
+    categories = MultiSelectField(choices=app_settings.TICKET_CATEGORIES.choices)
 
     def __str__(self):
         return self.name
@@ -78,7 +74,7 @@ class Ticket(CreateUpdateModelBase):
     priority = models.IntegerField(_("Priority"), default=PriorityChoices.MEDIUM, choices=PriorityChoices.choices)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="support_tickets")
     user_meta = models.JSONField(blank=True, null=True, default=dict)
-    category = models.IntegerField(_("Category"), default=CategoryChoices.HELP, choices=CategoryChoices.choices)
+    category = models.IntegerField(_("Category"), choices=app_settings.TICKET_CATEGORIES.choices)
     teams = models.ManyToManyField(Team, blank=True, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Description"))
