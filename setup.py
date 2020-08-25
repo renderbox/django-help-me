@@ -1,7 +1,6 @@
 # --------------------------------------------
-# Copyright 2019, Grant Viklund
+# Copyright 2015-2020, Grant Viklund
 # @Author: Grant Viklund
-# @Date:   2019-08-06 15:10:20
 # --------------------------------------------
 
 from os import path
@@ -24,7 +23,7 @@ package_metadata = {
     'description': 'A simple app for providing a simple help desk for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',
-    'author': 'Grant Viklund',
+    'author': 'Grant Viklund, Mackenzie Camisa',
     'author_email': 'renderbox@example.com',
     'license': 'MIT license',
     'classifiers': [
