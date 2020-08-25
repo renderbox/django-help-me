@@ -1,4 +1,3 @@
-
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -26,9 +25,27 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
             return response
 
     def form_valid(self, form):
-        form.instance.category = self.category
         form.instance.user = self.request.user
         form.instance.site = Site.objects.get_current()
+
+        user_agent = self.request.user_agent
+        
+        if user_agent.is_mobile:
+            device = "Mobile",
+        elif user_agent.is_pc:
+            device = "PC"
+        elif user_agent.is_tablet:
+            device = "Tablet"
+        else:
+            device = "Unknown"
+
+        form.instance.user_meta = {
+            "browser": user_agent.browser.family + " " + user_agent.browser.version_string,
+            "operating system": user_agent.os.family + " " + user_agent.os.version_string,
+            "device": user_agent.device.family,
+            "mobile/tablet/pc": device,
+            "IP address": self.request.META['REMOTE_ADDR']
+        }
         
         form.instance.log_history_event(event="created", user=self.request.user)
 
@@ -36,7 +53,7 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
 
         # filter and assign teams by site and category
         teams = Team.objects.filter(sites__in=[form.instance.site])
-        form.instance.teams.set(teams.filter(categories__contains=self.category))
+        form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
         form.instance.save()
 
         if self.request.is_ajax():
