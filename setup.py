@@ -20,7 +20,7 @@ except ImportError:
 
 package_metadata = {
     'name': 'django-help-me',
-    'version': '0.1.3',
+    'version': '0.1.4',
     'description': 'A simple app for providing a simple help desk for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',
@@ -46,18 +46,17 @@ setup(
     install_requires=[
         'Django>=3.1, <3.2',
         'django-autoslug',
-        'django-extensions',
-        'django-crispy-forms',
     ],
     extras_require={
         'dev': [
+            'django-extensions',
             'django-allauth',
             'dj-database-url',
             'psycopg2-binary',
-            'ipython',
             'pylint',
             'djangorestframework',
             'django-multiselectfield',
+            'django-crispy-forms',
         ],
         'test': [],
         'prod': [],

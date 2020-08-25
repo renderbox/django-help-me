@@ -20,6 +20,11 @@ To install, just use pip
 > pip install django-permafrost
 ```
 
+If you plan to use our templates you will need to installe these additional pacakges too (they are included in the 'dev' extensions):
+
+```shell
+> pip install django-crispy-forms django-multiselectfield
+```
 
 
 ## For developers
