@@ -54,7 +54,6 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
         # filter and assign teams by site and category
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
-        form.instance.save()
 
         if self.request.is_ajax():
             data = {
@@ -91,7 +90,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['support'] = self.request.user.has_perm('see-support-tickets')
+        context['support'] = self.request.user.has_perm('helpme.see-support-tickets')
         return context
     
 
