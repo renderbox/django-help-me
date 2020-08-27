@@ -85,7 +85,11 @@ class Ticket(CreateUpdateModelBase):
     site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
 
     class Meta:
-        permissions = (("see-support-tickets", "Access to support-level tickets"), ("see-developer-tickets", "Access to developer-level tickets"), ("see-all-tickets", "Access to all tickets"),) 
+        permissions = (
+            ("see-support-tickets", "Access to support-level tickets"), 
+            ("see-developer-tickets", "Access to developer-level tickets"), 
+            ("see-all-tickets", "Access to all tickets"),
+        ) 
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.subject)

@@ -13,7 +13,7 @@ from .forms import CommentForm
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
-    success_url = reverse_lazy('helpme:success')
+    success_url = reverse_lazy('helpme:dashboard')
     category = 3
     fields = ['subject', 'description', 'category']
 
@@ -62,10 +62,6 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
             return JsonResponse(data)
         else:
             return response
-
-            
-class SupportRequestSuccessView(LoginRequiredMixin, TemplateView):
-    template_name = "helpme/submission_successful.html"
 
 
 class SupportDashboardView(LoginRequiredMixin, ListView):

@@ -143,3 +143,5 @@ STATIC_URL = '/static/'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

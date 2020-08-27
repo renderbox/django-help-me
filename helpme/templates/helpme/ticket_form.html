@@ -2,9 +2,18 @@
 {% load crispy_forms_tags %}
 
 {% block help_content %}
-<form action="{% url 'helpme:submit-request' %}" method="POST">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" value="Submit" class="mt-3">
-</form>
+
+  <div class="row">
+    <div class="col-sm">
+      <h1>Create a Support Request</h1>
+    </div>
+    <div class="col-sm">
+        <form action="{% url 'helpme:submit-request' %}" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+  </div>
+
 {% endblock %}
