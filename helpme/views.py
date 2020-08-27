@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from .models import Ticket, Team
+from .models import Ticket, Team, VisibilityChoices
 from .forms import CommentForm
 
 
@@ -77,7 +77,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         elif self.request.user.has_perm('helpme.see-support-tickets'):
             tickets = Ticket.objects.none()
             for team in self.request.user.team_set.all():
-                tickets = tickets | Ticket.objects.filter(teams__in=[team])
+                tickets |= Ticket.objects.filter(teams__in=[team])
             queryset = Ticket.objects.filter(assigned_to=self.request.user) | tickets.filter(assigned_to=None)
         # platform user
         else:
@@ -114,14 +114,26 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         support = self.request.user.has_perm('helpme.see-support-tickets')
+        developer = self.request.user.has_perm('helpme.see-developer-tickets')
+        supervisor = self.request.user.has_perm('helpme.see-all-tickets')
         
         context['support'] = support
-        context['developer'] = self.request.user.has_perm('helpme.see-developer-tickets')
-        context['supervisor'] = self.request.user.has_perm('helpme.see-all-tickets')
+        context['developer'] = developer
+        context['supervisor'] = supervisor
 
         context['user'] = self.request.user
         context['comment_form'] = CommentForm(support=support)
-        context['comments'] = self.object.comments.all()
+
+        # filter comments by visibility
+        if supervisor:
+            comments = self.object.comments.all()
+        else:
+            comments = self.object.comments.filter(visibility=VisibilityChoices.REPORTERS)
+            if support:
+                comments |=  self.object.comments.filter(visibility=VisibilityChoices.SUPPORT)
+            if developer:
+                comments |= self.object.comments.filter(visibility=VisibilityChoices.DEVELOPERS)
+        context['comments'] = comments
         return context
 
     def form_valid(self, form):
