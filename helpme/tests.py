@@ -15,9 +15,6 @@ class ModelTests(TestCase):
         self.assertEqual(ticket.site.domain, "example.com")
         self.assertEqual(ticket.status, StatusChoices.OPEN)
         self.assertEqual(ticket.priority, PriorityChoices.MEDIUM)
-        self.assertEqual(ticket.category, app_settings.TICKET_CATEGORIES.HELP)
-        self.assertEqual(ticket.subject, "Test")
-        self.assertEqual(ticket.description, "Test description")
 
         
     def test_create_comment_model(self):
@@ -25,16 +22,6 @@ class ModelTests(TestCase):
         comment = Comment.objects.create(content="This is an example comment", ticket=ticket)
     
         self.assertEqual(comment.visibility, VisibilityChoices.REPORTERS)
-        self.assertEqual(comment.content, "This is an example comment")
-        self.assertIs(comment.ticket, ticket)
-
-        
-    def test_create_team_model(self):
-        team = Team.objects.create(name="Test Team", global_team=True, categories=str(app_settings.TICKET_CATEGORIES.COMMENT) + "," + str(app_settings.TICKET_CATEGORIES.HELP))
-        
-        self.assertEqual(team.categories, "1,3")
-        self.assertEqual(team.name, "Test Team")
-        self.assertIs(team.global_team, True)
 
         
 class ClientTests(TestCase):
@@ -53,11 +40,10 @@ class ClientTests(TestCase):
         cls.support_team.sites.add(Site.objects.get(pk=1))
         cls.support_team.members.add(cls.support)
 
-        cls.simple_ticket = Ticket.objects.create(subject="ABC", description="123", category=app_settings.TICKET_CATEGORIES.COMMENT, user=cls.student)
-        cls.simple_ticket.teams.add(cls.support_team)
-
         
     def setUp(self):
+        self.simple_ticket = Ticket.objects.create(subject="ABC", description="123", category=app_settings.TICKET_CATEGORIES.COMMENT, user=self.student)
+        self.simple_ticket.teams.add(self.support_team)
         self.client.force_login(self.support)
 
         
@@ -69,8 +55,7 @@ class ClientTests(TestCase):
         self.assertEqual(Ticket.objects.all().count(), 2)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain, [(reverse("helpme:success"), 302)])
-        
-        ticket = Ticket.objects.get(pk=2)
+        ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
         self.assertEqual(ticket.user_meta, {'device': 'Other', 'browser': 'Other ', 'IP address': '127.0.0.1', 'mobile/tablet/pc': 'Unknown', 'operating system': 'Other '})
