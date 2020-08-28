@@ -109,7 +109,7 @@ class ClientTests(TestCase):
         self.assertContains(response, "Created:")
         self.assertContains(response, "Updated:")
         self.assertContains(response, "History:")
-        self.assertContains(response, '<input type="submit" value="Update">')
+        self.assertContains(response, '<input type="submit" value="Update" class="btn btn-success">')
 
         # comment form
         self.assertContains(response, '<textarea name="content"')
