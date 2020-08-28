@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from .models import Ticket, Team, VisibilityChoices
+from .models import Ticket, Team, VisibilityChoices, StatusChoices
 from .forms import CommentForm
 
 
@@ -82,11 +82,25 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         # platform user
         else:
             queryset = Ticket.objects.filter(user=self.request.user)
+
+        # filter by status
+        s = self.request.GET.get('s', '')
+        if s:
+            status = s.split(',')
+            for stat in status:
+                stat = int(stat)
+            queryset = queryset.filter(status__in=status)
+        else:
+            # exclude closed tickets by default
+            queryset = queryset.exclude(status=StatusChoices.CLOSED)
+            
         return queryset.order_by('-priority')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['support'] = self.request.user.has_perm('helpme.see-support-tickets')
+        context['statuses'] = StatusChoices.choices
+        context['s'] = self.request.GET.get('s', '')
         return context
     
 

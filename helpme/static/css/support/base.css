@@ -1,0 +1,26 @@
+.status-dropdown .dropdown-item {
+    padding: 0.25rem 1rem;
+}
+
+.check-status {
+    display: inline-block;
+    font-size: 1rem;
+}
+
+.status-checkbox {
+    display: none;
+    color: var(--primary);
+}
+
+.status-checkbox.show {
+    display: block;
+}
+
+.status label {
+    margin-left: 0.5rem;
+    vertical-align: top;
+}
+
+.clear-all {
+    color: var(--primary);
+}

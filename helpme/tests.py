@@ -88,6 +88,23 @@ class ClientTests(TestCase):
         self.assertNotContains(response, "Priority: ")
         self.assertNotContains(response, "Medium")
 
+
+    def test_dashboard_filter_by_status(self):
+        active_ticket = Ticket.objects.create(subject="Active ticket", description="Test filter", category=app_settings.TICKET_CATEGORIES.HELP, status=StatusChoices.ACTIVE, user=self.support)
+        active_ticket.teams.add(self.support_team)
+        
+        # filter by active tickets
+        uri = reverse("helpme:dashboard")
+        response = self.client.get(uri, {'s': '10'})
+
+        self.assertContains(response, '>supportuser - Active ticket</a>')
+        self.assertNotContains(response, '>testuser - ABC</a>')
+
+        # filter by active and open tickets
+        new_response = self.client.get(uri, {"s": "1,10"})
+        self.assertContains(new_response, '>supportuser - Active ticket</a>')
+        self.assertContains(new_response, '>testuser - ABC</a>')
+
         
     def test_ticket_detail_support(self):
         uri = reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid])
