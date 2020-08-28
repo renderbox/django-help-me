@@ -109,7 +109,7 @@ class ClientTests(TestCase):
         self.assertContains(response, "Created:")
         self.assertContains(response, "Updated:")
         self.assertContains(response, "History:")
-        self.assertContains(response, '<input type="submit" value="Update" class="btn btn-success">')
+        self.assertContains(response, '<input type="submit" value="Update"')
 
         # comment form
         self.assertContains(response, '<textarea name="content"')
@@ -142,7 +142,7 @@ class ClientTests(TestCase):
         self.assertNotContains(response, "Created:")
         self.assertNotContains(response, "Updated:")
         self.assertNotContains(response, "History:")
-        self.assertNotContains(response, '<input type="submit" value="Update">')
+        self.assertNotContains(response, '<input type="submit" value="Update"')
 
         # can leave a comment but cannot set visibility
         self.assertContains(response, '<textarea name="content"')
@@ -241,7 +241,7 @@ class ClientTests(TestCase):
         self.assertContains(response, '<input type="text" name="name"')
         self.assertContains(response, '<input type="checkbox" name="global_team"')
         self.assertContains(response, '<select name="sites"')
-        self.assertContains(response, '<input type="checkbox" class="form-check-input" checked="checked" name="categories" id="id_categories_3" value="3" >')
+        self.assertContains(response, 'checked="checked" name="categories"')
         self.assertContains(response, '<select name="members"')
         self.assertContains(response, '<input type="submit" value="Update"')
         
