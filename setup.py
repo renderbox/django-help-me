@@ -19,7 +19,7 @@ except ImportError:
 
 package_metadata = {
     'name': 'django-help-me',
-    'version': '0.1.5',
+    'version': '0.1.6',
     'description': 'A simple app for providing a simple help desk & FAQ for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',

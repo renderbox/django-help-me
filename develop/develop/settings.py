@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-DJANGO_PROJECT_VERSION = "0.1.5"
+DJANGO_PROJECT_VERSION = "0.1.6"
 
 # Application definition
 
