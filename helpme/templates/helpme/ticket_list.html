@@ -2,6 +2,31 @@
 
 {% block help_content %}
 <h1>Dashboard</h1>
+<div class="filter-wrapper text-right">
+    <div class="d-inline-block font-weight-bold small"> {{object_list.count}} Tickets </div>
+    <ul class="d-inline-block ">
+        <li>
+            <div class="d-inline-block font-weight-bold small">FILTER BY:</div>
+            <div class="d-inline-block dropdown status-dropdown">
+              <a class="small dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                STATUS
+              </a>
+              <div class="dropdown-menu">
+                {% for num, name in statuses %}
+                <div class="status dropdown-item small form-check" data-status="{{ num }}">
+                  <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
+                    <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
+                    <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
+                  </div>
+                  <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
+                </div>
+                {% endfor %}
+                <div class="dropdown-item"><a class="clear-all small" href="#">Clear All</a></div>
+              </div>
+            </div>
+        </li>
+    </ul>
+</div>
 <ul>
 {% for ticket in object_list %}
     <li>
@@ -24,4 +49,65 @@
 
 <a class="btn btn-success" href="{% url 'helpme:submit-request' %}">Create a Request</a>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        var statuses = [];
+
+        var s = '{{ s }}';
+        if (s) {
+            statuses = s.split(',');
+        }
+
+        $('.check-status').each(function(idx, el) {
+            if (statuses.includes(el.dataset.status)) {
+                $(el).children('.blank').removeClass('show');
+                $(el).children('.checked').addClass('show');
+            } else {
+                $(el).children('.blank').addClass('show');
+                $(el).children('.checked').removeClass('show');
+            }
+        })
+
+        function reloadPage() {
+            var query = getUrlVars();
+            query['s'] = statuses.join(',');
+            var queryString = $.param(query);
+            var url = window.location.origin + window.location.pathname + '?' + queryString;
+            window.location = url;
+        }
+
+        function statusClick(evt) {
+            var status = evt.currentTarget.dataset.status;
+            if (statuses.includes(status)) {
+                statuses = $.grep(statuses, function(v) {
+                    return v != status;
+                })
+            } else {
+                statuses.push(status);
+            }
+            reloadPage();
+        }
+
+        $('.status').click(statusClick);
+
+        $('.clear-all').click(function(evt) {
+            statuses = [];
+            reloadPage();
+        });
+
+        function getUrlVars() {
+            var vars = {}, query;
+            if (window.location.search) {
+                var queries = window.location.search.slice(1).split('&');
+                for (var i = 0; i < queries.length; i++) {
+                    query = queries[i].split('=');
+                    vars[query[0]] = query[1];
+                }
+            }
+            return vars;
+        }
+
+    </script>
 {% endblock %}
