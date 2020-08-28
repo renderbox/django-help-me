@@ -117,6 +117,7 @@
                 <th scope="col">event</th>
                 <th scope="col">user</th>
                 <th scope="col">time</th>
+                <th scope="col">notes</th>
               </tr>
             </thead>
             <tbody>
@@ -125,6 +126,7 @@
                 <td>{{ item.event }}</td>
                 <td>{{ item.username }}</td>
                 <td>{{ item.time }}</td>
+                <td>{{ item.notes }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -152,10 +154,26 @@
 </div>
 
 {% else %}
-<p class="text-right">
-    <b>Status: </b>
-    {{ ticket.get_status_display }}
-</p>
+<div class="row">
+  <div class="col-12">
+    <div class="alert alert-secondary" role="alert">
+      <p>{{ ticket.description }}</p>  
+    </div>
+  </div>
+</div>
+<hr>
+{% for comment in comments %}
+<div class="row">
+  <div class="col-2">
+    <p><b>{{ comment.user.username }}</b><br><small>{{ comment.created }}</small></p>
+  </div>
+  <div class="col-10">
+    <div class="alert alert-primary" role="alert">
+      <p>{{ comment.content  }}</p>  
+    </div>
+  </div>
+</div>
+{% endfor %}
 <hr>
 <h2>Add Comment</h2>
 <form method="post" action="{% url 'helpme-api:create-comment' ticket.uuid %}" class="text-center">
