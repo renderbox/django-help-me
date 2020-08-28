@@ -54,7 +54,7 @@ class ClientTests(TestCase):
         response = self.client.post(uri, {"subject": "Test subject", "description": "Test description", "category": app_settings.TICKET_CATEGORIES.HELP}, follow=True)
         self.assertEqual(Ticket.objects.all().count(), 2)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:success"), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme:dashboard"), 302)])
         ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
@@ -96,13 +96,13 @@ class ClientTests(TestCase):
         # ticket information and update form
         self.assertContains(response, "ABC")
         self.assertContains(response, "123")
-        self.assertContains(response, '<select name="status" class="select" id="id_status"> <option value="1" selected>Open</option>')
+        self.assertContains(response, '<select name="status"')
         self.assertContains(response, '<option value="3" selected>Medium</option>')
         self.assertContains(response, '<option value="1" selected>Comment</option>')
         self.assertContains(response, '<option value="1" selected>Support</option>')
-        self.assertContains(response, '<select name="assigned_to" class="select" id="id_assigned_to"> <option value="" selected>---------</option>')
-        self.assertContains(response, '<input type="text" name="dev_ticket" maxlength="30" class="textinput textInput" id="id_dev_ticket">')
-        self.assertContains(response, '<select name="related_to" class="selectmultiple" id="id_related_to" multiple>')
+        self.assertContains(response, '<select name="assigned_to"')
+        self.assertContains(response, '<input type="text" name="dev_ticket"')
+        self.assertContains(response, '<select name="related_to"')
         self.assertContains(response, "User:")
         self.assertContains(response, "User Meta:")
         self.assertContains(response, "Site:")
@@ -112,8 +112,8 @@ class ClientTests(TestCase):
         self.assertContains(response, '<input type="submit" value="Update">')
 
         # comment form
-        self.assertContains(response, '<textarea name="content" cols="40" rows="10" placeholder="Leave a comment" class="textarea" required id="id_content">')
-        self.assertContains(response, '<select name="visibility" class="select" id="id_visibility"> <option value="1" selected>Reporters</option>')
+        self.assertContains(response, '<textarea name="content"')
+        self.assertContains(response, '<select name="visibility"')
         self.assertContains(response, '<input type="submit" value="Comment"')
 
 
@@ -129,13 +129,13 @@ class ClientTests(TestCase):
         self.assertContains(response, "Open")
 
         # does not contain certain data or an option to update the ticket
-        self.assertNotContains(response, '<select name="status" class="select" id="id_status"> <option value="1" selected>Open</option>')
+        self.assertNotContains(response, '<select name="status"')
         self.assertNotContains(response, '<option value="3" selected>Medium</option>')
         self.assertNotContains(response, '<option value="1" selected>Comment</option>')
         self.assertNotContains(response, '<option value="1" selected>Support</option>')
-        self.assertNotContains(response, '<select name="assigned_to" class="select" id="id_assigned_to"> <option value="" selected>---------</option>')
-        self.assertNotContains(response, '<input type="text" name="dev_ticket" maxlength="30" class="textinput textInput" id="id_dev_ticket">')
-        self.assertNotContains(response, '<select name="related_to" class="selectmultiple" id="id_related_to" multiple>')
+        self.assertNotContains(response, '<select name="assigned_to"')
+        self.assertNotContains(response, '<input type="text" name="dev_ticket"')
+        self.assertNotContains(response, '<select name="related_to"')
         self.assertNotContains(response, "User:")
         self.assertNotContains(response, "User Meta:")
         self.assertNotContains(response, "Site:")
@@ -145,8 +145,8 @@ class ClientTests(TestCase):
         self.assertNotContains(response, '<input type="submit" value="Update">')
 
         # can leave a comment but cannot set visibility
-        self.assertContains(response, '<textarea name="content" cols="40" rows="10" placeholder="Leave a comment" class="textarea" required id="id_content">')
-        self.assertNotContains(response, '<select name="visibility" class="select" id="id_visibility"> <option value="1" selected>Reporters</option>')
+        self.assertContains(response, '<textarea name="content"')
+        self.assertNotContains(response, '<select name="visibility"')
         self.assertContains(response, '<input type="submit" value="Comment"')
 
         
@@ -238,11 +238,11 @@ class ClientTests(TestCase):
 
         # form to update team details
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<input type="text" name="name" value="Support" maxlength="30" class="textinput textInput" required id="id_name">')
-        self.assertContains(response, '<input type="checkbox" name="global_team" class="checkboxinput" id="id_global_team">')
-        self.assertContains(response, '<select name="sites" class="selectmultiple" required id="id_sites" multiple> <option value="1" selected>example.com</option>')
-        self.assertContains(response, '<input type="checkbox" checked="checked" name="categories" id="id_categories_3" value="3" >Help')
-        self.assertContains(response, '<select name="members" class="selectmultiple" id="id_members" multiple> <option value="2">testuser</option> <option value="1" selected>supportuser</option> <option value="3">admin</option>')
+        self.assertContains(response, '<input type="text" name="name"')
+        self.assertContains(response, '<input type="checkbox" name="global_team"')
+        self.assertContains(response, '<select name="sites"')
+        self.assertContains(response, '<input type="checkbox" class="form-check-input" checked="checked" name="categories" id="id_categories_3" value="3" >')
+        self.assertContains(response, '<select name="members"')
         self.assertContains(response, '<input type="submit" value="Update"')
         
 

@@ -53,7 +53,6 @@
 </p>
 {% endif %}
 {% for comment in comments %}
-{% if comment.visibility == 10 and support or comment.visibility == 15 and developer or comment.visibility == 20 and supervisor or comment.visibility == 1 %}
 <div class="text-center comment_div" style="padding: 10px;">
     <p class="font-weight-bold">
         {{ comment.user.username }}
@@ -66,7 +65,6 @@
     </div>
 </div>
 
-{% endif %}
 {% endfor %}
 <form method="post" action="{% url 'helpme-api:create-comment' ticket.uuid %}" class="text-center">
     {% csrf_token %}
