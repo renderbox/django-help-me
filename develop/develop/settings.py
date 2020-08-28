@@ -22,7 +22,7 @@ SITE_ID = int(os.getenv('SITE_ID', '1'))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&1mmk1e%&9p87fvr=&v84u6fx1)$7f&%)*t9#$zfnu$#h#+5v^'
+SECRET_KEY = os.getenv('DJANGO_SECRET', '&1mmk1e%&9p87fvr=&v84u6fx1)$7f&%)*t9#$zfnu$#h#+5v^')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
