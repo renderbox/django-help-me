@@ -13,6 +13,10 @@ import os
 from pathlib import Path
 import dj_database_url
 
+from helpme.__version__ import VERSION
+
+BUILD_VERSION = VERSION
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -28,8 +32,6 @@ SECRET_KEY = os.getenv('DJANGO_SECRET', '&1mmk1e%&9p87fvr=&v84u6fx1)$7f&%)*t9#$z
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-DJANGO_PROJECT_VERSION = "0.1.6"
 
 # Application definition
 

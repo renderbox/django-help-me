@@ -26,8 +26,7 @@ copyright = '2020, Grant Viklund/Whitemoon Labs'
 author = 'Grant Viklund, Mackenzie Camisa'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.6'
-
+release = version = django.conf.settings.BUILD_VERSION
 
 # -- General configuration ---------------------------------------------------
 

@@ -6,6 +6,8 @@
 from os import path
 from setuptools import setup, find_packages
 
+from helpme.__version__ import VERSION
+
 readme_file = path.join(path.dirname(path.abspath(__file__)), 'README.md')
 
 try:
@@ -19,8 +21,8 @@ except ImportError:
 
 package_metadata = {
     'name': 'django-help-me',
-    'version': '0.1.6',
-    'description': 'A simple app for providing a simple help desk & FAQ for users.',
+    'version': VERSION,
+    'description': 'An app for providing a simple Help Desk & FAQ for users.',
     'long_description': long_description,
     'url': 'https://github.com/renderbox/django-help-me/',
     'author': 'Grant Viklund, Mackenzie Camisa',
