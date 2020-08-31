@@ -58,7 +58,7 @@
 
     <hr>
     <h4>Add Comment</h4>
-    <form method="post" action="{% url 'helpme-api:create-comment' ticket.uuid %}" class="text-center">
+    <form method="post" action="{% url 'helpme-api-create-comment' ticket.uuid %}" class="text-center">
         {% csrf_token %}
         {{ comment_form|crispy }}
         <input type="submit" value="Comment" class="btn btn-success">
@@ -176,7 +176,7 @@
 {% endfor %}
 <hr>
 <h2>Add Comment</h2>
-<form method="post" action="{% url 'helpme-api:create-comment' ticket.uuid %}" class="text-center">
+<form method="post" action="{% url 'helpme-api-create-comment' ticket.uuid %}" class="text-center">
     {% csrf_token %}
     {{ comment_form|crispy }}
     <input type="submit" value="Comment" class="btn btn-success">

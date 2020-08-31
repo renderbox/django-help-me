@@ -183,7 +183,7 @@ class ClientTests(TestCase):
         
     def test_comment_creation(self):
         self.assertEqual(Comment.objects.all().count(), 0)
-        uri = reverse("helpme-api:create-comment", args=[self.simple_ticket.uuid])
+        uri = reverse("helpme-api-create-comment", args=[self.simple_ticket.uuid])
         response = self.client.post(uri, {"content": "This is a test comment", "visibility": VisibilityChoices.REPORTERS}, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain, [(reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
