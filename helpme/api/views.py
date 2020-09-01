@@ -2,8 +2,8 @@ from rest_framework.generics import CreateAPIView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 
-from helpme.models import Ticket, Comment
-from helpme.api.serializers import CommentSerializer
+from helpme.models import Ticket, Comment, Category, Question
+from helpme.api.serializers import CommentSerializer, CategorySerializer, QuestionSerializer
 
 
 class CreateCommentAPIView(LoginRequiredMixin, CreateAPIView):
@@ -22,3 +22,21 @@ class CreateCommentAPIView(LoginRequiredMixin, CreateAPIView):
         response = super().create(request, *args, **kwargs)
         uuid = self.kwargs.get("uuid")
         return redirect('helpme:ticket-detail', uuid=uuid)
+
+
+class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return redirect('helpme:faq')
+
+
+class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return redirect('helpme:faq')

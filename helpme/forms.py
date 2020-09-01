@@ -2,14 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.utils.translation import gettext as _
 
-from helpme.models import Ticket, Comment
-
-
-class SupportRequestForm(ModelForm):
-
-    class Meta:
-        model = Ticket
-        fields = ['subject', 'description']
+from helpme.models import Comment, Category, Question
 
 
 class CommentForm(ModelForm):
@@ -24,3 +17,16 @@ class CommentForm(ModelForm):
         if not support:
             self.fields.pop('visibility')
             
+
+class CategoryForm(ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ['category', 'sites']
+
+
+class QuestionForm(ModelForm):
+
+    class Meta:
+        model = Question
+        fields = ['question', 'answer', 'category', 'sites']

@@ -4,4 +4,6 @@ from helpme.api import views
 
 urlpatterns = [
     path('<uuid:uuid>/comment/', views.CreateCommentAPIView.as_view(), name='helpme-api-create-comment'),
+    path('category/', views.CreateCategoryAPIView.as_view(), name='helpme-api-create-category'),
+    path('question/', views.CreateQuestionAPIView.as_view(), name='helpme-api-create-question'),
 ]

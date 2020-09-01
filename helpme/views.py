@@ -7,14 +7,28 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from .models import Ticket, Team, VisibilityChoices, StatusChoices
-from .forms import CommentForm
+from .models import Ticket, Team, Question, Category, VisibilityChoices, StatusChoices
+from .forms import CommentForm, QuestionForm, CategoryForm
 
+
+class FAQView(LoginRequiredMixin, TemplateView):
+    template_name = "helpme/faq.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_site = Site.objects.get_current()
+        categories = Category.objects.filter(sites__in=[current_site])
+        context['categories'] = categories
+        if not categories.exists():
+            context['questions'] = Question.objects.filter(sites__in=[current_site])
+        context['admin'] = self.request.user.has_perm('helpme.see-all-tickets')
+        context['question_form'] = QuestionForm
+        context['category_form'] = CategoryForm
+        return context
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
     success_url = reverse_lazy('helpme:dashboard')
-    category = 3
     fields = ['subject', 'description', 'category']
 
     def form_invalid(self, form):

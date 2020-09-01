@@ -1,31 +1,45 @@
 {% extends "helpme/base.html" %}
 
 {% block help_content %}
-<h1>Dashboard</h1>
-<div class="filter-wrapper text-right">
-    <div class="d-inline-block font-weight-bold small"> {{object_list.count}} Tickets </div>
-    <ul class="d-inline-block ">
+<div class="row">
+  <h1> HELP DESK </h1>
+</div>
+<div class="row">
+  <a href="{% url 'helpme:faq' %}" class="mr-3">
+    <h3>FAQ</h3>
+  </a>
+  <a href="{% url 'helpme:dashboard' %}" class="ml-3">
+    <h3 class="text-secondary">
+      <u>ASK THE HELP DESK</u>
+    </h3>
+  </a>
+  <div class="col">
+    <div class="filter-wrapper text-right">
+      <div class="d-inline-block font-weight-bold small"> {{object_list.count}} Tickets </div>
+      <ul class="d-inline-block ">
         <li>
-            <div class="d-inline-block font-weight-bold small">FILTER BY:</div>
-            <div class="d-inline-block dropdown status-dropdown">
-              <a class="small dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                STATUS
-              </a>
-              <div class="dropdown-menu">
-                {% for num, name in statuses %}
-                <div class="status dropdown-item small form-check" data-status="{{ num }}">
-                  <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
-                    <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
-                    <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
-                  </div>
-                  <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
+          <div class="d-inline-block font-weight-bold small">FILTER BY:</div>
+          <div class="d-inline-block dropdown status-dropdown">
+            <a class="small dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              STATUS
+            </a>
+            <div class="dropdown-menu">
+              {% for num, name in statuses %}
+              <div class="status dropdown-item small form-check" data-status="{{ num }}">
+                <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
+                  <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
+                  <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
                 </div>
-                {% endfor %}
-                <div class="dropdown-item"><a class="clear-all small" href="#">Clear All</a></div>
+                <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
               </div>
+              {% endfor %}
+              <div class="dropdown-item"><a class="clear-all small" href="#">Clear All</a></div>
             </div>
+          </div>
         </li>
-    </ul>
+      </ul>
+    </div>
+  </div>
 </div>
 <ul>
 {% for ticket in object_list %}
