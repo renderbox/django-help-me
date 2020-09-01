@@ -22,8 +22,9 @@ class FAQView(LoginRequiredMixin, TemplateView):
         if not categories.exists():
             context['questions'] = Question.objects.filter(sites__in=[current_site])
         context['admin'] = self.request.user.has_perm('helpme.see-all-tickets')
-        context['question_form'] = QuestionForm
-        context['category_form'] = CategoryForm
+        is_staff = self.request.user.is_staff
+        context['question_form'] = QuestionForm(staff=is_staff)
+        context['category_form'] = CategoryForm(staff=is_staff)
         return context
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
@@ -120,7 +121,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
 
 class TicketDetailView(LoginRequiredMixin, UpdateView):
     model = Ticket
-    fields = ['status', 'priority', 'category', 'teams', 'assigned_to', 'dev_ticket', 'related_to']
+    fields = ['status', 'priority', 'category', 'teams', 'assigned_to', 'dev_ticket', 'question']
     template_name = "helpme/ticket_detail.html"
 
     def get_success_url(self):

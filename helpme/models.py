@@ -56,6 +56,30 @@ class CreateUpdateModelBase(models.Model):
 # MODELS
 ##################
 
+class Category(models.Model):
+    category = models.CharField(max_length=120)
+    sites = models.ManyToManyField(Site, blank=True, related_name="categories")
+    localization = models.JSONField(default=dict)
+    global_category = models.BooleanField(default=False)
+    excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_categories")
+
+    def __str__(self):
+        return self.category
+
+
+class Question(models.Model):
+    question = models.CharField(max_length=120)
+    answer = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="questions")
+    sites = models.ManyToManyField(Site, blank=True, related_name="questions")
+    localization = models.JSONField(default=dict)
+    global_question = models.BooleanField(default=False)
+    excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_questions")
+
+    def __str__(self):
+        return self.question
+    
+
 class Team(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=30)
@@ -83,6 +107,7 @@ class Ticket(CreateUpdateModelBase):
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)
     site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         permissions = (
@@ -127,23 +152,4 @@ class Comment(CreateUpdateModelBase):
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.created)
-
-
-class Category(models.Model):
-    category = models.CharField(max_length=120)
-    sites = models.ManyToManyField(Site)
-    localization = models.JSONField(default=dict)
-
-    def __str__(self):
-        return self.category
-
-
-class Question(models.Model):
-    question = models.CharField(max_length=120)
-    answer = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="questions")
-    sites = models.ManyToManyField(Site, blank=True)
-    localization = models.JSONField(default=dict)
-
-    def __str__(self):
-        return self.question
+    
