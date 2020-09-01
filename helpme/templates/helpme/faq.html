@@ -23,9 +23,13 @@
     {% for question in category.questions.all %}
     <li>
       <p>
-	<a data-toggle="collapse" href="#answer-{{question.pk}}">{{ question.question }}</a>
+	<a data-toggle="collapse" href="#answer-{{question.pk}}">
+	  {{ question.question }}
+	</a>
       </p>
-      <p class="collapse" id="answer-{{question.pk}}">{{ question.answer }}</p>
+      <p class="collapse" id="answer-{{question.pk}}">
+	{{ question.answer }}
+      </p>
     </li>
     {% empty %}
     <li> There are no Frequently Asked Questions in this category yet. </li>
@@ -33,8 +37,14 @@
     {% empty %}
     {% for question in questions %}
     <li>
-      {{ question.question }}
-      {{ question.answer }}
+      <p>
+	<a data-toggle="collapse" href="#answer-{{question.pk}}">
+	  {{ question.question }}
+	</a>
+      </p>
+      <p class="collapse" id="answer-{{question.pk}}">
+	{{ question.answer }}
+      </p>
     </li>
     {% empty %}
     <li> There are no Frequently Asked Questions yet. </li>
