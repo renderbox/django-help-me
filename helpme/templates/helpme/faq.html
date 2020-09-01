@@ -1,0 +1,83 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block help_content %}
+
+<div class="row">
+  <h1> HELP DESK </h1>
+</div>
+<div class="row">
+  <a href="{% url 'helpme:faq' %}" class="mr-3">
+    <h3 class="text-secondary">
+      <u> FAQ </u>
+    </h3>
+  </a>
+  <a href="{% url 'helpme:dashboard' %}" class="ml-3">
+    <h3>ASK THE HELP DESK</h3>
+  </a>
+</div>
+<div class="row">
+  <ul class="my-3">
+    {% for category in categories %}
+    <h3> {{ category }} </h3>
+    {% for question in category.questions.all %}
+    <li>
+      <p>
+	<a data-toggle="collapse" href="#answer-{{question.pk}}">
+	  {{ question.question }}
+	</a>
+      </p>
+      <p class="collapse" id="answer-{{question.pk}}">
+	{{ question.answer }}
+      </p>
+    </li>
+    {% empty %}
+    <li> There are no Frequently Asked Questions in this category yet. </li>
+    {% endfor %}
+    {% empty %}
+    {% for question in questions %}
+    <li>
+      <p>
+	<a data-toggle="collapse" href="#answer-{{question.pk}}">
+	  {{ question.question }}
+	</a>
+      </p>
+      <p class="collapse" id="answer-{{question.pk}}">
+	{{ question.answer }}
+      </p>
+    </li>
+    {% empty %}
+    <li> There are no Frequently Asked Questions yet. </li>
+    {% endfor %}
+    {% endfor %}
+  </ul>
+</div>
+
+{% if admin %}
+<div class="mt-3">
+  <h3> Create a New Question </h3>
+  <div class="row">
+    <div class="col-sm">
+      <form method="post" action="{% url 'helpme-api-create-question' %}">
+        {% csrf_token %}
+        {{ question_form|crispy }}
+        <input type="submit" value="Create" class="btn btn-success">
+      </form>
+    </div>
+  </div>
+</div>
+<div class="mt-3">
+  <h3> Create a New Category </h3>
+  <div class="row">
+    <div class="col-sm">
+      <form method="post" action="{% url 'helpme-api-create-category' %}">
+        {% csrf_token %}
+        {{ category_form|crispy }}
+        <input type="submit" value="Create" class="btn btn-success">
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

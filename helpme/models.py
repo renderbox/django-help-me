@@ -127,3 +127,23 @@ class Comment(CreateUpdateModelBase):
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.created)
+
+
+class Category(models.Model):
+    category = models.CharField(max_length=120)
+    sites = models.ManyToManyField(Site)
+    localization = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.category
+
+
+class Question(models.Model):
+    question = models.CharField(max_length=120)
+    answer = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="questions")
+    sites = models.ManyToManyField(Site, blank=True)
+    localization = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.question
