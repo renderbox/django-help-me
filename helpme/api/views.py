@@ -1,5 +1,6 @@
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 
 from helpme.models import Ticket, Comment, Category, Question
@@ -28,6 +29,13 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        if instance.global_category:
+            instance.sites.set(Site.objects.exclude(id__in=instance.excluded_sites.all()))
+        elif not instance.sites.exists():
+            instance.sites.add(Site.objects.get_current())
+
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return redirect('helpme:faq')
@@ -36,6 +44,13 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
 class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        if instance.global_question:
+            instance.sites.set(Site.objects.exclude(id__in=instance.excluded_sites.all()))
+        elif not instance.sites.exists():
+            instance.sites.add(Site.objects.get_current())
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

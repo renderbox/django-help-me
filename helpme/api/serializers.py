@@ -18,10 +18,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('category', 'sites')
+        fields = ('category', 'sites', 'global_category', 'excluded_sites')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ('question', 'answer', 'category', 'sites')
+        fields = ('question', 'answer', 'category', 'sites', 'global_question', 'excluded_sites')

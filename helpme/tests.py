@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.urls import reverse
 
-from .models import Ticket, Comment, Team, StatusChoices, PriorityChoices, VisibilityChoices
+from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices
 from .settings import app_settings
 
 class ModelTests(TestCase):
@@ -37,8 +37,13 @@ class ClientTests(TestCase):
         cls.support.user_permissions.add(support, view_team)
         
         cls.support_team = Team.objects.create(name="Support", global_team=False, categories=str(app_settings.TICKET_CATEGORIES.HELP))
-        cls.support_team.sites.add(Site.objects.get(pk=1))
+        site = Site.objects.get(pk=1)
+        cls.support_team.sites.add(site)
         cls.support_team.members.add(cls.support)
+
+        cls.basic_category = Category.objects.create(category="Testing")
+        cls.basic_category.sites.add(site)
+        cls.question = Question.objects.create(question="What is 2 + 2?", answer="4", category=cls.basic_category)
 
         
     def setUp(self):
@@ -119,7 +124,6 @@ class ClientTests(TestCase):
         self.assertContains(response, '<option value="1" selected>Support</option>')
         self.assertContains(response, '<select name="assigned_to"')
         self.assertContains(response, '<input type="text" name="dev_ticket"')
-        self.assertContains(response, '<select name="related_to"')
         self.assertContains(response, "User:")
         self.assertContains(response, "User Meta:")
         self.assertContains(response, "Site:")
@@ -152,7 +156,6 @@ class ClientTests(TestCase):
         self.assertNotContains(response, '<option value="1" selected>Support</option>')
         self.assertNotContains(response, '<select name="assigned_to"')
         self.assertNotContains(response, '<input type="text" name="dev_ticket"')
-        self.assertNotContains(response, '<select name="related_to"')
         self.assertNotContains(response, "User:")
         self.assertNotContains(response, "User Meta:")
         self.assertNotContains(response, "Site:")
@@ -270,3 +273,13 @@ class ClientTests(TestCase):
 
         # regular user should not have permission to view this page
         self.assertEqual(response.status_code, 403)
+
+
+    def test_faq_view(self):
+        uri = reverse("helpme:faq")
+        response = self.client.get(uri)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Testing")
+        self.assertContains(response, "What is 2 + 2?")
+        self.assertContains(response, "4")
