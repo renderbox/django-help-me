@@ -1,4 +1,5 @@
 from django import template
+from datetime import datetime
 
 register = template.Library()
 
@@ -15,6 +16,10 @@ def last_visible(ticket_comments, comments):
             last_visible = comment
             break
     return last_visible
+
+@register.simple_tag
+def convert_isotime(isotime):
+    return datetime.strptime(isotime[:19], '%Y-%m-%dT%H:%M:%S')
 
 @register.simple_tag
 def url_replace(request, field, value):

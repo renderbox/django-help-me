@@ -119,7 +119,7 @@ class Ticket(CreateUpdateModelBase):
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.subject)
 
-    def log_history_event(self, action, user=None, notes=None, time=None):
+    def log_history_event(self, action, user=None, notes=None, isotime=None):
         '''
         "history": [
             {
@@ -128,10 +128,10 @@ class Ticket(CreateUpdateModelBase):
             }
         ],
         '''
-        if not time:
-            time = timezone.now().strftime("%b %d, %Y, %I:%M %p")
+        if not isotime:
+            isotime = timezone.now().isoformat()           # '2019-12-18T22:27:28.222000+00:00'
 
-        event = {'action':action, 'time':time}
+        event = {'action':action, 'time':isotime}
 
         if user:
             event['user'] = user.pk
