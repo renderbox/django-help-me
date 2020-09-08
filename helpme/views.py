@@ -103,7 +103,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
             # exclude closed tickets by default
             queryset = queryset.exclude(status=StatusChoices.CLOSED)
             
-        return queryset.order_by('-priority')
+        return queryset.distinct().order_by('-priority')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
