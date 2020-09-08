@@ -17,7 +17,7 @@ def last_visible(ticket_comments, comments):
             break
     return last_visible
 
-@register.simple_tag
+@register.filter
 def convert_isotime(isotime):
     return datetime.strptime(isotime[:19], '%Y-%m-%dT%H:%M:%S')
 

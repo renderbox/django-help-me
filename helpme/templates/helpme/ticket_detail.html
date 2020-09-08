@@ -141,8 +141,7 @@
             <tr>
               <td>{{ item.action }}</td>
               <td>{{ item.username }}</td>
-              {% convert_isotime item.time as datetime %}
-              <td>{{ datetime|date:"M j, Y, g:i a" }}</td> 
+              <td>{{ item.time|convert_isotime|date:"M j, Y, g:i a" }}</td> 
             </tr>
             {% endfor %}
           </tbody>
