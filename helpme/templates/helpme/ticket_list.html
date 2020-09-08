@@ -1,21 +1,38 @@
 {% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+{% load helpme_extras %}
 
 {% block help_content %}
-<div class="row">
-  <h1> HELP DESK </h1>
+<div class="row no-gutters">
+  <h1>
+    HELP DESK
+  </h1>
 </div>
-<div class="row">
+<div class="row no-gutters">
   <a href="{% url 'helpme:faq' %}" class="mr-3">
-    <h3>FAQ</h3>
+    <h5>
+      FAQ
+    </h5>
   </a>
   <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h3 class="text-secondary">
-      <u>ASK THE HELP DESK</u>
-    </h3>
+    <h5 class="text-secondary">
+      <u>
+	ASK THE HELP DESK
+      </u>
+    </h5>
   </a>
+  {% if support %}
   <div class="col">
+    <form id="pagination_form" action="" method="get" class="form form-inline float-right">
+      <div class="text-right mx-3"> Show: </div>
+      <select class="selectpicker" name="paginate_by" id="paginate_by" data-show-tick="true">
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+      </select>
+    </form>
+    
     <div class="filter-wrapper text-right">
-      <div class="d-inline-block font-weight-bold small"> {{object_list.count}} Tickets </div>
       <ul class="d-inline-block ">
         <li>
           <div class="d-inline-block font-weight-bold small">FILTER BY:</div>
@@ -33,39 +50,243 @@
                 <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
               </div>
               {% endfor %}
-              <div class="dropdown-item"><a class="clear-all small" href="#">Clear All</a></div>
+              <div class="dropdown-item">
+                <a class="clear-all small" href="#">Clear All</a>
+              </div>
             </div>
           </div>
         </li>
       </ul>
     </div>
   </div>
+  
+  {% endif %}
 </div>
-<ul>
-{% for ticket in object_list %}
-    <li>
-        <a href="{% url 'helpme:ticket-detail' ticket.uuid %}">{{ ticket }}</a>
-        <div>
-            <b>Status: </b>
-            {{ticket.get_status_display}}
-        </div>
-        {% if support %}
-        <div>
-            <b>Priority: </b>
-            {{ticket.get_priority_display}}
-        </div>
-        {% endif %}
-    </li>
-{% empty %}
-    <li>You have no tickets yet.</li>
-{% endfor %}
-</ul>
 
-<a class="btn btn-success" href="{% url 'helpme:submit-request' %}">Create a Request</a>
+<div class="row">
+  <div class="col-sm">
+    <h5 class="mt-2">
+      <b>
+	How can we help you today?
+      </b>
+    </h5>
+  </div>
+  <div class="col-sm text-center text-sm-right">
+    <button class="btn btn-success"  data-toggle="modal" data-target="#request">
+      New Help Ticket
+    </button>
+  </div>
+</div>
+
+<div class="modal" id="request">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h3 class="modal-title mt-3">
+	  <b>New Help Ticket</b>
+	</h3>
+	<p> Please provide clear details about how we can help you. </p>
+        <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
+            {% csrf_token %}
+            {{ ticket_form|crispy }}
+            <input type="submit" value="Create Ticket" class="btn btn-primary mr-3">
+	    <a href="" data-dismiss="modal">Close</a>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>My Help Tickets</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+	{% for ticket in object_list %}
+        <tr>
+          <td>
+	    <small> Created: {{ ticket.created.date }} </small>
+	    <div class="mt-1">
+	      {% if support %}
+	      <a type="button" href="{% url 'helpme:ticket-detail' ticket.uuid %}">
+	      {{ ticket }}
+	      {% else %}
+	      <a type="button" href="" data-toggle="modal" data-target="#detail-{{ticket.pk}}">
+	      {{ ticket.subject }}
+	      {% endif %}
+	    </a>
+	    </div>
+	  </td>
+          <td class="align-middle">
+	    Status:
+	    {% if ticket.status in negative_status %}
+	    <span class="text-danger">
+	    {% else %}
+	    <span class="text-success">
+	    {% endif %}
+	      <b>
+	        {{ticket.get_status_display}}
+	      </b>
+	    </span>
+	  </td>
+          <td class="align-middle">
+	    {% if ticket.comments.exists %}
+
+	    {% with ticket.comments.all|last_visible:comments as comment %}
+	    {% if comment.user == user %}
+	    You replied {{ comment.created.date }}
+	    {% else %}
+	    {{ comment.user }} replied {{ comment.created.date }}
+	    {% endif %}
+	    {% endwith %}
+	    
+	    {% else %}
+	    Waiting for a reply
+	    {% endif %}
+	  </td>
+        </tr>
+
+	<div class="modal" id="detail-{{ticket.pk}}">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+
+	      <!-- Modal body -->
+	      <div class="modal-body">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3 class="modal-title mt-3">
+		  <b> {{ ticket.subject }} </b>
+		</h3>
+		<div class="text-secondary">
+		  Status: 
+		  {% if ticket.status in negative_status %}
+		  <span class="text-danger mr-2">
+		  {% else %}
+		  <span class="text-success mr-2">
+		  {% endif %}
+		    <b>
+		      {{ticket.get_status_display}}
+		    </b>
+		  </span>
+		</div>
+		<small class="text-secondary">
+		  Created: {{ticket.created}}
+		</small>
+		<div class="text-secondary">
+		  Category: <b>{{ ticket.get_category_display }}</b>
+		</div>
+		<p class="mt-3"> {{ ticket.description }} </p>
+		
+		<hr>
+		
+		{% for comment in ticket.comments.all|sort_by:'-created' %}
+
+		{% if comment in comments %}
+		{% if comment.user == user %}
+		<div class="row mb-3 justify-content-end">
+		  <div class="col-11">
+		    <div class="alert alert-primary mb-0">
+		      {{ comment.content  }}
+		    </div>
+		    <small class="float-right">
+		      <b>{{ comment.user.username }}</b>
+		      {{ comment.created }}
+		    </small>
+		{% else %}
+		<div class="row mb-3">
+		  <div class="col-11">
+		    <div class="alert alert-secondary mb-0">
+		      {{ comment.content  }}
+		    </div>
+		    <small>
+		      <b>{{ comment.user.username }}</b>
+		      {{ comment.created }}
+		    </small>
+		{% endif %}
+		  </div>
+		</div>
+		{% endif %}
+		
+		{% endfor %}
+		<form id="comment_form" action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" pk="{{ticket.pk}}">
+		  {% csrf_token %}
+		  {{ comment_form|crispy }}
+		  <input type="submit" value="Reply" class="btn btn-primary mr-3">
+		</form>
+	      </div>
+	      
+	    </div>
+	  </div>
+	</div>
+	
+	{% empty %}
+	<tr>
+	  <td> You have no active tickets. </td>
+	  <td></td>
+	  <td></td>
+	</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if paginator.num_pages > 1 or object_list.count > 1 %}
+    <div>
+      Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {% multiply object_list.count paginator.num_pages %} entries
+    </div>
+    <nav aria-label="Support dashboard page navigation">
+      <ul class="pagination float-right mt-3">
+	
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' 1 %}">&laquo; First</a>
+	</li>
+        <li class="page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' page_obj.previous_page_number %}">Previous</a>
+	</li>
+        {% endif %}
+
+	{% if paginator.num_pages > 1 %}
+	{% for i in paginator.page_range %}
+	{% if page_obj.number == i %}
+	<li class="active page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' i %}">{{ i }}</a>
+	</li>
+	{% else %}
+        <li class="page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' i %}">{{ i }}</a>
+	</li>
+	{% endif %}
+	{% endfor %}
+	{% endif %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' page_obj.next_page_number %}">Next</a>
+	</li>
+        <li class="page-item">
+	  <a class="page-link" href="?{% url_replace request 'page' paginator.num_pages %}">Last &raquo;</a>
+	</li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+    
+  </div>
+</div>
 
 {% endblock %}
 
 {% block extra_js %}
+    <!-- filter tickets by status -->
     <script>
         var statuses = [];
 
@@ -87,8 +308,12 @@
         function reloadPage() {
             var query = getUrlVars();
             query['s'] = statuses.join(',');
+	    if (query['page']) {
+	       query['page'] = 1;
+	    };
             var queryString = $.param(query);
-            var url = window.location.origin + window.location.pathname + '?' + queryString;
+            var url = window.location.origin + window.location.pathname + '?' + queryString
+	;
             window.location = url;
         }
 
@@ -123,5 +348,65 @@
             return vars;
         }
 
+    </script>
+
+    <!-- change pagination -->
+    <script>
+      $(document).ready(function() {
+      var select_pickers = document.querySelectorAll('.selectpicker');
+
+      select_pickers.forEach(function(el) {
+            var el_form = el.closest('form');
+            el.addEventListener('change', function(evt) {
+                el_form.submit();
+            });
+        });
+      
+      const params = new URLSearchParams(window.location.search)
+        $('#paginate_by option').each((idx, option) => {
+            if (option.value === params.get('paginate_by')) {
+                option.selected = true;
+            }
+        })
+	});
+    </script>
+    
+    <!-- refresh the modal if the correct variables are set -->
+    <script>
+      function reloadNow(pk){
+        sessionStorage.setItem('refreshModal',"true");
+        sessionStorage.setItem('ticket', pk);
+        window.location.reload(true);
+      }
+
+      //when loading:        
+      if (sessionStorage.getItem('refreshModal') === "true") {
+        $("#detail-" + sessionStorage.getItem('ticket')).modal("toggle");
+        sessionStorage.clear(); //so it doesn't trigger next time
+        
+      }
+    </script>
+
+    <!-- submit comment form via ajax and call function to refresh the modal -->
+    <script>
+      $(document).on('submit', '#comment_form',function(e){
+      e.preventDefault();
+      var pk = $(this).attr("pk");
+    $.ajax({
+        type:'POST',
+        url:$(this).attr("action"),
+        data:{
+            content:$('#id_content').val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            action: 'post'
+        },
+        success:function(json){
+            reloadNow(pk);   
+        },
+        error : function(xhr,errmsg,err) {
+        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+    }
+    });
+});
     </script>
 {% endblock %}

@@ -52,8 +52,8 @@ class ClientTests(TestCase):
         self.client.force_login(self.support)
 
         
-    def test_support_request_view(self):
-        uri = reverse("helpme:submit-request")
+    def test_create_ticket(self):
+        uri = reverse("helpme-api-create-ticket")
         self.assertEqual(Ticket.objects.all().count(), 1)
         
         response = self.client.post(uri, {"subject": "Test subject", "description": "Test description", "category": app_settings.TICKET_CATEGORIES.HELP}, follow=True)
@@ -63,22 +63,17 @@ class ClientTests(TestCase):
         ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
-        self.assertEqual(ticket.user_meta, {'device': 'Other', 'browser': 'Other ', 'IP address': '127.0.0.1', 'mobile/tablet/pc': 'Unknown', 'operating system': 'Other '})
-        self.assertEqual(ticket.history[0]["event"], "created")
-        self.assertEqual(ticket.history[0]["user"], 1)
-        self.assertEqual(ticket.history[0]["username"], "supportuser")
+        self.assertEqual(ticket.user_meta, {'Device': 'Other', 'Browser': 'Other ', 'IP Address': '127.0.0.1', 'Mobile/Tablet/PC': 'Unknown', 'Operating System': 'Other '})
 
         
     def test_dashboard_support(self):
         uri = reverse("helpme:dashboard")
         response = self.client.get(uri)
         self.assertEqual(self.support.has_perm("helpme.see-support-tickets"), True)
-        self.assertContains(response, '<a href="/support/ticket/')
-        self.assertContains(response, '>testuser - ABC</a>')
+        self.assertContains(response, 'href="/support/ticket/')
+        self.assertContains(response, 'testuser - ABC')
         self.assertContains(response, "Status: ")
         self.assertContains(response, "Open")
-        self.assertContains(response, "Priority: ")
-        self.assertContains(response, "Medium")
 
 
     def test_dashboard_student(self):
@@ -86,12 +81,9 @@ class ClientTests(TestCase):
         uri = reverse("helpme:dashboard")
         response = self.client.get(uri)
         self.assertEqual(self.student.has_perm("helpme.see-support-tickets"), False)
-        self.assertContains(response, '<a href="/support/ticket/')
-        self.assertContains(response, '>testuser - ABC</a>')
+        self.assertContains(response, 'ABC')
         self.assertContains(response, "Status: ")
         self.assertContains(response, "Open")
-        self.assertNotContains(response, "Priority: ")
-        self.assertNotContains(response, "Medium")
 
 
     def test_dashboard_filter_by_status(self):
@@ -102,13 +94,13 @@ class ClientTests(TestCase):
         uri = reverse("helpme:dashboard")
         response = self.client.get(uri, {'s': '10'})
 
-        self.assertContains(response, '>supportuser - Active ticket</a>')
-        self.assertNotContains(response, '>testuser - ABC</a>')
+        self.assertContains(response, 'supportuser - Active ticket')
+        self.assertNotContains(response, 'testuser - ABC')
 
         # filter by active and open tickets
         new_response = self.client.get(uri, {"s": "1,10"})
-        self.assertContains(new_response, '>supportuser - Active ticket</a>')
-        self.assertContains(new_response, '>testuser - ABC</a>')
+        self.assertContains(new_response, 'supportuser - Active ticket')
+        self.assertContains(new_response, 'testuser - ABC')
 
         
     def test_ticket_detail_support(self):
@@ -124,18 +116,17 @@ class ClientTests(TestCase):
         self.assertContains(response, '<option value="1" selected>Support</option>')
         self.assertContains(response, '<select name="assigned_to"')
         self.assertContains(response, '<input type="text" name="dev_ticket"')
-        self.assertContains(response, "User:")
-        self.assertContains(response, "User Meta:")
+        self.assertContains(response, "Reporter:")
+        self.assertContains(response, "Reporter Meta:")
         self.assertContains(response, "Site:")
         self.assertContains(response, "Created:")
-        self.assertContains(response, "Updated:")
-        self.assertContains(response, "History:")
+        self.assertContains(response, "Last Updated:")
         self.assertContains(response, '<input type="submit" value="Update"')
 
         # comment form
         self.assertContains(response, '<textarea name="content"')
         self.assertContains(response, '<select name="visibility"')
-        self.assertContains(response, '<input type="submit" value="Comment"')
+        self.assertContains(response, '<input type="submit" value="Reply"')
 
 
     def test_ticket_detail_student(self):
@@ -143,31 +134,7 @@ class ClientTests(TestCase):
         uri = reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid])
         response = self.client.get(uri)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "ABC")
-        self.assertContains(response, "123")
-        self.assertContains(response, "Status:")
-        self.assertContains(response, "Open")
-
-        # does not contain certain data or an option to update the ticket
-        self.assertNotContains(response, '<select name="status"')
-        self.assertNotContains(response, '<option value="3" selected>Medium</option>')
-        self.assertNotContains(response, '<option value="1" selected>Comment</option>')
-        self.assertNotContains(response, '<option value="1" selected>Support</option>')
-        self.assertNotContains(response, '<select name="assigned_to"')
-        self.assertNotContains(response, '<input type="text" name="dev_ticket"')
-        self.assertNotContains(response, "User:")
-        self.assertNotContains(response, "User Meta:")
-        self.assertNotContains(response, "Site:")
-        self.assertNotContains(response, "Created:")
-        self.assertNotContains(response, "Updated:")
-        self.assertNotContains(response, "History:")
-        self.assertNotContains(response, '<input type="submit" value="Update"')
-
-        # can leave a comment but cannot set visibility
-        self.assertContains(response, '<textarea name="content"')
-        self.assertNotContains(response, '<select name="visibility"')
-        self.assertContains(response, '<input type="submit" value="Comment"')
+        self.assertEqual(response.status_code, 403)
 
         
     def test_ticket_detail_update(self):
@@ -179,7 +146,7 @@ class ClientTests(TestCase):
         self.assertContains(response, '<option value="10" selected>Active</option>')
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.status, StatusChoices.ACTIVE)
-        self.assertEqual(self.simple_ticket.history[0]["event"], "updated")
+        self.assertEqual(self.simple_ticket.history[0]["action"], "supportuser updated the status and teams fields")
         self.assertEqual(self.simple_ticket.history[0]["user"], 1)
         self.assertEqual(self.simple_ticket.history[0]["username"], "supportuser")
 
@@ -191,16 +158,11 @@ class ClientTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain, [(reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
         
-        self.assertContains(response, "supportuser left a comment")
         self.assertContains(response, "This is a test comment")
         self.assertEqual(Comment.objects.all().count(), 1)
 
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.comments.all().count(), 1)
-        self.assertEqual(self.simple_ticket.history[0]["event"], "updated")
-        self.assertEqual(self.simple_ticket.history[0]["user"], 1)
-        self.assertEqual(self.simple_ticket.history[0]["username"], "supportuser")
-        self.assertEqual(self.simple_ticket.history[0]["notes"], "supportuser left a comment")
 
 
     def test_teams_view_support(self):

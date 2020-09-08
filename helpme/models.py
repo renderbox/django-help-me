@@ -101,7 +101,7 @@ class Ticket(CreateUpdateModelBase):
     category = models.IntegerField(_("Category"), choices=app_settings.TICKET_CATEGORIES.choices)
     teams = models.ManyToManyField(Team, blank=True, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
-    description = models.TextField(_("Description"))
+    description = models.TextField(_("Message"))
     history = models.JSONField(blank=True, null=True, default=list)
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
@@ -119,19 +119,19 @@ class Ticket(CreateUpdateModelBase):
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.subject)
 
-    def log_history_event(self, event, user=None, notes=None, isotime=None):
+    def log_history_event(self, action, user=None, notes=None, time=None):
         '''
         "history": [
             {
                 "time": "2020-04-08T23:45:02.225609+00:00",
-                "event": "created"
+                "action": "created"
             }
         ],
         '''
-        if not isotime:
-            isotime = timezone.now().isoformat()           # '2019-12-18T22:27:28.222000+00:00'
+        if not time:
+            time = timezone.now().strftime("%b %d, %Y, %I:%M %p")
 
-        event = {'event':event, 'time':isotime}
+        event = {'action':action, 'time':time}
 
         if user:
             event['user'] = user.pk

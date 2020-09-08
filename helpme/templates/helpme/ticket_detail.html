@@ -1,187 +1,198 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
+{% load helpme_extras %}
 
 {% block help_content %}
 
-      <div class="row">
-        <div class="col-9">
-          <h2>{{ticket.subject}}</h2>
-        </div>
-        <div class="col-3 text-right">
-          <h4><small>Status:</small> <span class="badge badge-pill badge-primary">{{ ticket.get_status_display }}</span></h4>
-        </div>
+<div class="container-fluid mt-3">
+  <div class="row align-items-end">
+    <div class="col">
+      <h3 class="mt-3">
+	<b> {{ ticket.subject }} </b>
+      </h3>
+      <div class="text-secondary">
+	Status: 
+	{% if ticket.status in negative_status %}
+	<span class="text-danger mr-2">
+	{% else %}
+	<span class="text-success mr-2">
+	{% endif %}
+	  <b>
+	    {{ticket.get_status_display}}
+	  </b>
+	</span>
+	Priority:
+	<b>
+	  {{ ticket.get_priority_display }}
+	</b>
       </div>
-
-{% if support %}
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">Comments</a>
-  </li>
-  <li class="nav-item" role="presentation">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#detail" role="tab" aria-controls="detail" aria-selected="false">Details</a>
-  </li>
-  <li class="nav-item" role="presentation">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
-  </li>
-</ul>
-
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="comment" role="tabpanel" aria-labelledby="comment-tab">
-    <div class="mt-3">
-  
-      <div class="row">
-        <div class="col-10">
-          <div class="alert alert-secondary" role="alert">
-            <p>{{ ticket.description }}</p>  
-          </div>
-        </div>
-        <div class="col-2">
-          <p><b>{{ ticket.user.username }}</b><br><small>{{ ticket.created }}</small></p>
-        </div>
+      <small class="text-secondary">
+	Created: {{ticket.created}}
+      </small>
+      <div class="text-secondary">
+	Category: <b>{{ ticket.get_category_display }}</b>
       </div>
-
-      {% for comment in comments %}
-      <div class="row">
-        <div class="col-2">
-          <p><b>{{ comment.user.username }}</b><br><small>{{ comment.created }}</small></p>
-        </div>
-        <div class="col-10">
-          <div class="alert alert-primary" role="alert">
-            <p>{{ comment.content  }}</p>  
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-
+      <p class="mt-3"> {{ ticket.description }} </p>
     </div>
-
-    <hr>
-    <h4>Add Comment</h4>
-    <form method="post" action="{% url 'helpme-api-create-comment' ticket.uuid %}" class="text-center">
-        {% csrf_token %}
-        {{ comment_form|crispy }}
-        <input type="submit" value="Comment" class="btn btn-success">
-    </form>
-
+    <div class="col-sm text-center text-sm-right mb-3">
+      <a href="" role="button" data-toggle="modal" data-target="#edit"> Edit Details</a>
+      <button class="btn btn-success ml-3"  data-toggle="modal" data-target="#request">
+	New Help Ticket
+      </button>
+    </div>
   </div>
+</div>
 
-  <div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
-    <div class="mt-3">
+<hr>
 
-      <div class="row">
-        <div class="col-sm">
-          <p>
-              <b>User: </b>
-              {{ticket.user.username}}
-          </p>
-          <p>
-            <b>User Meta: </b>
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">attribute</th>
-                  <th scope="col">value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for key, value in ticket.user_meta.items %}  
-                <tr>
-                    <td>{{key}}:</td>
-                    <td>{{value}}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </p>
-          <p>
-              <b>Site: </b>
-              {{ticket.site}}
-          </p>
-          <p>
-              <b>Created: </b>
-              {{ticket.created}}
-          </p>
-          <p>
-              <b>Updated: </b>
-              {{ticket.updated}}
-          </p>
-        </div>
-        <div class="col-sm">
-          <p>
-              <b>History: </b>
-          </p>
+<div class="parent-container d-flex">
+  <div class="container" style="width:66%;">
+    {% for comment in ticket.comments.all|sort_by:'-created' %}
+    
+    {% if comment in comments %}
+    {% if comment.user == user %}
+    <div class="row mb-3">
+      <div class="col offset-1">
+	<div class="alert alert-primary mb-0">
+	  {{ comment.content  }}
+	</div>
+	<small>
+	  Visibility: {{ comment.get_visibility_display }}
+	</small>
+	<small class="float-right">
+	  <b>{{ comment.user.username }}</b>
+	  {{ comment.created }}
+	</small>
+    {% else %}
+    <div class="row mb-3">
+      <div class="col-11">
+	<div class="alert alert-secondary mb-0">
+	  {{ comment.content  }}
+	</div>
+	<small>
+	  <b>{{ comment.user.username }}</b>
+	  {{ comment.created }}
+	</small>
+	<small class="float-right">
+	  Visibility: {{ comment.get_visibility_display }}
+	</small>
+    {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% endfor %}
+    <div class="row">
+      <div class="col">
+	<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST">
+	  {% csrf_token %}
+	  {{ comment_form|crispy }}
+	  <input type="submit" value="Reply" class="btn btn-primary mr-3">
+	</form>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="width:33%; overflow-y: scroll;">
+    <div class="row">
+      <div class="col-sm">
+        <p>
+          <b>Reporter: </b>
+          {{ticket.user.username}}
+        </p>
+	<p>
+          <b>Reporter Meta: </b>
           <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">event</th>
-                <th scope="col">user</th>
-                <th scope="col">time</th>
-                <th scope="col">notes</th>
-              </tr>
-            </thead>
+	    <thead>
+	      <th></th>
+	      <th></th>
+	    </thead>
             <tbody>
-              {% for item in ticket.history %}
+              {% for key, value in ticket.user_meta.items %}  
               <tr>
-                <td>{{ item.event }}</td>
-                <td>{{ item.username }}</td>
-                <td>{{ item.time }}</td>
-                <td>{{ item.notes }}</td>
+                <td>{{key}}:</td>
+                <td>{{value}}</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
-
-        </div>
+        </p>
+        <p>
+          <b>Site: </b>
+          {{ticket.site}}
+        </p>
+        <p>
+          <b>Last Updated: </b>
+          {{ticket.updated}}
+        </p>
+	{% if ticket.history %}
+        <p>
+          <b>Support History: </b>
+        </p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Action</th>
+              <th scope="col">User</th>
+              <th scope="col">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in ticket.history %}
+            <tr>
+              <td>{{ item.action }}</td>
+              <td>{{ item.username }}</td>
+              <td>{{ item.time }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+	{% endif %}
       </div>
     </div>
   </div>
+</div>
 
-  <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
-    <div class="mt-3">
-      <div class="row">
-        <div class="col-sm">
-          <form method="post">
-              {% csrf_token %}
-              {{ form|crispy }}
-              <input type="submit" value="Update" class="btn btn-success">
-          </form>
-        </div>
+<div class="modal" id="request">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h3 class="modal-title mt-3">
+	  <b>New Help Ticket</b>
+	</h3>
+	<p> Please provide clear details about how we can help you. </p>
+        <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
+          {% csrf_token %}
+          {{ ticket_form|crispy }}
+          <input type="submit" value="Create Ticket" class="btn btn-primary mr-3">
+	  <a href="" data-dismiss="modal">Close</a>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="edit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h3 class="modal-title mt-3">
+	  <b>Edit Ticket Details</b>
+	</h3>
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <input type="submit" value="Update" class="btn btn-success">
+        </form>
       </div>
     </div>
   </div>
-
 </div>
-
-{% else %}
-<div class="row">
-  <div class="col-12">
-    <div class="alert alert-secondary" role="alert">
-      <p>{{ ticket.description }}</p>  
-    </div>
-  </div>
-</div>
-<hr>
-{% for comment in comments %}
-<div class="row">
-  <div class="col-2">
-    <p><b>{{ comment.user.username }}</b><br><small>{{ comment.created }}</small></p>
-  </div>
-  <div class="col-10">
-    <div class="alert alert-primary" role="alert">
-      <p>{{ comment.content  }}</p>  
-    </div>
-  </div>
-</div>
-{% endfor %}
-<hr>
-<h2>Add Comment</h2>
-<form method="post" action="{% url 'helpme-api-create-comment' ticket.uuid %}" class="text-center">
-    {% csrf_token %}
-    {{ comment_form|crispy }}
-    <input type="submit" value="Comment" class="btn btn-success">
-</form>
-
-{% endif %}
 
 {% endblock %}

@@ -3,81 +3,107 @@
 
 {% block help_content %}
 
-<div class="row">
-  <h1> HELP DESK </h1>
-</div>
-<div class="row">
-  <a href="{% url 'helpme:faq' %}" class="mr-3">
-    <h3 class="text-secondary">
-      <u> FAQ </u>
-    </h3>
-  </a>
-  <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h3>ASK THE HELP DESK</h3>
-  </a>
-</div>
-<div class="row">
-  <ul class="my-3">
+<div class="container-fluid">
+  <div class="row no-gutters">
+    <h1> HELP DESK </h1>
+  </div>
+  <div class="row no-gutters">
+    <a href="{% url 'helpme:faq' %}" class="mr-3">
+      <h5 class="text-secondary">
+	<u> FAQ </u>
+      </h5>
+    </a>
+    <a href="{% url 'helpme:dashboard' %}" class="ml-3">
+      <h5>ASK THE HELP DESK</h5>
+    </a>
+  </div>
+
+  <div class="row">
     {% for category in categories %}
-    <h3> {{ category }} </h3>
-    {% for question in category.questions.all %}
-    <li>
+    <div class="col-sm-4 my-3">
+      <h5>
+	<b>
+	  {{ category }}
+	</b>
+      </h5>
+      {% for question in category.questions.all %}
       <p>
-	<a data-toggle="collapse" href="#answer-{{question.pk}}">
+	<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
 	  {{ question.question }}
 	</a>
       </p>
       <p class="collapse" id="answer-{{question.pk}}">
 	{{ question.answer }}
       </p>
-    </li>
-    {% empty %}
-    <li> There are no Frequently Asked Questions in this category yet. </li>
-    {% endfor %}
+      {% empty %}
+      There are no Frequently Asked Questions in this category yet.
+      {% endfor %}
+    </div>
     {% empty %}
     {% for question in questions %}
-    <li>
-      <p>
-	<a data-toggle="collapse" href="#answer-{{question.pk}}">
-	  {{ question.question }}
-	</a>
-      </p>
-      <p class="collapse" id="answer-{{question.pk}}">
-	{{ question.answer }}
-      </p>
-    </li>
+    <p>
+      <a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+	{{ question.question }}
+      </a>
+    </p>
+    <p class="collapse" id="answer-{{question.pk}}">
+      {{ question.answer }}
+    </p>
     {% empty %}
-    <li> There are no Frequently Asked Questions yet. </li>
+    There are no Frequently Asked Questions yet.
     {% endfor %}
     {% endfor %}
-  </ul>
-</div>
+  </div>
 
-{% if admin %}
-<div class="mt-3">
-  <h3> Create a New Question </h3>
-  <div class="row">
-    <div class="col-sm">
-      <form method="post" action="{% url 'helpme-api-create-question' %}">
-        {% csrf_token %}
-        {{ question_form|crispy }}
-        <input type="submit" value="Create" class="btn btn-success">
-      </form>
+  {% if admin %}
+  <div class="mt-3">
+    <h3> Create a New Question </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" action="{% url 'helpme-api-create-question' %}">
+          {% csrf_token %}
+          {{ question_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-success">
+	</form>
+      </div>
     </div>
   </div>
-</div>
-<div class="mt-3">
-  <h3> Create a New Category </h3>
-  <div class="row">
-    <div class="col-sm">
-      <form method="post" action="{% url 'helpme-api-create-category' %}">
-        {% csrf_token %}
-        {{ category_form|crispy }}
-        <input type="submit" value="Create" class="btn btn-success">
-      </form>
+  <div class="mt-3">
+    <h3> Create a New Category </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" action="{% url 'helpme-api-create-category' %}">
+          {% csrf_token %}
+          {{ category_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-success">
+	</form>
+      </div>
     </div>
   </div>
+  {% endif %}
+  
 </div>
-{% endif %}
+{% endblock %}
+  
+{% block extra_js %}
+<!-- A question becomes bold when selected -->
+<script>
+  var questions = document.getElementsByClassName('question');
+  var num = questions.length;
+  
+  function toggleBold(e) {
+    var question = $(e.currentTarget)[0];
+  
+    if (question.style.fontWeight === "bold") {
+      question.style.fontWeight = ""
+    }
+    else {
+      question.style.fontWeight = "bold"
+    }
+  }
 
+  for (var i = 0; i < num; i++) {
+    questions[i].addEventListener('click', toggleBold, false)
+  };
+</script>
 {% endblock %}

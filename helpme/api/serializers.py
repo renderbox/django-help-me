@@ -6,8 +6,14 @@
 
 from rest_framework import serializers
 
-from helpme.models import Comment, Category, Question
+from helpme.models import Ticket, Comment, Category, Question
 
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ('category', 'subject', 'description')
+        
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
