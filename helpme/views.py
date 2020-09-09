@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from .models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
+from .models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices, CommentTypeChoices
 from .forms import TicketForm, CommentForm, QuestionForm, CategoryForm
 
 
@@ -84,10 +84,8 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         # sees tickets that are assigned to them or to a team they belong to
         # but are not assigned to a specific user yet
         elif self.request.user.has_perm('helpme.see-support-tickets'):
-            tickets = Ticket.objects.none()
-            for team in self.request.user.team_set.all():
-                tickets |= Ticket.objects.filter(teams__in=[team])
-            queryset = Ticket.objects.filter(assigned_to=self.request.user) | tickets.filter(assigned_to=None)
+            tickets = Ticket.objects.filter(assigned_to=self.request.user) | Ticket.objects.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
+            queryset = tickets.distinct()
         # platform user
         else:
             queryset = Ticket.objects.filter(user=self.request.user)
@@ -103,7 +101,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
             # exclude closed tickets by default
             queryset = queryset.exclude(status=StatusChoices.CLOSED)
             
-        return queryset.distinct().order_by('-priority')
+        return queryset.order_by('-priority')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -187,7 +185,7 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        action = self.request.user.username + " updated the "
+        action = " updated the "
         cd = form.changed_data
         length = len(cd)
         for field in cd:
@@ -200,8 +198,9 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
                     else:
                         action += field + ", "
             else:
-                action += field + " field"
-        form.instance.log_history_event(action=action, user=self.request.user)
+                action += field + " field"    
+        Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.HISTORY, visibility=VisibilityChoices.SUPPORT)
+        
         response = super().form_valid(form)
         return response
 

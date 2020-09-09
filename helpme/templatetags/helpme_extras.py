@@ -1,17 +1,19 @@
 from django import template
 from datetime import datetime
 
+from helpme.models import CommentTypeChoices 
+
 register = template.Library()
 
 @register.filter
 def sort_by(queryset, order):
     return queryset.order_by(order)
 
-# find the ticket's last comment visible to the current user
+# find the ticket's last message visible to the current user
 @register.filter
 def last_visible(ticket_comments, comments):
     last_visible = None
-    for comment in ticket_comments.order_by('-created'):
+    for comment in ticket_comments.filter(comment_type=CommentTypeChoices.MESSAGE).order_by('-created'):
         if comment in comments:
             last_visible = comment
             break

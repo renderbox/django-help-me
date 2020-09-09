@@ -21,49 +21,9 @@
       </u>
     </h5>
   </a>
-  {% if support %}
-  <div class="col">
-    <form id="pagination_form" action="" method="get" class="form form-inline float-right">
-      <div class="text-right mx-3"> Show: </div>
-      <select class="selectpicker" name="paginate_by" id="paginate_by" data-show-tick="true">
-        <option>10</option>
-        <option>25</option>
-        <option>50</option>
-      </select>
-    </form>
-    
-    <div class="filter-wrapper text-right">
-      <ul class="d-inline-block ">
-        <li>
-          <div class="d-inline-block font-weight-bold small">FILTER BY:</div>
-          <div class="d-inline-block dropdown status-dropdown">
-            <a class="small dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-              STATUS
-            </a>
-            <div class="dropdown-menu">
-              {% for num, name in statuses %}
-              <div class="status dropdown-item small form-check" data-status="{{ num }}">
-                <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
-                  <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
-                  <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
-                </div>
-                <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
-              </div>
-              {% endfor %}
-              <div class="dropdown-item">
-                <a class="clear-all small" href="#">Clear All</a>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-  
-  {% endif %}
 </div>
 
-<div class="row">
+<div class="row mb-3">
   <div class="col-sm">
     <h5 class="mt-2">
       <b>
@@ -77,6 +37,43 @@
     </button>
   </div>
 </div>
+
+{% if support %}
+<div class="row">
+  <div class="col">
+    <form id="pagination_form" action="" method="get" class="form form-inline float-right mx-2">
+      <div class="text-right mx-2"> Show: </div>
+      <select class="selectpicker custom-select" name="paginate_by" id="paginate_by">
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+      </select>
+    </form>
+    
+    <div class="filter-wrapper text-right">
+      <div class="d-inline-block dropdown status-dropdown">
+        <a class="small custom-select" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          STATUS
+        </a>
+        <div class="dropdown-menu">
+          {% for num, name in statuses %}
+          <div class="status dropdown-item small form-check" data-status="{{ num }}">
+            <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
+              <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
+              <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
+            </div>
+            <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
+          </div>
+          {% endfor %}
+          <div class="dropdown-item">
+            <a class="clear-all small" href="#">Clear All</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 <div class="modal" id="request">
   <div class="modal-dialog">
@@ -101,7 +98,7 @@
   </div>
 </div>
 
-<div class="row mt-3">
+<div class="row">
   <div class="col">
     <table class="table table-striped">
       <thead>

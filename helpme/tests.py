@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.urls import reverse
 
-from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices
+from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices, CommentTypeChoices
 from .settings import app_settings
 
 class ModelTests(TestCase):
@@ -22,6 +22,7 @@ class ModelTests(TestCase):
         comment = Comment.objects.create(content="This is an example comment", ticket=ticket)
     
         self.assertEqual(comment.visibility, VisibilityChoices.REPORTERS)
+        self.assertEqual(comment.comment_type, CommentTypeChoices.MESSAGE)
 
         
 class ClientTests(TestCase):
@@ -146,9 +147,9 @@ class ClientTests(TestCase):
         self.assertContains(response, '<option value="10" selected>Active</option>')
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.status, StatusChoices.ACTIVE)
-        self.assertEqual(self.simple_ticket.history[0]["action"], "supportuser updated the status and teams fields")
-        self.assertEqual(self.simple_ticket.history[0]["user"], 1)
-        self.assertEqual(self.simple_ticket.history[0]["username"], "supportuser")
+        self.assertEqual(self.simple_ticket.comments.all().count(), 1)
+        history = self.simple_ticket.comments.get(comment_type=CommentTypeChoices.HISTORY)
+        self.assertEqual(history.user, self.support)
 
         
     def test_comment_creation(self):

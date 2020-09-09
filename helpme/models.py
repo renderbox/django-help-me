@@ -37,6 +37,10 @@ class VisibilityChoices(models.IntegerChoices):
     DEVELOPERS = 15, _("Developers")
     SUPERVISORS = 20, _("Supervisors")
 
+class CommentTypeChoices(models.IntegerChoices):
+    MESSAGE = 0, _('Message')
+    HISTORY = 1, _('History')
+
 
 ##################
 # ABSTRACT MODELS
@@ -102,7 +106,6 @@ class Ticket(CreateUpdateModelBase):
     teams = models.ManyToManyField(Team, blank=True, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Message"))
-    history = models.JSONField(blank=True, null=True, default=list)
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)
@@ -149,6 +152,7 @@ class Comment(CreateUpdateModelBase):
     content = models.TextField(_("Content"))
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
     visibility = models.IntegerField(_("Visibility"), default=VisibilityChoices.REPORTERS, choices=VisibilityChoices.choices)
+    comment_type = models.IntegerField(_("Type"), default=CommentTypeChoices.MESSAGE, choices=CommentTypeChoices.choices)
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.created)

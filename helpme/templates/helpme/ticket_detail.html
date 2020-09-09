@@ -50,6 +50,8 @@
     {% for comment in ticket.comments.all|sort_by:'-created' %}
     
     {% if comment in comments %}
+    {% if comment.get_comment_type_display == "Message" %}
+    
     {% if comment.user == user %}
     <div class="row mb-3">
       <div class="col offset-1">
@@ -77,6 +79,22 @@
 	  Visibility: {{ comment.get_visibility_display }}
 	</small>
     {% endif %}
+	
+    {% elif comment.get_comment_type_display == "History"  %}
+    <div class="row mb-3">
+      <div class="col-sm-6 offset-sm-3 text-center">
+	<div>
+	  {% if comment.user == user %}
+	  You {{ comment.content  }}
+	  {% else %}
+	  {{ comment.user.username}} {{ comment.content }}
+	  {% endif %}
+	</div>
+	<small>
+	  {{ comment.created }}
+	</small>
+    {% endif %}
+	
       </div>
     </div>
     {% endif %}
@@ -92,7 +110,7 @@
       </div>
     </div>
   </div>
-  <div class="container" style="width:33%; overflow-y: scroll;">
+  <div class="container" style="width:33%;">
     <div class="row">
       <div class="col-sm">
         <p>
@@ -124,29 +142,6 @@
           <b>Last Updated: </b>
           {{ticket.updated}}
         </p>
-	{% if ticket.history %}
-        <p>
-          <b>Support History: </b>
-        </p>
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Action</th>
-              <th scope="col">User</th>
-              <th scope="col">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in ticket.history %}
-            <tr>
-              <td>{{ item.action }}</td>
-              <td>{{ item.username }}</td>
-              <td>{{ item.time|convert_isotime|date:"M j, Y, g:i a" }}</td> 
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-	{% endif %}
       </div>
     </div>
   </div>
