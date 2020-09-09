@@ -1,12 +1,21 @@
 from django.forms import ModelForm
 from django import forms
 from django.utils.translation import gettext as _
+from django.contrib.sites.models import Site
 
-from helpme.models import Comment, Category, Question
+from helpme.models import Ticket, Comment, Category, Question, VisibilityChoices
+
+
+class TicketForm(ModelForm):
+
+    class Meta:
+        model = Ticket
+        fields = ['category', 'subject', 'description']
 
 
 class CommentForm(ModelForm):
-    content = forms.CharField(label="", widget=forms.Textarea(attrs={'placeholder': 'Leave a comment'}))
+    content = forms.CharField(label=_("Message"), widget=forms.Textarea(attrs={'placeholder': 'Enter a message', 'rows': '4'}))
+    visibility = forms.ChoiceField(label=_("Visibility (Who can see this message)"), choices=VisibilityChoices.choices)
     
     class Meta:
         model = Comment
@@ -44,3 +53,7 @@ class QuestionForm(ModelForm):
             self.fields.pop('sites')
             self.fields.pop('global_question')
             self.fields.pop('excluded_sites')
+
+            # limit the possible categories to the current site
+            current_site = Site.objects.get_current()
+            self.fields['category'].queryset = Category.objects.filter(sites__in=[current_site])

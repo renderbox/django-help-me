@@ -3,9 +3,44 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 
-from helpme.models import Ticket, Comment, Category, Question
-from helpme.api.serializers import CommentSerializer, CategorySerializer, QuestionSerializer
+from helpme.models import Ticket, Comment, Category, Question, Team
+from helpme.api.serializers import TicketSerializer, CommentSerializer, CategorySerializer, QuestionSerializer
 
+
+class CreateTicketAPIView(LoginRequiredMixin, CreateAPIView):
+    serializer_class = TicketSerializer
+    queryset = Ticket.objects.all()
+
+    def perform_create(self, serializer):
+        user_agent = self.request.user_agent
+        
+        if user_agent.is_mobile:
+            device = "Mobile",
+        elif user_agent.is_pc:
+            device = "PC"
+        elif user_agent.is_tablet:
+            device = "Tablet"
+        else:
+            device = "Unknown"
+
+        user_meta = {
+            "Browser": user_agent.browser.family + " " + user_agent.browser.version_string,
+            "Operating System": user_agent.os.family + " " + user_agent.os.version_string,
+            "Device": user_agent.device.family,
+            "Mobile/Tablet/PC": device,
+            "IP Address": self.request.META['REMOTE_ADDR']
+        }
+
+        instance = serializer.save(user=self.request.user, site=Site.objects.get_current(), user_meta=user_meta)
+
+        # filter and assign teams by site and category
+        teams = Team.objects.filter(sites__in=[instance.site])
+        instance.teams.set(teams.filter(categories__contains=instance.category))
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return redirect('helpme:dashboard')
+    
 
 class CreateCommentAPIView(LoginRequiredMixin, CreateAPIView):
     lookup_field = 'uuid'
@@ -16,13 +51,14 @@ class CreateCommentAPIView(LoginRequiredMixin, CreateAPIView):
         ticket = self.get_object()
         instance = serializer.save(user=self.request.user, ticket=ticket)
         
-        ticket.log_history_event(event="updated", user=self.request.user, notes="{0} left a comment".format(self.request.user.username))
-        ticket.save()
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         uuid = self.kwargs.get("uuid")
-        return redirect('helpme:ticket-detail', uuid=uuid)
+        if request.user.has_perm('helpme.see-support-tickets'):
+            return redirect('helpme:ticket-detail', uuid=uuid)
+        else:
+            return redirect('helpme:dashboard')
 
 
 class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):

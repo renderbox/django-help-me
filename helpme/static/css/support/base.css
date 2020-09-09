@@ -24,3 +24,9 @@
 .clear-all {
     color: var(--primary);
 }
+
+a.question:hover {
+    font-weight:bold;
+}
+
+
