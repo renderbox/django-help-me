@@ -10,12 +10,12 @@
 </div>
 <div class="row no-gutters">
   <a href="{% url 'helpme:faq' %}" class="mr-3">
-    <h5>
+    <h5 class="support-link">
       FAQ
     </h5>
   </a>
   <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h5 class="text-secondary">
+    <h5 class="support-link-active">
       <u>
 	ASK THE HELP DESK
       </u>
@@ -32,7 +32,8 @@
     </h5>
   </div>
   <div class="col-sm text-center text-sm-right">
-    <button class="btn btn-success"  data-toggle="modal" data-target="#request">
+    <button class="btn helpme-button px-4 py-2"  data-toggle="modal" data-target="#request">
+      <iconify-icon data-icon="ic-baseline-plus" class="plus-icon"></iconify-icon>                       
       New Help Ticket
     </button>
   </div>
@@ -89,8 +90,8 @@
         <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
             {% csrf_token %}
             {{ ticket_form|crispy }}
-            <input type="submit" value="Create Ticket" class="btn btn-primary mr-3">
-	    <a href="" data-dismiss="modal">Close</a>
+            <input type="submit" value="Create Ticket" class="btn px-4 py-2 mr-3 helpme-button">
+	    <a href="" class="text-primary font-weight-bold" data-dismiss="modal">Cancel</a>
         </form>
       </div>
 
@@ -102,7 +103,7 @@
   <div class="col">
     <table class="table table-striped">
       <thead>
-        <tr>
+        <tr class="text-light table-title">
           <th>My Help Tickets</th>
           <th></th>
           <th></th>
@@ -184,40 +185,48 @@
 		<p class="mt-3"> {{ ticket.description }} </p>
 		
 		<hr>
-		
-		{% for comment in ticket.comments.all|sort_by:'-created' %}
 
-		{% if comment in comments %}
-		{% if comment.user == user %}
-		<div class="row mb-3 justify-content-end">
-		  <div class="col-11">
-		    <div class="alert alert-primary mb-0">
-		      {{ comment.content  }}
+		{% if ticket.comments.exists %}
+		<div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
+		  <a class="dropdown-toggle"> Most recent </a>
+		</div>
+		<div class="comment-thread container">
+		  {% for comment in ticket.comments.all|sort_by:'-created' %}
+
+		  {% if comment in comments %}
+		  {% if comment.user == user %}
+		  <div class="row mb-3 justify-content-end">
+		    <div class="col-11">
+		      <div class="alert my-message mb-0">
+			{{ comment.content  }}
+		      </div>
+		      <small class="float-right text-secondary">
+			<b>{{ comment.user.username }}</b>
+			{{ comment.created }}
+		      </small>
+		  {% else %}
+		  <div class="row mb-3">
+		    <div class="col-11">
+		      <div class="alert their-message mb-0">
+			{{ comment.content  }}
+		      </div>
+		      <small class="text-secondary">
+			<b>{{ comment.user.username }}</b>
+			{{ comment.created }}
+		      </small>
+		  {% endif %}
 		    </div>
-		    <small class="float-right">
-		      <b>{{ comment.user.username }}</b>
-		      {{ comment.created }}
-		    </small>
-		{% else %}
-		<div class="row mb-3">
-		  <div class="col-11">
-		    <div class="alert alert-secondary mb-0">
-		      {{ comment.content  }}
-		    </div>
-		    <small>
-		      <b>{{ comment.user.username }}</b>
-		      {{ comment.created }}
-		    </small>
-		{% endif %}
 		  </div>
+		  {% endif %}
+		
+		  {% endfor %}
 		</div>
 		{% endif %}
-		
-		{% endfor %}
+		    
 		<form id="comment_form" action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" pk="{{ticket.pk}}">
 		  {% csrf_token %}
 		  {{ comment_form|crispy }}
-		  <input type="submit" value="Reply" class="btn btn-primary mr-3">
+		  <input type="submit" value="Reply" class="btn px-4 py-2 mr-3 helpme-button">
 		</form>
 	      </div>
 	      

@@ -87,9 +87,9 @@ class Question(models.Model):
 class Team(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=30)
-    global_team = models.BooleanField()
+    global_team = models.BooleanField(default=False)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    sites = models.ManyToManyField(Site, default=1)
+    sites = models.ManyToManyField(Site)
     categories = MultiSelectField(choices=app_settings.TICKET_CATEGORIES.choices)
 
     def __str__(self):

@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.sites.models import Site
 
 from .models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices, CommentTypeChoices
-from .forms import TicketForm, CommentForm, QuestionForm, CategoryForm
+from .forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
 
 
 class FAQView(LoginRequiredMixin, TemplateView):
@@ -31,7 +31,7 @@ class FAQView(LoginRequiredMixin, TemplateView):
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
     success_url = reverse_lazy('helpme:dashboard')
-    fields = ['category', 'subject', 'description']
+    form_class = TicketForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -129,13 +129,13 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
                 comments |=  Comment.objects.filter(visibility=VisibilityChoices.SUPPORT)
             if developer:
                 comments |= Comment.objects.filter(visibility=VisibilityChoices.DEVELOPERS)
-        context['comments'] = comments.order_by('-created')
+        context['comments'] = comments
         return context
     
 
 class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Ticket
-    fields = ['status', 'priority', 'category', 'teams', 'assigned_to', 'dev_ticket', 'question']
+    form_class = UpdateTicketForm
     template_name = "helpme/ticket_detail.html"
     permission_required = "helpme.see-support-tickets"
 
@@ -154,6 +154,13 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
             raise Http404(_("No %(verbose_name)s found matching the query") %
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
+
+    def sort_comments(self):
+        ticket = self.get_object()
+        if 'oldest' in self.request.GET:
+            return ticket.comments.all().order_by('created')
+        else:
+            return ticket.comments.all().order_by('-created')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -181,7 +188,8 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
                 comments |=  self.object.comments.filter(visibility=VisibilityChoices.SUPPORT)
             if developer:
                 comments |= self.object.comments.filter(visibility=VisibilityChoices.DEVELOPERS)
-        context['comments'] = comments.order_by('-created')
+        context['comments'] = comments
+        context['ticket_comments'] = self.sort_comments
         return context
 
     def form_valid(self, form):
@@ -208,27 +216,40 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'helpme.view_team'
     model = Team
-    fields = ['name', 'global_team', 'sites', 'categories', 'members']
+    form_class = TeamForm
     success_url = reverse_lazy('helpme:team-list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['teams'] = Team.objects.all()
         context['admin'] = self.request.user.has_perm('helpme.add_team')
         context['user_teams'] = self.request.user.team_set.all()
+        if self.request.user.is_staff:
+            context['teams'] = Team.objects.all()
+        else:
+            context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'staff':self.request.user.is_staff})
+        return kwargs
 
     def form_valid(self, form):
         response = super().form_valid(form)
+
         if form.instance.global_team:
             form.instance.sites.set(Site.objects.all())
-            form.instance.save()
+        elif form.instance.sites.exists():
+            form.instance.sites.set(form.instance.sites.all())
+        else:
+            form.instance.sites.add(Site.objects.get_current())
         return response
+    
     
 class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'helpme.view_team'
     model = Team
-    fields = ['name', 'global_team', 'sites', 'categories', 'members']
+    form_class = TeamForm
     template_name = "helpme/team_detail.html"
 
     def get_success_url(self):
@@ -251,8 +272,12 @@ class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         response = super().form_valid(form)
         if form.instance.global_team:
             form.instance.sites.set(Site.objects.all())
-            form.instance.save()
         return response
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'staff':self.request.user.is_staff})
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

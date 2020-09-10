@@ -11,7 +11,7 @@
         <form action="{% url 'helpme:submit-request' %}" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="submit" value="Submit" class="btn helpme-button px-4 py-2">
         </form>
     </div>
   </div>

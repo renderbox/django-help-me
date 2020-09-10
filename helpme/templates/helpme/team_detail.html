@@ -7,37 +7,51 @@
 <form method="POST">
     {% csrf_token %}
     {{ form|crispy }}
-    <input type="submit" value="Update" class="mt-3">
+    <input type="submit" value="Update" class="btn helpme-button py-2 px-4 mt-3">
 </form>
 {% else %}
 <h1>{{team.name}}</h1>
 <p>
-    <b>Global team: </b>
-    {{ team.global_team }}
-</p>
-<p>
-    <b>Sites: </b>
-    <ul>
+    <b>Site(s): </b>
+    <ul class="list-group">
     {% for site in team.sites.all %}
-        <li>
+        <li class="list-group-item">
             {{ site }}
         </li>
     {% endfor %}
     </ul>
 </p>
 <p>
-    <b>Categories: </b>
-    {{ team.categories }}
+  <b>Handles Categories: </b>
+  {{ team.categories }}
 </p>
 <p>
     <b>Members: </b>
-    <ul>
+    <ul class="list-group">
     {% for member in team.members.all %}
-        <li>
+        <li class="list-group-item">
             {{member}}
         </li>
     {% endfor %}
     </ul>
 </p>
 {% endif %}
+<div class="row justify-content-center">
+  <button class="btn helpme-button px-4 py-2">
+    <a class="text-light" href="{% url 'helpme:team-list' %}"> Return to Teams Page </a>
+  </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- select all sites if global_team is checked; unselect them if it is unchecked -->
+<script>
+  $("#id_global_team").change(function() {
+    checkboxes = document.getElementsByName('sites');
+    global = document.getElementById('id_global_team');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+</script>
 {% endblock %}
