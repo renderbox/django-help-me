@@ -7,7 +7,7 @@
 <form method="POST">
     {% csrf_token %}
     {{ form|crispy }}
-    <input type="submit" value="Update" class="btn helpme-button py-2 px-4 mt-3">
+    <input type="submit" value="Update" class="btn btn-primary font-weight-bold py-2 px-4 mt-3" style="border-radius:25px;">
 </form>
 {% else %}
 <h1>{{team.name}}</h1>
@@ -37,7 +37,7 @@
 </p>
 {% endif %}
 <div class="row justify-content-center">
-  <button class="btn helpme-button px-4 py-2">
+  <button class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius:25px;">
     <a class="text-light" href="{% url 'helpme:team-list' %}"> Return to Teams Page </a>
   </button>
 </div>

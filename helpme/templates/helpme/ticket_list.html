@@ -10,12 +10,12 @@
 </div>
 <div class="row no-gutters">
   <a href="{% url 'helpme:faq' %}" class="mr-3">
-    <h5 class="support-link">
+    <h5>
       FAQ
     </h5>
   </a>
   <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h5 class="support-link-active">
+    <h5 class="text-secondary">
       <u>
 	ASK THE HELP DESK
       </u>
@@ -32,8 +32,8 @@
     </h5>
   </div>
   <div class="col-sm text-center text-sm-right">
-    <button class="btn helpme-button px-4 py-2"  data-toggle="modal" data-target="#request">
-      <iconify-icon data-icon="ic-baseline-plus" class="plus-icon"></iconify-icon>                       
+    <button class="btn btn-primary font-weight-bold px-4 py-2"  data-toggle="modal" data-target="#request" style="border-radius:25px;">
+      <iconify-icon data-icon="ic-baseline-plus" style="font-size: 1.5rem; position: relative; bottom: 1px;"></iconify-icon>                       
       New Help Ticket
     </button>
   </div>
@@ -59,9 +59,9 @@
         <div class="dropdown-menu">
           {% for num, name in statuses %}
           <div class="status dropdown-item small form-check" data-status="{{ num }}">
-            <div class="check-status" id="check-{{ name }}" data-status="{{ num }}">
-              <iconify-icon class="status-checkbox blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
-              <iconify-icon class="status-checkbox checked" data-icon="mdi:checkbox-marked"></iconify-icon>
+            <div class="check-status d-inline-block" id="check-{{ name }}" data-status="{{ num }}">
+              <iconify-icon class="status-checkbox text-primary d-block blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
+              <iconify-icon class="status-checkbox text-primary d-none checked" data-icon="mdi:checkbox-marked"></iconify-icon>
             </div>
             <label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
           </div>
@@ -90,7 +90,7 @@
         <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
             {% csrf_token %}
             {{ ticket_form|crispy }}
-            <input type="submit" value="Create Ticket" class="btn px-4 py-2 mr-3 helpme-button">
+            <input type="submit" value="Create Ticket" class="btn btn-primary font-weight-bold px-4 py-2 mr-3" style="border-radius:25px;">
 	    <a href="" class="text-primary font-weight-bold" data-dismiss="modal">Cancel</a>
         </form>
       </div>
@@ -103,7 +103,7 @@
   <div class="col">
     <table class="table table-striped">
       <thead>
-        <tr class="text-light table-title">
+        <tr class="text-light bg-info">
           <th>My Help Tickets</th>
           <th></th>
           <th></th>
@@ -190,14 +190,14 @@
 		<div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
 		  <a class="dropdown-toggle"> Most recent </a>
 		</div>
-		<div class="comment-thread container">
+		<div class="container" style="height:375px; overflow-y: scroll;">
 		  {% for comment in ticket.comments.all|sort_by:'-created' %}
 
 		  {% if comment in comments %}
 		  {% if comment.user == user %}
 		  <div class="row mb-3 justify-content-end">
 		    <div class="col-11">
-		      <div class="alert my-message mb-0">
+		      <div class="alert alert-primary mb-0">
 			{{ comment.content  }}
 		      </div>
 		      <small class="float-right text-secondary">
@@ -207,7 +207,7 @@
 		  {% else %}
 		  <div class="row mb-3">
 		    <div class="col-11">
-		      <div class="alert their-message mb-0">
+		      <div class="alert alert-secondary mb-0">
 			{{ comment.content  }}
 		      </div>
 		      <small class="text-secondary">
@@ -226,7 +226,7 @@
 		<form id="comment_form" action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" pk="{{ticket.pk}}">
 		  {% csrf_token %}
 		  {{ comment_form|crispy }}
-		  <input type="submit" value="Reply" class="btn px-4 py-2 mr-3 helpme-button">
+		  <input type="submit" value="Reply" class="btn btn-primary font-weight-bold px-4 py-2 mr-3" style="border-radius:25px;">
 		</form>
 	      </div>
 	      
@@ -303,11 +303,15 @@
 
         $('.check-status').each(function(idx, el) {
             if (statuses.includes(el.dataset.status)) {
-                $(el).children('.blank').removeClass('show');
-                $(el).children('.checked').addClass('show');
+                $(el).children('.blank').removeClass('d-block');
+                $(el).children('.blank').addClass('d-none');
+                $(el).children('.checked').addClass('d-block');
+                $(el).children('.checked').removeClass('d-none');
             } else {
-                $(el).children('.blank').addClass('show');
-                $(el).children('.checked').removeClass('show');
+                $(el).children('.blank').addClass('d-block');
+                $(el).children('.checked').removeClass('d-block');
+                $(el).children('.blank').removeClass('d-none');
+                $(el).children('.blank').addClass('d-none');
             }
         })
 

@@ -36,7 +36,7 @@
     </div>
     <div class="col-sm text-center text-sm-right mb-3">
       <a href="" role="button" data-toggle="modal" data-target="#edit" class="text-primary font-weight-bold"> Edit Details</a>
-      <button class="btn helpme-button px-4 py-2 ml-3"  data-toggle="modal" data-target="#request">
+      <button class="btn btn-primary font-weight-bold px-4 py-2 ml-3"  data-toggle="modal" data-target="#request" style="border-radius:25px;">
 	New Help Ticket
       </button>
     </div>
@@ -51,7 +51,7 @@
     <div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
       <a role="button" class="dropdown-toggle"> Most recent </a>
     </div>
-    <div class="container comment-thread">
+    <div class="container" style="height:375px; overflow-y: scroll;">
       {% for comment in ticket_comments %}
     
       {% if comment in comments %}
@@ -60,7 +60,7 @@
       {% if comment.user == user %}
       <div class="row mb-3">
 	<div class="col offset-1">
-	  <div class="alert my-message mb-0">
+	  <div class="alert alert-primary mb-0">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -73,7 +73,7 @@
       {% else %}
       <div class="row mb-3">
 	<div class="col-11">
-	  <div class="alert their-message mb-0">
+	  <div class="alert alert-secondary mb-0">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -112,7 +112,7 @@
 	<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST">
 	  {% csrf_token %}
 	  {{ comment_form|crispy }}
-	  <input type="submit" value="Reply" class="btn helpme-button px-4 py-2 mr-3">
+	  <input type="submit" value="Reply" class="btn btn-primary font-weight-bold px-4 py-2 mr-3" style="border-radius:25px;">
 	</form>
       </div>
     </div>
@@ -126,7 +126,7 @@
         </p>
 	<p>
           <table class="table table-hover table-bordered">
-	    <thead class="table-title">
+	    <thead class="bg-info">
 	      <th>Reporter Meta</th>
 	      <th></th>
 	    </thead>
@@ -167,7 +167,7 @@
         <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
           {% csrf_token %}
           {{ ticket_form|crispy }}
-          <input type="submit" value="Create Ticket" class="btn helpme-button px-4 py-2 mr-3">
+          <input type="submit" value="Create Ticket" class="btn btn-primary font-weight-bold px-4 py-2 mr-3" style="border-radius:25px;">
 	  <a href="" data-dismiss="modal" class="text-primary font-weight-bold">Cancel</a>
         </form>
       </div>
@@ -189,7 +189,7 @@
         <form method="post">
           {% csrf_token %}
           {{ form|crispy }}
-          <input type="submit" value="Update" class="btn helpme-button px-4 py-2">
+          <input type="submit" value="Update" class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius:25px;">
         </form>
       </div>
     </div>
