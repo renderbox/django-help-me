@@ -39,7 +39,7 @@ class VisibilityChoices(models.IntegerChoices):
 
 class CommentTypeChoices(models.IntegerChoices):
     MESSAGE = 0, _('Message')
-    HISTORY = 1, _('History')
+    EVENT = 1, _('Event')
 
 
 ##################

@@ -207,7 +207,7 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
                         action += field + ", "
             else:
                 action += field + " field"    
-        Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.HISTORY, visibility=VisibilityChoices.SUPPORT)
+        Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.EVENT, visibility=VisibilityChoices.SUPPORT)
         
         response = super().form_valid(form)
         return response
