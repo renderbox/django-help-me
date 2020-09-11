@@ -1,0 +1,131 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block help_content %}
+
+<div class="container-fluid">
+  <div class="row no-gutters">
+    <h1> HELP DESK </h1>
+  </div>
+  <div class="row no-gutters">
+    <a href="{% url 'helpme:faq' %}" class="mr-3">
+      <h5 class="text-secondary">
+	<u> FAQ </u>
+      </h5>
+    </a>
+    <a href="{% url 'helpme:dashboard' %}" class="ml-3">
+      <h5>ASK THE HELP DESK</h5>
+    </a>
+  </div>
+
+  <div class="row">
+    {% for category in categories %}
+    <div class="col-sm-4 my-3">
+      <h5>
+	<b>
+	  {{ category }}
+	</b>
+      </h5>
+      {% for question in category.questions.all %}
+      <p>
+	<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+	  {{ question.question }}
+	</a>
+      </p>
+      <p class="collapse" id="answer-{{question.pk}}">
+	{{ question.answer }}
+      </p>
+      <hr>
+      {% empty %}
+      There are no Frequently Asked Questions in this category yet.
+      {% endfor %}
+    </div>
+    {% empty %}
+    {% for question in questions %}
+    <p>
+      <a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+	{{ question.question }}
+      </a>
+    </p>
+    <p class="collapse" id="answer-{{question.pk}}">
+      {{ question.answer }}
+    </p>
+    {% empty %}
+    There are no Frequently Asked Questions yet.
+    {% endfor %}
+    {% endfor %}
+  </div>
+
+  {% if admin %}
+  <div class="mt-3">
+    <h3> Create a New Question </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
+          {% csrf_token %}
+          {{ question_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	</form>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <h3> Create a New Category </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
+          {% csrf_token %}
+          {{ category_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	</form>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  
+</div>
+{% endblock %}
+  
+{% block extra_js %}
+<!-- select all sites if global_team is checked; unselect them if it is unchecked -->
+<script>
+  $("#id_global_question").change(function() {
+    var container = document.querySelector("#question_form");
+    var checkboxes = container.querySelectorAll("[name=sites]");
+    var global = document.getElementById('id_global_question');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+
+  $("#id_global_category").change(function() {
+    var container = document.querySelector("#category_form");
+    var checkboxes = container.querySelectorAll("[name=category_sites]");
+    var global = document.getElementById('id_global_category');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+</script>
+
+<!-- A question becomes bold when selected -->
+<script>
+  var questions = document.getElementsByClassName('question');
+  var num = questions.length;
+  
+  function toggleBold(e) {
+    var question = $(e.currentTarget)[0];
+  
+    if (question.style.fontWeight === "bold") {
+      question.style.fontWeight = ""
+    }
+    else {
+      question.style.fontWeight = "bold"
+    }
+  }
+
+  for (var i = 0; i < num; i++) {
+    questions[i].addEventListener('click', toggleBold, false)
+  };
+</script>
+{% endblock %}

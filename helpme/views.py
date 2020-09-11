@@ -7,29 +7,38 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 
-from .models import Ticket, Team, VisibilityChoices
-from .forms import CommentForm
+from .models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices, CommentTypeChoices
+from .forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
+
+
+class FAQView(LoginRequiredMixin, TemplateView):
+    template_name = "helpme/faq.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_site = Site.objects.get_current()
+        categories = Category.objects.filter(category_sites__in=[current_site])
+        context['categories'] = categories
+        if not categories.exists():
+            context['questions'] = Question.objects.filter(sites__in=[current_site])
+        context['admin'] = self.request.user.has_perm('helpme.see-all-tickets')
+        is_staff = self.request.user.is_staff
+        context['question_form'] = QuestionForm(staff=is_staff)
+        context['category_form'] = CategoryForm(staff=is_staff)
+        return context
 
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
     success_url = reverse_lazy('helpme:dashboard')
-    category = 3
-    fields = ['subject', 'description', 'category']
-
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
+    form_class = TicketForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.site = Site.objects.get_current()
 
         user_agent = self.request.user_agent
-        
+
         if user_agent.is_mobile:
             device = "Mobile",
         elif user_agent.is_pc:
@@ -40,14 +49,12 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
             device = "Unknown"
 
         form.instance.user_meta = {
-            "browser": user_agent.browser.family + " " + user_agent.browser.version_string,
-            "operating system": user_agent.os.family + " " + user_agent.os.version_string,
-            "device": user_agent.device.family,
-            "mobile/tablet/pc": device,
-            "IP address": self.request.META['REMOTE_ADDR']
+            "Browser": user_agent.browser.family + " " + user_agent.browser.version_string,
+            "Operating System": user_agent.os.family + " " + user_agent.os.version_string,
+            "Device": user_agent.device.family,
+            "Mobile/Tablet/PC": device,
+            "IP Address": self.request.META['REMOTE_ADDR']
         }
-        
-        form.instance.log_history_event(event="created", user=self.request.user)
 
         response = super().form_valid(form)
 
@@ -55,45 +62,82 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
-        if self.request.is_ajax():
-            data = {
-                'message': "Successfully submitted form data."
-            }
-            return JsonResponse(data)
-        else:
-            return response
+        return response
 
 
 class SupportDashboardView(LoginRequiredMixin, ListView):
     model = Ticket
+    paginate_by = 10
+
+    def get_paginate_by(self, queryset):
+        if 'paginate_by' in self.request.GET:
+            # returning the value doesn't work, have to explicitly set it
+            self.paginate_by = int(self.request.GET['paginate_by']) # force to int just in case there's mischief
+
+        return self.paginate_by
 
     def get_queryset(self, **kwargs):
-        # supervisor
+        # admin
         if self.request.user.has_perm('helpme.see-all-tickets'):
             queryset = Ticket.objects.all()
         # support team member
         # sees tickets that are assigned to them or to a team they belong to
         # but are not assigned to a specific user yet
         elif self.request.user.has_perm('helpme.see-support-tickets'):
-            tickets = Ticket.objects.none()
-            for team in self.request.user.team_set.all():
-                tickets |= Ticket.objects.filter(teams__in=[team])
-            queryset = Ticket.objects.filter(assigned_to=self.request.user) | tickets.filter(assigned_to=None)
+            tickets = Ticket.objects.filter(assigned_to=self.request.user) | Ticket.objects.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
+            queryset = tickets.distinct()
         # platform user
         else:
             queryset = Ticket.objects.filter(user=self.request.user)
+
+        # filter by status
+        s = self.request.GET.get('s', '')
+        if s:
+            status = s.split(',')
+            for stat in status:
+                stat = int(stat)
+            queryset = queryset.filter(status__in=status)
+        else:
+            # exclude closed tickets by default
+            queryset = queryset.exclude(status=StatusChoices.CLOSED)
+            
         return queryset.order_by('-priority')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['support'] = self.request.user.has_perm('helpme.see-support-tickets')
+        support = self.request.user.has_perm('helpme.see-support-tickets')
+        developer = self.request.user.has_perm('helpme.see-developer-tickets')
+        admin = self.request.user.has_perm('helpme.see-all-tickets')
+        
+        context['support'] = support
+        context['statuses'] = StatusChoices.choices
+        context['s'] = self.request.GET.get('s', '')
+        context['pagination'] = self.paginate_by
+        
+        # determines whether status color is red or green
+        context['negative_status'] = [StatusChoices.CLOSED, StatusChoices.CANCELED, StatusChoices.HOLD]
+        
+        context['ticket_form'] = TicketForm
+        context['comment_form'] = CommentForm(support=support)
+
+        # filter comments by visibility
+        if admin:
+            comments = Comment.objects.all()
+        else:
+            comments = Comment.objects.filter(visibility=VisibilityChoices.REPORTERS)
+            if support:
+                comments |=  Comment.objects.filter(visibility=VisibilityChoices.SUPPORT)
+            if developer:
+                comments |= Comment.objects.filter(visibility=VisibilityChoices.DEVELOPERS)
+        context['comments'] = comments
         return context
     
 
-class TicketDetailView(LoginRequiredMixin, UpdateView):
+class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Ticket
-    fields = ['status', 'priority', 'category', 'teams', 'assigned_to', 'dev_ticket', 'related_to']
+    form_class = UpdateTicketForm
     template_name = "helpme/ticket_detail.html"
+    permission_required = "helpme.see-support-tickets"
 
     def get_success_url(self):
         return reverse_lazy('helpme:ticket-detail', args=[self.object.uuid])
@@ -111,21 +155,32 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
 
+    def sort_comments(self):
+        ticket = self.get_object()
+        if 'oldest' in self.request.GET:
+            return ticket.comments.all().order_by('created')
+        else:
+            return ticket.comments.all().order_by('-created')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         support = self.request.user.has_perm('helpme.see-support-tickets')
         developer = self.request.user.has_perm('helpme.see-developer-tickets')
-        supervisor = self.request.user.has_perm('helpme.see-all-tickets')
+        admin = self.request.user.has_perm('helpme.see-all-tickets')
         
         context['support'] = support
         context['developer'] = developer
-        context['supervisor'] = supervisor
+        context['admin'] = admin
 
         context['user'] = self.request.user
         context['comment_form'] = CommentForm(support=support)
+        context['ticket_form'] = TicketForm
+        
+        # determines whether status color is red or green
+        context['negative_status'] = [StatusChoices.CLOSED, StatusChoices.CANCELED, StatusChoices.HOLD]
 
         # filter comments by visibility
-        if supervisor:
+        if admin:
             comments = self.object.comments.all()
         else:
             comments = self.object.comments.filter(visibility=VisibilityChoices.REPORTERS)
@@ -134,10 +189,26 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
             if developer:
                 comments |= self.object.comments.filter(visibility=VisibilityChoices.DEVELOPERS)
         context['comments'] = comments
+        context['ticket_comments'] = self.sort_comments
         return context
 
     def form_valid(self, form):
-        form.instance.log_history_event(event="updated", user=self.request.user)
+        action = " updated the "
+        cd = form.changed_data
+        length = len(cd)
+        for field in cd:
+            if length > 1:
+                if field == cd[-1]:
+                    action += "and " + field + " fields"
+                else:
+                    if length == 2:
+                        action += field + " "
+                    else:
+                        action += field + ", "
+            else:
+                action += field + " field"    
+        Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.EVENT, visibility=VisibilityChoices.SUPPORT)
+        
         response = super().form_valid(form)
         return response
 
@@ -145,27 +216,40 @@ class TicketDetailView(LoginRequiredMixin, UpdateView):
 class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'helpme.view_team'
     model = Team
-    fields = ['name', 'global_team', 'sites', 'categories', 'members']
+    form_class = TeamForm
     success_url = reverse_lazy('helpme:team-list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['teams'] = Team.objects.all()
         context['admin'] = self.request.user.has_perm('helpme.add_team')
         context['user_teams'] = self.request.user.team_set.all()
+        if self.request.user.is_staff:
+            context['teams'] = Team.objects.all()
+        else:
+            context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'staff':self.request.user.is_staff})
+        return kwargs
 
     def form_valid(self, form):
         response = super().form_valid(form)
+
         if form.instance.global_team:
             form.instance.sites.set(Site.objects.all())
-            form.instance.save()
+        elif form.instance.sites.exists():
+            form.instance.sites.set(form.instance.sites.all())
+        else:
+            form.instance.sites.add(Site.objects.get_current())
         return response
+    
     
 class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'helpme.view_team'
     model = Team
-    fields = ['name', 'global_team', 'sites', 'categories', 'members']
+    form_class = TeamForm
     template_name = "helpme/team_detail.html"
 
     def get_success_url(self):
@@ -188,8 +272,12 @@ class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         response = super().form_valid(form)
         if form.instance.global_team:
             form.instance.sites.set(Site.objects.all())
-            form.instance.save()
         return response
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'staff':self.request.user.is_staff})
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

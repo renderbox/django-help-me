@@ -37,6 +37,10 @@ class VisibilityChoices(models.IntegerChoices):
     DEVELOPERS = 15, _("Developers")
     SUPERVISORS = 20, _("Supervisors")
 
+class CommentTypeChoices(models.IntegerChoices):
+    MESSAGE = 0, _('Message')
+    EVENT = 1, _('Event')
+
 
 ##################
 # ABSTRACT MODELS
@@ -56,12 +60,36 @@ class CreateUpdateModelBase(models.Model):
 # MODELS
 ##################
 
+class Category(models.Model):
+    category = models.CharField(max_length=120)
+    category_sites = models.ManyToManyField(Site, blank=True, related_name="categories")
+    localization = models.JSONField(default=dict)
+    global_category = models.BooleanField(default=False)
+    category_excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_categories")
+
+    def __str__(self):
+        return self.category
+
+
+class Question(models.Model):
+    question = models.CharField(max_length=120)
+    answer = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="questions")
+    sites = models.ManyToManyField(Site, blank=True, related_name="questions")
+    localization = models.JSONField(default=dict)
+    global_question = models.BooleanField(default=False)
+    excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_questions")
+
+    def __str__(self):
+        return self.question
+    
+
 class Team(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=30)
-    global_team = models.BooleanField()
+    global_team = models.BooleanField(default=False)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    sites = models.ManyToManyField(Site, default=1)
+    sites = models.ManyToManyField(Site)
     categories = MultiSelectField(choices=app_settings.TICKET_CATEGORIES.choices)
 
     def __str__(self):
@@ -77,12 +105,12 @@ class Ticket(CreateUpdateModelBase):
     category = models.IntegerField(_("Category"), choices=app_settings.TICKET_CATEGORIES.choices)
     teams = models.ManyToManyField(Team, blank=True, related_name="support_tickets")
     subject = models.CharField(_("Subject"), max_length=120)
-    description = models.TextField(_("Description"))
-    history = models.JSONField(blank=True, null=True, default=list)
+    description = models.TextField(_("Message"))
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
     dev_ticket = models.CharField(max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)
     site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         permissions = (
@@ -94,19 +122,19 @@ class Ticket(CreateUpdateModelBase):
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.subject)
 
-    def log_history_event(self, event, user=None, notes=None, isotime=None):
+    def log_history_event(self, action, user=None, notes=None, isotime=None):
         '''
         "history": [
             {
                 "time": "2020-04-08T23:45:02.225609+00:00",
-                "event": "created"
+                "action": "created"
             }
         ],
         '''
         if not isotime:
             isotime = timezone.now().isoformat()           # '2019-12-18T22:27:28.222000+00:00'
 
-        event = {'event':event, 'time':isotime}
+        event = {'action':action, 'time':isotime}
 
         if user:
             event['user'] = user.pk
@@ -124,6 +152,8 @@ class Comment(CreateUpdateModelBase):
     content = models.TextField(_("Content"))
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="comments")
     visibility = models.IntegerField(_("Visibility"), default=VisibilityChoices.REPORTERS, choices=VisibilityChoices.choices)
+    comment_type = models.IntegerField(_("Type"), default=CommentTypeChoices.MESSAGE, choices=CommentTypeChoices.choices)
 
     def __str__(self):
         return "{0} - {1}".format(self.user.username, self.created)
+    

@@ -13,6 +13,10 @@ import os
 from pathlib import Path
 import dj_database_url
 
+from helpme.__version__ import VERSION
+
+BUILD_VERSION = VERSION
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -22,14 +26,12 @@ SITE_ID = int(os.getenv('SITE_ID', '1'))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&1mmk1e%&9p87fvr=&v84u6fx1)$7f&%)*t9#$zfnu$#h#+5v^'
+SECRET_KEY = os.getenv('DJANGO_SECRET', '&1mmk1e%&9p87fvr=&v84u6fx1)$7f&%)*t9#$zfnu$#h#+5v^')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-DJANGO_PROJECT_VERSION = "0.1.6"
 
 # Application definition
 
@@ -120,6 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+LOGIN_REDIRECT_URL = "/support/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
