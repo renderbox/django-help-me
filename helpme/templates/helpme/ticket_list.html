@@ -138,7 +138,7 @@
 	    </span>
 	  </td>
           <td class="align-middle">
-	    {% if ticket.comments.exists %}
+	    {% if ticket.comments.all|last_visible:comments %}
 
 	    {% with ticket.comments.all|last_visible:comments as comment %}
 	    {% if comment.user == user %}
