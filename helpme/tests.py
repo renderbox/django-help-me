@@ -148,8 +148,8 @@ class ClientTests(TestCase):
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.status, StatusChoices.ACTIVE)
         self.assertEqual(self.simple_ticket.comments.all().count(), 1)
-        history = self.simple_ticket.comments.get(comment_type=CommentTypeChoices.HISTORY)
-        self.assertEqual(history.user, self.support)
+        event = self.simple_ticket.comments.get(comment_type=CommentTypeChoices.EVENT)
+        self.assertEqual(event.user, self.support)
 
         
     def test_comment_creation(self):
