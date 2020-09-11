@@ -50,22 +50,26 @@ class CommentForm(ModelForm):
             
 
 class CategoryForm(ModelForm):
+    category_sites = forms.ModelMultipleChoiceField(queryset=Site.objects.all(), widget=forms.CheckboxSelectMultiple, label=_("Sites"))
+    category_excluded_sites = forms.ModelMultipleChoiceField(queryset=Site.objects.all(), widget=forms.CheckboxSelectMultiple, label=_("Excluded sites"), required=False)
     
     class Meta:
         model = Category
-        fields = ['category', 'global_category', 'sites', 'excluded_sites']
+        fields = ['category', 'global_category', 'category_sites', 'category_excluded_sites']
 
     def __init__(self, staff, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not staff:
-            self.fields.pop('sites')
+            self.fields.pop('category_sites')
             self.fields.pop('global_category')
-            self.fields.pop('excluded_sites')
+            self.fields.pop('category_excluded_sites')
         else:
             self.fields['global_category'].label = _("Global Category? (Appears on all sites except excluded sites)")
 
 
 class QuestionForm(ModelForm):
+    sites = forms.ModelMultipleChoiceField(queryset=Site.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+    excluded_sites = forms.ModelMultipleChoiceField(queryset=Site.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
     class Meta:
         model = Question
@@ -80,7 +84,7 @@ class QuestionForm(ModelForm):
 
             # limit the possible categories to the current site
             current_site = Site.objects.get_current()
-            self.fields['category'].queryset = Category.objects.filter(sites__in=[current_site])
+            self.fields['category'].queryset = Category.objects.filter(category_sites__in=[current_site])
         else:
             self.fields['global_question'].label = _("Global Question? (Appears on all sites except excluded sites)")
 

@@ -87,6 +87,27 @@
 {% endblock %}
   
 {% block extra_js %}
+<!-- select all sites if global_team is checked; unselect them if it is unchecked -->
+<script>
+  $("#id_global_question").change(function() {
+    var container = document.querySelector("#question_form");
+    var checkboxes = container.querySelectorAll("[name=sites]");
+    var global = document.getElementById('id_global_question');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+
+  $("#id_global_category").change(function() {
+    var container = document.querySelector("#category_form");
+    var checkboxes = container.querySelectorAll("[name=category_sites]");
+    var global = document.getElementById('id_global_category');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+</script>
+
 <!-- A question becomes bold when selected -->
 <script>
   var questions = document.getElementsByClassName('question');

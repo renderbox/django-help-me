@@ -17,7 +17,7 @@ class FAQView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         current_site = Site.objects.get_current()
-        categories = Category.objects.filter(sites__in=[current_site])
+        categories = Category.objects.filter(category_sites__in=[current_site])
         context['categories'] = categories
         if not categories.exists():
             context['questions'] = Question.objects.filter(sites__in=[current_site])

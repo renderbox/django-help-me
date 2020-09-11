@@ -62,10 +62,10 @@ class CreateUpdateModelBase(models.Model):
 
 class Category(models.Model):
     category = models.CharField(max_length=120)
-    sites = models.ManyToManyField(Site, blank=True, related_name="categories")
+    category_sites = models.ManyToManyField(Site, blank=True, related_name="categories")
     localization = models.JSONField(default=dict)
     global_category = models.BooleanField(default=False)
-    excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_categories")
+    category_excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_categories")
 
     def __str__(self):
         return self.category

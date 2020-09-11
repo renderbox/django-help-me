@@ -43,7 +43,7 @@ class ClientTests(TestCase):
         cls.support_team.members.add(cls.support)
 
         cls.basic_category = Category.objects.create(category="Testing")
-        cls.basic_category.sites.add(site)
+        cls.basic_category.category_sites.add(site)
         cls.question = Question.objects.create(question="What is 2 + 2?", answer="4", category=cls.basic_category)
 
         
