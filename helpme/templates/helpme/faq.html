@@ -35,6 +35,7 @@
       <p class="collapse" id="answer-{{question.pk}}">
 	{{ question.answer }}
       </p>
+      <hr>
       {% empty %}
       There are no Frequently Asked Questions in this category yet.
       {% endfor %}
@@ -60,10 +61,10 @@
     <h3> Create a New Question </h3>
     <div class="row">
       <div class="col-sm">
-	<form method="post" action="{% url 'helpme-api-create-question' %}">
+	<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
           {% csrf_token %}
           {{ question_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-success">
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
 	</form>
       </div>
     </div>
@@ -72,10 +73,10 @@
     <h3> Create a New Category </h3>
     <div class="row">
       <div class="col-sm">
-	<form method="post" action="{% url 'helpme-api-create-category' %}">
+	<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
           {% csrf_token %}
           {{ category_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-success">
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
 	</form>
       </div>
     </div>
@@ -86,6 +87,27 @@
 {% endblock %}
   
 {% block extra_js %}
+<!-- select all sites if global_team is checked; unselect them if it is unchecked -->
+<script>
+  $("#id_global_question").change(function() {
+    var container = document.querySelector("#question_form");
+    var checkboxes = container.querySelectorAll("[name=sites]");
+    var global = document.getElementById('id_global_question');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+
+  $("#id_global_category").change(function() {
+    var container = document.querySelector("#category_form");
+    var checkboxes = container.querySelectorAll("[name=category_sites]");
+    var global = document.getElementById('id_global_category');
+    for(var i=0, n=checkboxes.length;i<n;i++) {
+      checkboxes[i].checked = global.checked;
+    }
+  });
+</script>
+
 <!-- A question becomes bold when selected -->
 <script>
   var questions = document.getElementsByClassName('question');

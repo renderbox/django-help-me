@@ -9,7 +9,7 @@
 
 .status-checkbox {
     display: none;
-    color: var(--primary);
+    color: var(--primary, #5C9D5B);
 }
 
 .status-checkbox.show {
@@ -22,11 +22,75 @@
 }
 
 .clear-all {
-    color: var(--primary);
+    color: var(--primary, #5C9D5B);
 }
 
 a.question:hover {
     font-weight:bold;
 }
 
+/* Scrollbar for the modal's messaging thread*/
+.comment-thread {
+  height: 375px;
+  overflow-y: scroll;
+}
 
+/* width */
+.comment-thread::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.comment-thread::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+/* Handle */
+.comment-thread::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.comment-thread::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.table-title {
+    background-color: var(--accent, #7EA6D6);
+}
+
+input.helpme-button, button.helpme-button {
+    background-color:  var(--primary, #5C9D5B);
+    color: white;
+    font-weight: bold;
+    border-radius: 25px;
+}
+
+.plus-icon {
+    font-size: 1.5rem;
+    position: relative;
+    bottom: 1px;
+}
+
+.my-message {
+    background: #38629D;
+    border-radius: 15px 15px 0px 15px;
+    color: white;
+}
+
+.their-message {
+    background: #F0F0F0;
+    border-radius: 15px 15px 15px 0px;
+}
+
+.faq-question {
+    color: #38629D;
+}
+
+.support-link {
+    color: var(--accent, #7EA6D6);
+}
+
+.support-link-active {
+    color: var(--muted, #91939A);
+}

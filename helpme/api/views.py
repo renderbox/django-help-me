@@ -68,9 +68,9 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
     def perform_create(self, serializer):
         instance = serializer.save()
         if instance.global_category:
-            instance.sites.set(Site.objects.exclude(id__in=instance.excluded_sites.all()))
-        elif not instance.sites.exists():
-            instance.sites.add(Site.objects.get_current())
+            instance.category_sites.set(Site.objects.exclude(id__in=instance.category_excluded_sites.all()))
+        elif not instance.category_sites.exists():
+            instance.category_sites.add(Site.objects.get_current())
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

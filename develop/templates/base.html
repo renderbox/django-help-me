@@ -23,6 +23,9 @@
       <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/">Home</a>
         <a class="p-2 text-dark" href="{% url 'helpme:dashboard' %}">Support Dashboard</a>
+	{% if perms.helpme.view_team %}
+	<a class="p-2 text-dark" href="{% url 'helpme:team-list' %}">Teams</a>
+	{% endif %}
       </nav>
       {% if request.user.is_authenticated %}
       <a class="btn btn-outline-secondary" href="{% url 'account_logout' %}">Logout</a>

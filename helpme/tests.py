@@ -4,7 +4,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.urls import reverse
 
-from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices
+from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices, CommentTypeChoices
 from .settings import app_settings
 
 class ModelTests(TestCase):
@@ -22,6 +22,7 @@ class ModelTests(TestCase):
         comment = Comment.objects.create(content="This is an example comment", ticket=ticket)
     
         self.assertEqual(comment.visibility, VisibilityChoices.REPORTERS)
+        self.assertEqual(comment.comment_type, CommentTypeChoices.MESSAGE)
 
         
 class ClientTests(TestCase):
@@ -42,7 +43,7 @@ class ClientTests(TestCase):
         cls.support_team.members.add(cls.support)
 
         cls.basic_category = Category.objects.create(category="Testing")
-        cls.basic_category.sites.add(site)
+        cls.basic_category.category_sites.add(site)
         cls.question = Question.objects.create(question="What is 2 + 2?", answer="4", category=cls.basic_category)
 
         
@@ -113,11 +114,11 @@ class ClientTests(TestCase):
         self.assertContains(response, '<select name="status"')
         self.assertContains(response, '<option value="3" selected>Medium</option>')
         self.assertContains(response, '<option value="1" selected>Comment</option>')
-        self.assertContains(response, '<option value="1" selected>Support</option>')
+        self.assertContains(response, 'checked="checked" name="teams"')
         self.assertContains(response, '<select name="assigned_to"')
         self.assertContains(response, '<input type="text" name="dev_ticket"')
         self.assertContains(response, "Reporter:")
-        self.assertContains(response, "Reporter Meta:")
+        self.assertContains(response, "Reporter Meta")
         self.assertContains(response, "Site:")
         self.assertContains(response, "Created:")
         self.assertContains(response, "Last Updated:")
@@ -146,9 +147,9 @@ class ClientTests(TestCase):
         self.assertContains(response, '<option value="10" selected>Active</option>')
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.status, StatusChoices.ACTIVE)
-        self.assertEqual(self.simple_ticket.history[0]["action"], "supportuser updated the status and teams fields")
-        self.assertEqual(self.simple_ticket.history[0]["user"], 1)
-        self.assertEqual(self.simple_ticket.history[0]["username"], "supportuser")
+        self.assertEqual(self.simple_ticket.comments.all().count(), 1)
+        event = self.simple_ticket.comments.get(comment_type=CommentTypeChoices.EVENT)
+        self.assertEqual(event.user, self.support)
 
         
     def test_comment_creation(self):
@@ -202,11 +203,9 @@ class ClientTests(TestCase):
         # lists team details but cannot update them 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Support")
-        self.assertContains(response, "Global team:")
-        self.assertContains(response, "False")
-        self.assertContains(response, "Sites:")
+        self.assertContains(response, "Site(s):")
         self.assertContains(response, "example.com")
-        self.assertContains(response, "Categories:")
+        self.assertContains(response, "Handles Categories:")
         self.assertContains(response, "Help")
         self.assertContains(response, "Members:")
         self.assertContains(response, "supportuser")
@@ -221,10 +220,8 @@ class ClientTests(TestCase):
         # form to update team details
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<input type="text" name="name"')
-        self.assertContains(response, '<input type="checkbox" name="global_team"')
-        self.assertContains(response, '<select name="sites"')
         self.assertContains(response, 'checked="checked" name="categories"')
-        self.assertContains(response, '<select name="members"')
+        self.assertContains(response, 'checked="checked" name="members"')
         self.assertContains(response, '<input type="submit" value="Update"')
         
 
