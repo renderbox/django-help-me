@@ -15,7 +15,7 @@
     </h5>
   </a>
   <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h5 class="text-secondary">
+    <h5 class="text-dark">
       <u>
 	ASK THE HELP DESK
       </u>
@@ -103,7 +103,7 @@
   <div class="col">
     <table class="table table-striped">
       <thead>
-        <tr class="text-light bg-info">
+        <tr class="bg-info">
           <th>My Help Tickets</th>
           <th></th>
           <th></th>
@@ -164,7 +164,7 @@
 		<h3 class="modal-title mt-3">
 		  <b> {{ ticket.subject }} </b>
 		</h3>
-		<div class="text-secondary">
+		<div>
 		  Status: 
 		  {% if ticket.status in negative_status %}
 		  <span class="text-danger mr-2">
@@ -176,10 +176,10 @@
 		    </b>
 		  </span>
 		</div>
-		<small class="text-secondary">
+		<small>
 		  Created: {{ticket.created}}
 		</small>
-		<div class="text-secondary">
+		<div>
 		  Category: <b>{{ ticket.get_category_display }}</b>
 		</div>
 		<p class="mt-3"> {{ ticket.description }} </p>
@@ -197,20 +197,20 @@
 		  {% if comment.user == user %}
 		  <div class="row mb-3 justify-content-end">
 		    <div class="col-11">
-		      <div class="alert rounded-pill bg-info text-light mb-0">
+		      <div class="p-3 rounded-pill bg-info mb-0">
 			{{ comment.content  }}
 		      </div>
-		      <small class="float-right text-secondary">
+		      <small class="float-right">
 			<b>{{ comment.user.username }}</b>
 			{{ comment.created }}
 		      </small>
 		  {% else %}
 		  <div class="row mb-3">
 		    <div class="col-11">
-		      <div class="alert alert-secondary mb-0 rounded-pill">
+		      <div class="p-3 bg-secondary mb-0 rounded-pill">
 			{{ comment.content  }}
 		      </div>
-		      <small class="text-secondary">
+		      <small>
 			<b>{{ comment.user.username }}</b>
 			{{ comment.created }}
 		      </small>
