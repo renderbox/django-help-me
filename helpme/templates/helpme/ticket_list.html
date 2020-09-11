@@ -197,7 +197,7 @@
 		  {% if comment.user == user %}
 		  <div class="row mb-3 justify-content-end">
 		    <div class="col-11">
-		      <div class="alert bg-info text-light mb-0" style="border-radius: 15px 15px 0px 15px;">
+		      <div class="alert rounded-pill bg-info text-light mb-0 p-3">
 			{{ comment.content  }}
 		      </div>
 		      <small class="float-right text-secondary">
@@ -207,7 +207,7 @@
 		  {% else %}
 		  <div class="row mb-3">
 		    <div class="col-11">
-		      <div class="alert alert-secondary mb-0" style="border-radius: 15px 15px 15px 0px;">
+		      <div class="alert alert-secondary mb-0 rounded-pill">
 			{{ comment.content  }}
 		      </div>
 		      <small class="text-secondary">

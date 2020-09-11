@@ -60,7 +60,7 @@
       {% if comment.user == user %}
       <div class="row mb-3">
 	<div class="col offset-1">
-	  <div class="alert text-light bg-info mb-0" style="border-radius: 15px 15px 0px 15px;">
+	  <div class="alert text-light bg-info mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -73,7 +73,7 @@
       {% else %}
       <div class="row mb-3">
 	<div class="col-11">
-	  <div class="alert alert-secondary mb-0" style="border-radius: 15px 15px 15px 0px;">
+	  <div class="alert alert-secondary mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
