@@ -64,7 +64,7 @@
 	<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
           {% csrf_token %}
           {{ question_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius:25px;">
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
 	</form>
       </div>
     </div>
@@ -76,7 +76,7 @@
 	<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
           {% csrf_token %}
           {{ category_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius:25px;">
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
 	</form>
       </div>
     </div>
