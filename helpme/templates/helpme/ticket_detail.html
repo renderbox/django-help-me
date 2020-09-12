@@ -60,7 +60,7 @@
       {% if comment.user == user %}
       <div class="row mb-3">
 	<div class="col offset-1">
-	  <div class="p-3 bg-info mb-0 rounded-pill">
+	  <div class="p-3 alert-primary mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -73,7 +73,7 @@
       {% else %}
       <div class="row mb-3">
 	<div class="col-11">
-	  <div class="p-3 bg-secondary mb-0 rounded-pill">
+	  <div class="p-3 alert-secondary mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -152,7 +152,12 @@
     </div>
   </div>
 </div>
-
+<div class="row justify-content-center my-3">
+  <button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+    <a class="text-light" href="{% url 'helpme:dashboard' %}"> Return to Dashboard </a>
+  </button>
+</div>
+	
 <div class="modal" id="request">
   <div class="modal-dialog">
     <div class="modal-content">
