@@ -10,7 +10,7 @@
       <h3 class="mt-3">
 	<b> {{ ticket.subject }} </b>
       </h3>
-      <div class="text-secondary">
+      <div>
 	Status: 
 	{% if ticket.status in negative_status %}
 	<span class="text-danger mr-2">
@@ -26,10 +26,10 @@
 	  {{ ticket.get_priority_display }}
 	</b>
       </div>
-      <small class="text-secondary">
+      <small>
 	Created: {{ticket.created}}
       </small>
-      <div class="text-secondary">
+      <div>
 	Category: <b>{{ ticket.get_category_display }}</b>
       </div>
       <p class="mt-3"> {{ ticket.description }} </p>
@@ -60,7 +60,7 @@
       {% if comment.user == user %}
       <div class="row mb-3">
 	<div class="col offset-1">
-	  <div class="alert text-light bg-info mb-0 rounded-pill">
+	  <div class="p-3 alert-primary mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -73,7 +73,7 @@
       {% else %}
       <div class="row mb-3">
 	<div class="col-11">
-	  <div class="alert alert-secondary mb-0 rounded-pill">
+	  <div class="p-3 alert-secondary mb-0 rounded-pill">
 	    {{ comment.content  }}
 	  </div>
 	  <small>
@@ -109,7 +109,7 @@
 	
     <div class="row">
       <div class="col">
-	<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST">
+	<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" class="mb-3">
 	  {% csrf_token %}
 	  {{ comment_form|crispy }}
 	  <input type="submit" value="Reply" class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 mr-3">
@@ -152,7 +152,14 @@
     </div>
   </div>
 </div>
-
+<div class="row justify-content-center my-3">
+  <a class="text-light" href="{% url 'helpme:dashboard' %}">
+    <button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+      Return to Dashboard
+    </button>
+  </a>
+</div>
+	
 <div class="modal" id="request">
   <div class="modal-dialog">
     <div class="modal-content">
