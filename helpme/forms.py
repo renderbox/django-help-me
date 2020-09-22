@@ -90,8 +90,6 @@ class QuestionForm(ModelForm):
 
 
 class TeamForm(ModelForm):
-    sites = forms.ModelMultipleChoiceField(queryset=Site.objects.all(), widget=forms.CheckboxSelectMultiple)
-    
     # get users with explicit support permissions
     # as well as admins with all permissions
     member_qs = get_user_model().objects.filter(user_permissions__codename="see-support-tickets") | get_user_model().objects.filter(is_superuser=True)
@@ -99,11 +97,4 @@ class TeamForm(ModelForm):
 
     class Meta:
         model = Team
-        fields = ['name', 'global_team', 'sites', 'categories', 'members']
-
-    def __init__(self, staff=False, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['global_team'].label = _("Global team? (Provides support for all sites)")
-        if not staff:
-            self.fields.pop('sites')
-            self.fields.pop('global_team')
+        fields = ['name', 'categories', 'members']
