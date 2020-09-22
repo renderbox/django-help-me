@@ -9,6 +9,16 @@
     {{ form|crispy }}
     <input type="submit" value="Update" class="btn btn-primary font-weight-bold py-2 px-4 mt-3 rounded-pill">
 </form>
+<p>
+    <b>Handles Site(s): </b>
+    <ul class="list-group">
+	{% for site in team.sites.all %}
+	<li class="list-group-item">
+	    {{ site }}
+	</li>
+	{% endfor %}
+    </ul>
+</p>
 {% else %}
 <h1 class="my-2">{{team.name}}</h1>
 <p>
