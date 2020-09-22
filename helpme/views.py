@@ -223,26 +223,13 @@ class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['admin'] = self.request.user.has_perm('helpme.add_team')
         context['user_teams'] = self.request.user.team_set.all()
-        if self.request.user.is_staff:
-            context['teams'] = Team.objects.all()
-        else:
-            context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
+        context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
         return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'staff':self.request.user.is_staff})
-        return kwargs
+    
 
     def form_valid(self, form):
         response = super().form_valid(form)
-
-        if form.instance.global_team:
-            form.instance.sites.set(Site.objects.all())
-        elif form.instance.sites.exists():
-            form.instance.sites.set(form.instance.sites.all())
-        else:
-            form.instance.sites.add(Site.objects.get_current())
+        form.instance.sites.add(Site.objects.get_current())
         return response
     
     
@@ -268,16 +255,6 @@ class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        if form.instance.global_team:
-            form.instance.sites.set(Site.objects.all())
-        return response
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'staff':self.request.user.is_staff})
-        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
