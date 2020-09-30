@@ -74,7 +74,7 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return redirect('helpme:faq')
+        return redirect('helpme:faq-create')
 
 
 class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
@@ -90,4 +90,4 @@ class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return redirect('helpme:faq')
+        return redirect('helpme:faq-create')

@@ -21,12 +21,20 @@ class FAQView(LoginRequiredMixin, TemplateView):
         context['categories'] = categories
         if not categories.exists():
             context['questions'] = Question.objects.filter(sites__in=[current_site])
-        context['admin'] = self.request.user.has_perm('helpme.see-all-tickets')
-        is_staff = self.request.user.is_staff
-        context['question_form'] = QuestionForm(staff=is_staff)
-        context['category_form'] = CategoryForm(staff=is_staff)
         return context
 
+
+class FAQCreateView(PermissionRequiredMixin, FAQView):
+    template_name = "helpme/faq_create.html"
+    permission_required = ["helpme.add_question, helpme.add_category"]
+    success_url = "helpme:faq-create"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_form'] = QuestionForm
+        context['category_form'] = CategoryForm
+        return context
+    
 
 class SupportRequestView(LoginRequiredMixin, CreateView):
     model = Ticket
