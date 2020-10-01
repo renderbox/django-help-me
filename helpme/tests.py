@@ -33,9 +33,12 @@ class ClientTests(TestCase):
         cls.support = get_user_model().objects.create(username="supportuser")
         cls.student = get_user_model().objects.create(username="testuser")
         cls.admin = get_user_model().objects.create_superuser(username="admin")
+        
         support = Permission.objects.get(codename="see-support-tickets")
         view_team = Permission.objects.get(codename="view_team")
-        cls.support.user_permissions.add(support, view_team)
+        add_category = Permission.objects.get(codename="add_category")
+        add_question = Permission.objects.get(codename="add_question")
+        cls.support.user_permissions.add(support, view_team, add_category, add_question)
         
         cls.support_team = Team.objects.create(name="Support", global_team=False, categories=str(app_settings.TICKET_CATEGORIES.HELP))
         site = Site.objects.get(pk=1)
@@ -242,3 +245,22 @@ class ClientTests(TestCase):
         self.assertContains(response, "Testing")
         self.assertContains(response, "What is 2 + 2?")
         self.assertContains(response, "4")
+
+
+    def test_category_creation(self):
+        uri = reverse("helpme-api-create-category")
+        response = self.client.post(uri, {"category": "New!"}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [(reverse("helpme:faq-create"), 302)])
+        self.assertContains(response, "New!")
+
+
+    def test_question_creation(self):
+        uri = reverse("helpme-api-create-question")
+        response = self.client.post(uri, {"question": "What color is the sky?", "answer": "Blue", "category": self.basic_category.pk}, follow=True)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [(reverse("helpme:faq-create"), 302)])
+        self.assertContains(response, "What color is the sky?")
+        self.assertContains(response, "Blue")

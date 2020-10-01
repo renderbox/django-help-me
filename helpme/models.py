@@ -67,6 +67,9 @@ class Category(models.Model):
     global_category = models.BooleanField(default=False)
     category_excluded_sites = models.ManyToManyField(Site, blank=True, related_name="excluded_categories")
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
     def __str__(self):
         return self.category
 
