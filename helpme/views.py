@@ -26,7 +26,7 @@ class FAQView(LoginRequiredMixin, TemplateView):
 
 class FAQCreateView(PermissionRequiredMixin, FAQView):
     template_name = "helpme/faq_create.html"
-    permission_required = ["helpme.add_question, helpme.add_category"]
+    permission_required = ["helpme.add_question", "helpme.add_category"]
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
