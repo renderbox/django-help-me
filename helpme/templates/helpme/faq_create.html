@@ -4,20 +4,6 @@
 {% block help_content %}
 
 <div class="container-fluid">
-  <div class="row no-gutters">
-    <h1> HELP DESK </h1>
-  </div>
-  <div class="row no-gutters">
-    <a href="{% url 'helpme:faq' %}" class="mr-3">
-      <h5 class="text-dark">
-	<u> FAQ </u>
-      </h5>
-    </a>
-    <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-      <h5>ASK THE HELP DESK</h5>
-    </a>
-  </div>
-
   <div class="row">
     {% for category in categories %}
     <div class="col-sm-4 my-3">
@@ -60,6 +46,31 @@
     {% endfor %}
   </div>
 
+  <div class="my-3">
+    <h3> Create a New Category </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
+          {% csrf_token %}
+          {{ category_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	</form>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <h3> Create a New Question </h3>
+    <div class="row">
+      <div class="col-sm">
+	<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
+          {% csrf_token %}
+          {{ question_form|crispy }}
+          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	</form>
+      </div>
+    </div>
+  </div>
+  
 </div>
 {% endblock %}
   

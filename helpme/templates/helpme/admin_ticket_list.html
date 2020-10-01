@@ -3,34 +3,13 @@
 {% load helpme_extras %}
 
 {% block help_content %}
-<div class="row no-gutters">
+<div class="row no-gutters text-uppercase">
   <h1>
-    HELP DESK
+    Help Desk
   </h1>
-</div>
-<div class="row no-gutters">
-  <a href="{% url 'helpme:faq' %}" class="mr-3">
-    <h5>
-      FAQ
-    </h5>
-  </a>
-  <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-    <h5 class="text-dark">
-      <u>
-	ASK THE HELP DESK
-      </u>
-    </h5>
-  </a>
 </div>
 
 <div class="row mb-3">
-  <div class="col-sm">
-    <h5 class="mt-2">
-      <b>
-	How can we help you today?
-      </b>
-    </h5>
-  </div>
   <div class="col-sm text-center text-sm-right">
     <button class="btn btn-primary font-weight-bold rounded-pill px-4 py-2"  data-toggle="modal" data-target="#request">
       <iconify-icon data-icon="ic-baseline-plus" style="font-size: 1.5rem; position: relative; bottom: 1px;"></iconify-icon>                       
@@ -39,7 +18,7 @@
   </div>
 </div>
 
-{% if support %}
+
 <div class="row">
   <div class="col">
     <form id="pagination_form" action="" method="get" class="form form-inline float-right mx-2">
@@ -74,7 +53,6 @@
     </div>
   </div>
 </div>
-{% endif %}
 
 <div class="modal" id="request">
   <div class="modal-dialog">
@@ -104,7 +82,7 @@
     <table class="table table-striped">
       <thead>
         <tr class="bg-info text-white">
-          <th>My Help Tickets</th>
+          <th>Manage Tickets</th>
           <th></th>
           <th></th>
         </tr>
@@ -153,86 +131,6 @@
 	    {% endif %}
 	  </td>
         </tr>
-
-	<div class="modal" id="detail-{{ticket.pk}}">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-
-	      <!-- Modal body -->
-	      <div class="modal-body">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3 class="modal-title mt-3">
-		  <b> {{ ticket.subject }} </b>
-		</h3>
-		<div>
-		  Status: 
-		  {% if ticket.status in negative_status %}
-		  <span class="text-danger mr-2">
-		  {% else %}
-		  <span class="text-success mr-2">
-		  {% endif %}
-		    <b>
-		      {{ticket.get_status_display}}
-		    </b>
-		  </span>
-		</div>
-		<small>
-		  Created: {{ticket.created}}
-		</small>
-		<div>
-		  Category: <b>{{ ticket.get_category_display }}</b>
-		</div>
-		<p class="mt-3"> {{ ticket.description }} </p>
-		
-		<hr>
-
-		{% if ticket.comments.exists %}
-		<div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
-		  <a class="dropdown-toggle"> Most recent </a>
-		</div>
-		<div class="container overflow-auto" style="max-height:350px;">
-		  {% for comment in ticket.comments.all|sort_by:'-created' %}
-
-		  {% if comment in comments %}
-		  {% if comment.user == user %}
-		  <div class="row mb-3 justify-content-end">
-		    <div class="col-11">
-		      <div class="p-3 alert-primary rounded-pill mb-0">
-			{{ comment.content  }}
-		      </div>
-		      <small class="float-right">
-			<b>{{ comment.user.username }}</b>
-			{{ comment.created }}
-		      </small>
-		  {% else %}
-		  <div class="row mb-3">
-		    <div class="col-11">
-		      <div class="p-3 alert-secondary mb-0 rounded-pill">
-			{{ comment.content  }}
-		      </div>
-		      <small>
-			<b>{{ comment.user.username }}</b>
-			{{ comment.created }}
-		      </small>
-		  {% endif %}
-		    </div>
-		  </div>
-		  {% endif %}
-		
-		  {% endfor %}
-		</div>
-		{% endif %}
-		    
-		<form id="comment_form" action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" pk="{{ticket.pk}}">
-		  {% csrf_token %}
-		  {{ comment_form|crispy }}
-		  <input type="submit" value="Reply" class="btn btn-primary font-weight-bold px-4 py-2 mr-3 rounded-pill">
-		</form>
-	      </div>
-	      
-	    </div>
-	  </div>
-	</div>
 	
 	{% empty %}
 	<tr>
@@ -378,44 +276,5 @@
             }
         })
 	});
-    </script>
-    
-    <!-- refresh the modal if the correct variables are set -->
-    <script>
-      function reloadNow(pk){
-        sessionStorage.setItem('refreshModal',"true");
-        sessionStorage.setItem('ticket', pk);
-        window.location.reload(true);
-      }
-
-      //when loading:        
-      if (sessionStorage.getItem('refreshModal') === "true") {
-        $("#detail-" + sessionStorage.getItem('ticket')).modal("toggle");
-        sessionStorage.clear(); //so it doesn't trigger next time
-        
-      }
-    </script>
-
-    <!-- submit comment form via ajax and call function to refresh the modal -->
-    <script>
-      $(document).on('submit', '#comment_form',function(e){
-      e.preventDefault();
-      var pk = $(this).attr("pk");
-    $.ajax({
-        type:'POST',
-        url:$(this).attr("action"),
-        data:{
-            content:$('.show #id_content').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-            action: 'post'
-        },
-        success:function(json){
-            reloadNow(pk);   
-        },
-        error : function(xhr,errmsg,err) {
-        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-    }
-    });
-});
     </script>
 {% endblock %}

@@ -22,9 +22,16 @@
       <h5 class="my-0 mr-md-auto font-weight-normal">Django Help-Me</h5>
       <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="/">Home</a>
+	{% if perms.helpme.see_support_tickets %}
+	<a class="p-2 text-dark" href="{% url 'helpme_admin:dashboard' %}">Support Tickets</a>
+	{% else %}
         <a class="p-2 text-dark" href="{% url 'helpme:dashboard' %}">Support Dashboard</a>
+	{% endif %}
 	{% if perms.helpme.view_team %}
-	<a class="p-2 text-dark" href="{% url 'helpme:team-list' %}">Teams</a>
+	<a class="p-2 text-dark" href="{% url 'helpme_admin:team-list' %}">Teams</a>
+	{% endif %}
+	{% if perms.helpme.add_question and perms.helpme.add_category %}
+	<a class="p-2 text-dark" href="{% url 'helpme_admin:faq-create' %}">Create FAQs</a>
 	{% endif %}
       </nav>
       {% if request.user.is_authenticated %}

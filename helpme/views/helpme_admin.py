@@ -1,0 +1,153 @@
+from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.sites.models import Site
+
+from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
+from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
+from .helpme import FAQView, SupportDashboardView
+
+
+class FAQCreateView(PermissionRequiredMixin, FAQView):
+    template_name = "helpme/faq_create.html"
+    permission_required = ["helpme.add_question", "helpme.add_category"]
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_form'] = QuestionForm
+        context['category_form'] = CategoryForm
+        return context
+    
+
+class AdminSupportDashboardView(PermissionRequiredMixin, SupportDashboardView):
+    permission_required = "helpme.see_support_tickets"
+    template_name = "helpme/admin_ticket_list.html"
+    
+
+class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = Ticket
+    form_class = UpdateTicketForm
+    template_name = "helpme/ticket_detail.html"
+    permission_required = "helpme.see_support_tickets"
+
+    def get_success_url(self):
+        return reverse_lazy('helpme_admin:ticket-detail', args=[self.object.uuid])
+    
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        uuid = self.kwargs.get('uuid')
+
+        try:
+            obj = queryset.get(uuid=uuid)
+        except queryset.model.DoesNotExist:
+            raise Http404(_("No %(verbose_name)s found matching the query") %
+                          {'verbose_name': queryset.model._meta.verbose_name})
+        return obj
+
+    def sort_comments(self):
+        ticket = self.get_object()
+        if 'oldest' in self.request.GET:
+            return ticket.comments.all().order_by('created')
+        else:
+            return ticket.comments.all().order_by('-created')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        support = self.request.user.has_perm('helpme.see_support_tickets')
+        developer = self.request.user.has_perm('helpme.see_developer_tickets')
+        admin = self.request.user.has_perm('helpme.see_all_tickets')
+        
+        context['support'] = support
+        context['developer'] = developer
+        context['admin'] = admin
+
+        context['user'] = self.request.user
+        context['comment_form'] = CommentForm(support=support)
+        context['ticket_form'] = TicketForm
+        
+        # determines whether status color is red or green
+        context['negative_status'] = [StatusChoices.CLOSED, StatusChoices.CANCELED, StatusChoices.HOLD]
+
+        # filter comments by visibility
+        if admin:
+            comments = self.object.comments.all()
+        else:
+            comments = self.object.comments.filter(visibility=VisibilityChoices.REPORTERS)
+            if support:
+                comments |=  self.object.comments.filter(visibility=VisibilityChoices.SUPPORT)
+            if developer:
+                comments |= self.object.comments.filter(visibility=VisibilityChoices.DEVELOPERS)
+        context['comments'] = comments
+        context['ticket_comments'] = self.sort_comments
+        return context
+
+    def form_valid(self, form):
+        action = " updated the "
+        cd = form.changed_data
+        length = len(cd)
+        for field in cd:
+            if length > 1:
+                if field == cd[-1]:
+                    action += "and " + field + " fields"
+                else:
+                    if length == 2:
+                        action += field + " "
+                    else:
+                        action += field + ", "
+            else:
+                action += field + " field"    
+        Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.EVENT, visibility=VisibilityChoices.SUPPORT)
+        
+        response = super().form_valid(form)
+        return response
+
+
+class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'helpme.view_team'
+    model = Team
+    form_class = TeamForm
+    success_url = reverse_lazy('helpme_admin:team-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['admin'] = self.request.user.has_perm('helpme.add_team')
+        context['user_teams'] = self.request.user.team_set.all()
+        context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
+        return context
+    
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        form.instance.sites.add(Site.objects.get_current())
+        return response
+    
+    
+class TeamDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'helpme.view_team'
+    model = Team
+    form_class = TeamForm
+    template_name = "helpme/team_detail.html"
+
+    def get_success_url(self):
+        return reverse_lazy('helpme_admin:team-detail', args=[self.object.uuid])
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        uuid = self.kwargs.get('uuid')
+
+        try:
+            obj = queryset.get(uuid=uuid)
+        except queryset.model.DoesNotExist:
+            raise Http404(_("No %(verbose_name)s found matching the query") %
+                          {'verbose_name': queryset.model._meta.verbose_name})
+        return obj
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['admin'] = self.request.user.has_perm('helpme.change_team')
+        return context
