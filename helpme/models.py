@@ -117,9 +117,9 @@ class Ticket(CreateUpdateModelBase):
 
     class Meta:
         permissions = (
-            ("see-support-tickets", "Access to support-level tickets"), 
-            ("see-developer-tickets", "Access to developer-level tickets"), 
-            ("see-all-tickets", "Access to all tickets"),
+            ("see_support_tickets", "Access to support-level tickets"), 
+            ("see_developer_tickets", "Access to developer-level tickets"), 
+            ("see_all_tickets", "Access to all tickets"),
         ) 
 
     def __str__(self):

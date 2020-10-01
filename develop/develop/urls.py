@@ -20,7 +20,8 @@ from core import views
 urlpatterns = [
     path("", views.CoreIndexView.as_view(), name="core-index"),
     path('api/v1/support/', include('helpme.api.urls')), 
-    path('support/', include('helpme.urls')),
+    path('support/', include('helpme.urls.helpme')),
+    path('administration/support/', include('helpme.urls.helpme_admin')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
 ]
