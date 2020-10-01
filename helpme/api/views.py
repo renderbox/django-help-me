@@ -39,6 +39,8 @@ class CreateTicketAPIView(LoginRequiredMixin, CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
+        if request.user.has_perm('helpme.see_support_tickets'):
+            return redirect('helpme_admin:dashboard')
         return redirect('helpme:dashboard')
     
 
@@ -50,13 +52,12 @@ class CreateCommentAPIView(LoginRequiredMixin, CreateAPIView):
     def perform_create(self, serializer):
         ticket = self.get_object()
         instance = serializer.save(user=self.request.user, ticket=ticket)
-        
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         uuid = self.kwargs.get("uuid")
-        if request.user.has_perm('helpme.see-support-tickets'):
-            return redirect('helpme:ticket-detail', uuid=uuid)
+        if request.user.has_perm('helpme.see_support_tickets'):
+            return redirect('helpme_admin:ticket-detail', uuid=uuid)
         else:
             return redirect('helpme:dashboard')
 
@@ -74,7 +75,7 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return redirect('helpme:faq-create')
+        return redirect('helpme_admin:faq-create')
 
 
 class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
@@ -90,4 +91,4 @@ class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        return redirect('helpme:faq-create')
+        return redirect('helpme_admin:faq-create')

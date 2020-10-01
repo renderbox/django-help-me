@@ -34,7 +34,7 @@ class ClientTests(TestCase):
         cls.student = get_user_model().objects.create(username="testuser")
         cls.admin = get_user_model().objects.create_superuser(username="admin")
         
-        support = Permission.objects.get(codename="see-support-tickets")
+        support = Permission.objects.get(codename="see_support_tickets")
         view_team = Permission.objects.get(codename="view_team")
         add_category = Permission.objects.get(codename="add_category")
         add_question = Permission.objects.get(codename="add_question")
@@ -63,7 +63,7 @@ class ClientTests(TestCase):
         response = self.client.post(uri, {"subject": "Test subject", "description": "Test description", "category": app_settings.TICKET_CATEGORIES.HELP}, follow=True)
         self.assertEqual(Ticket.objects.all().count(), 2)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:dashboard"), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:dashboard"), 302)])
         ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
@@ -71,12 +71,12 @@ class ClientTests(TestCase):
 
         
     def test_dashboard_support(self):
-        uri = reverse("helpme:dashboard")
+        uri = reverse("helpme_admin:dashboard")
         response = self.client.get(uri)
-        self.assertEqual(self.support.has_perm("helpme.see-support-tickets"), True)
-        self.assertContains(response, 'href="/support/ticket/')
+        self.assertEqual(self.support.has_perm("helpme.see_support_tickets"), True)
+        self.assertContains(response, reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid]))
         self.assertContains(response, 'testuser - ABC')
-        self.assertContains(response, "Status: ")
+        self.assertContains(response, "Status:")
         self.assertContains(response, "Open")
 
 
@@ -84,7 +84,7 @@ class ClientTests(TestCase):
         self.client.force_login(self.student)
         uri = reverse("helpme:dashboard")
         response = self.client.get(uri)
-        self.assertEqual(self.student.has_perm("helpme.see-support-tickets"), False)
+        self.assertEqual(self.student.has_perm("helpme.see_support_tickets"), False)
         self.assertContains(response, 'ABC')
         self.assertContains(response, "Status: ")
         self.assertContains(response, "Open")
@@ -95,7 +95,7 @@ class ClientTests(TestCase):
         active_ticket.teams.add(self.support_team)
         
         # filter by active tickets
-        uri = reverse("helpme:dashboard")
+        uri = reverse("helpme_admin:dashboard")
         response = self.client.get(uri, {'s': '10'})
 
         self.assertContains(response, 'supportuser - Active ticket')
@@ -108,7 +108,7 @@ class ClientTests(TestCase):
 
         
     def test_ticket_detail_support(self):
-        uri = reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid])
+        uri = reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid])
         response = self.client.get(uri)
 
         # ticket information and update form
@@ -135,18 +135,18 @@ class ClientTests(TestCase):
 
     def test_ticket_detail_student(self):
         self.client.force_login(self.student)
-        uri = reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid])
+        uri = reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid])
         response = self.client.get(uri)
 
         self.assertEqual(response.status_code, 403)
 
         
     def test_ticket_detail_update(self):
-        uri = reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid])
+        uri = reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid])
         response = self.client.post(uri, {"status": StatusChoices.ACTIVE, "category": app_settings.TICKET_CATEGORIES.COMMENT, "priority": PriorityChoices.MEDIUM}, follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
         self.assertContains(response, '<option value="10" selected>Active</option>')
         self.simple_ticket.refresh_from_db()
         self.assertEqual(self.simple_ticket.status, StatusChoices.ACTIVE)
@@ -160,7 +160,7 @@ class ClientTests(TestCase):
         uri = reverse("helpme-api-create-comment", args=[self.simple_ticket.uuid])
         response = self.client.post(uri, {"content": "This is a test comment", "visibility": VisibilityChoices.REPORTERS}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid]), 302)])
         
         self.assertContains(response, "This is a test comment")
         self.assertEqual(Comment.objects.all().count(), 1)
@@ -170,29 +170,29 @@ class ClientTests(TestCase):
 
 
     def test_teams_view_support(self):
-        uri = reverse("helpme:team-list")
+        uri = reverse("helpme_admin:team-list")
         response = self.client.get(uri)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "My Teams")
-        self.assertContains(response, '<a href="/support/teams/')
+        self.assertContains(response, reverse("helpme_admin:team-detail", args=[self.support_team.uuid]))
         self.assertContains(response, '> Support </a>')
 
 
     def test_teams_view_admin(self):
         self.client.force_login(self.admin)
-        uri = reverse("helpme:team-list")
+        uri = reverse("helpme_admin:team-list")
         response = self.client.get(uri)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Manage Teams")
-        self.assertContains(response, '<a href="/support/teams/')
+        self.assertContains(response, reverse("helpme_admin:team-detail", args=[self.support_team.uuid]))
         self.assertContains(response, '> Support </a>')
 
 
     def test_teams_view_student(self):
         self.client.force_login(self.student)
-        uri = reverse("helpme:team-list")
+        uri = reverse("helpme_admin:team-list")
         response = self.client.get(uri)
 
         # regular user should not have permission to view this page
@@ -200,7 +200,7 @@ class ClientTests(TestCase):
 
 
     def test_team_detail_support(self):
-        uri = reverse("helpme:team-detail", args=[self.support_team.uuid])
+        uri = reverse("helpme_admin:team-detail", args=[self.support_team.uuid])
         response = self.client.get(uri)
 
         # lists team details but cannot update them 
@@ -217,7 +217,7 @@ class ClientTests(TestCase):
 
     def test_team_detail_admin(self):
         self.client.force_login(self.admin)
-        uri = reverse("helpme:team-detail", args=[self.support_team.uuid])
+        uri = reverse("helpme_admin:team-detail", args=[self.support_team.uuid])
         response = self.client.get(uri)
 
         # form to update team details
@@ -230,7 +230,7 @@ class ClientTests(TestCase):
 
     def test_team_detail_student(self):
         self.client.force_login(self.student)
-        uri = reverse("helpme:team-detail", args=[self.support_team.uuid])
+        uri = reverse("helpme_admin:team-detail", args=[self.support_team.uuid])
         response = self.client.get(uri)
 
         # regular user should not have permission to view this page
@@ -252,7 +252,7 @@ class ClientTests(TestCase):
         response = self.client.post(uri, {"category": "New!"}, follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:faq-create"), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:faq-create"), 302)])
         self.assertContains(response, "New!")
 
 
@@ -261,6 +261,6 @@ class ClientTests(TestCase):
         response = self.client.post(uri, {"question": "What color is the sky?", "answer": "Blue", "category": self.basic_category.pk}, follow=True)
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.redirect_chain, [(reverse("helpme:faq-create"), 302)])
+        self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:faq-create"), 302)])
         self.assertContains(response, "What color is the sky?")
         self.assertContains(response, "Blue")

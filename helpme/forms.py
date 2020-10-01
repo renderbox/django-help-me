@@ -73,7 +73,7 @@ class QuestionForm(ModelForm):
 class TeamForm(ModelForm):
     # get users with explicit support permissions
     # as well as admins with all permissions
-    member_qs = get_user_model().objects.filter(user_permissions__codename="see-support-tickets") | get_user_model().objects.filter(is_superuser=True)
+    member_qs = get_user_model().objects.filter(user_permissions__codename="see_support_tickets") | get_user_model().objects.filter(is_superuser=True)
     members = forms.ModelMultipleChoiceField(queryset=member_qs.distinct(), widget=forms.CheckboxSelectMultiple)
 
     class Meta:
