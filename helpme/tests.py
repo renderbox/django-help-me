@@ -74,7 +74,7 @@ class ClientTests(TestCase):
         uri = reverse("helpme_admin:dashboard")
         response = self.client.get(uri)
         self.assertEqual(self.support.has_perm("helpme.see_support_tickets"), True)
-        self.assertContains(response, 'href="/administration/support/ticket/')
+        self.assertContains(response, reverse("helpme_admin:ticket-detail", args=[self.simple_ticket.uuid]))
         self.assertContains(response, 'testuser - ABC')
         self.assertContains(response, "Status:")
         self.assertContains(response, "Open")
@@ -175,7 +175,7 @@ class ClientTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "My Teams")
-        self.assertContains(response, '<a href="/administration/support/teams/')
+        self.assertContains(response, reverse("helpme_admin:team-detail", args=[self.support_team.uuid]))
         self.assertContains(response, '> Support </a>')
 
 
@@ -186,7 +186,7 @@ class ClientTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Manage Teams")
-        self.assertContains(response, '<a href="/administration/support/teams/')
+        self.assertContains(response, reverse("helpme_admin:team-detail", args=[self.support_team.uuid]))
         self.assertContains(response, '> Support </a>')
 
 
