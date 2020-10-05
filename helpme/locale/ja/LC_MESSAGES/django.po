@@ -1,0 +1,236 @@
+# Translation file for the helpme project
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the HELPME package.
+# Mackenzie Camisa <mackenziec@whitemoondreams.com>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-05 16:53-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: forms.py:18
+msgid "Enter Subject Title"
+msgstr "件名を入力してください"
+
+#: forms.py:19
+msgid "Enter Details"
+msgstr "詳細を入力"
+
+#: forms.py:31 models.py:113
+msgid "Developer Ticket"
+msgstr "開発者チケット"
+
+#: forms.py:32
+msgid "Related Frequently Asked Question"
+msgstr "関連するよくある質問"
+
+#: forms.py:33
+msgid "Assigned to"
+msgstr "に割り当てられた"
+
+#: forms.py:34
+msgid "Teams"
+msgstr "チーム"
+
+#: forms.py:41 models.py:41 models.py:111
+msgid "Message"
+msgstr "メッセージ"
+
+#: forms.py:41
+msgid "Enter a message"
+msgstr "メッセージを入力してください"
+
+#: forms.py:42
+msgid "Visibility (Who can see this message)"
+msgstr "可視性（このメッセージを見ることができる人）"
+
+#: forms.py:85
+msgid "Members"
+msgstr "メンバー"
+
+#: models.py:21
+msgid "Open"
+msgstr "開いた"
+
+#: models.py:22
+msgid "Active"
+msgstr "アクティブ"
+
+#: models.py:23
+msgid "Hold"
+msgstr "ホールド"
+
+#: models.py:24
+msgid "Closed"
+msgstr "閉まっている"
+
+#: models.py:25
+msgid "Canceled"
+msgstr "キャンセル"
+
+#: models.py:28
+msgid "Suggestion"
+msgstr "提案"
+
+#: models.py:29
+msgid "Low"
+msgstr "低"
+
+#: models.py:30
+msgid "Medium"
+msgstr "中"
+
+#: models.py:31
+msgid "High"
+msgstr "高い"
+
+#: models.py:32
+msgid "Urgent"
+msgstr "緊急"
+
+#: models.py:35
+msgid "Reporters"
+msgstr "記者"
+
+#: models.py:36
+msgid "Support Handlers"
+msgstr "サポートハンドラー"
+
+#: models.py:37
+msgid "Developers"
+msgstr "開発者"
+
+#: models.py:38
+msgid "Supervisors"
+msgstr "監督者"
+
+#: models.py:42
+msgid "Event"
+msgstr "イベント"
+
+#: models.py:64 models.py:108
+msgid "Category"
+msgstr "カテゴリー"
+
+#: models.py:78
+msgid "Question"
+msgstr "質問"
+
+#: models.py:79
+msgid "Answer"
+msgstr "回答"
+
+#: models.py:92
+msgid "Name"
+msgstr "名前"
+
+#: models.py:96
+msgid "Categories"
+msgstr "カテゴリ"
+
+#: models.py:104
+msgid "Status"
+msgstr "状態"
+
+#: models.py:105
+msgid "Priority"
+msgstr "優先"
+
+#: models.py:110
+msgid "Subject"
+msgstr "件名"
+
+#: models.py:155
+msgid "Content"
+msgstr "コンテンツ"
+
+#: models.py:157
+msgid "Visibility"
+msgstr "可視性"
+
+#: models.py:158
+msgid "Type"
+msgstr "タイプ"
+
+#: settings.py:7
+msgid "Comment"
+msgstr "コメント"
+
+#: settings.py:8
+msgid "Sales"
+msgstr "販売"
+
+#: settings.py:9
+msgid "Help"
+msgstr "助けて"
+
+#: settings.py:10
+msgid "Bug"
+msgstr "バグ"
+
+#: views/helpme.py:38
+msgid "Mobile"
+msgstr "モバイル"
+
+#: views/helpme.py:40
+msgid "PC"
+msgstr "PC"
+
+#: views/helpme.py:42
+msgid "Tablet"
+msgstr "タブレット"
+
+#: views/helpme.py:44
+msgid "Unknown"
+msgstr "わからない"
+
+#: views/helpme.py:47
+msgid "Browser"
+msgstr "ブラウザ"
+
+#: views/helpme.py:48
+msgid "Operating System"
+msgstr "オペレーティング・システム"
+
+#: views/helpme.py:49
+msgid "Device"
+msgstr "端末"
+
+#: views/helpme.py:50
+msgid "Mobile/Tablet/PC"
+msgstr "モバイル/タブレット/ PC"
+
+#: views/helpme.py:51
+msgid "IP Address"
+msgstr "IPアドレス"
+
+#: views/helpme_admin.py:46 views/helpme_admin.py:146
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr "クエリに一致する％（verbose_name）が見つかりません"
+
+#: views/helpme_admin.py:88
+msgid " updated the "
+msgstr "を更新しました"
+
+#: views/helpme_admin.py:94
+msgid "and "
+msgstr "そして"
+
+#: views/helpme_admin.py:94
+msgid " fields"
+msgstr "田畑"
+
+#: views/helpme_admin.py:101
+msgid " field"
+msgstr "フィールド"

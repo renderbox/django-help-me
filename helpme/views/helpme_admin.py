@@ -2,6 +2,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
+from django.utils.translation import gettext as _
 
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
 from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
@@ -84,20 +85,20 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        action = " updated the "
+        action = _(" updated the ")
         cd = form.changed_data
         length = len(cd)
         for field in cd:
             if length > 1:
                 if field == cd[-1]:
-                    action += "and " + field + " fields"
+                    action += _("and ") + field + _(" fields")
                 else:
                     if length == 2:
                         action += field + " "
                     else:
                         action += field + ", "
             else:
-                action += field + " field"    
+                action += field + _(" field")  
         Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.EVENT, visibility=VisibilityChoices.SUPPORT)
         
         response = super().form_valid(form)

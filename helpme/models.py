@@ -61,7 +61,7 @@ class CreateUpdateModelBase(models.Model):
 ##################
 
 class Category(models.Model):
-    category = models.CharField(max_length=120)
+    category = models.CharField(_("Category"), max_length=120)
     category_sites = models.ManyToManyField(Site, blank=True, related_name="categories")
     localization = models.JSONField(default=dict)
     global_category = models.BooleanField(default=False)
@@ -75,8 +75,8 @@ class Category(models.Model):
 
 
 class Question(models.Model):
-    question = models.CharField(max_length=120)
-    answer = models.CharField(max_length=255)
+    question = models.CharField(_("Question"), max_length=120)
+    answer = models.CharField(_("Answer"), max_length=255)
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="questions")
     sites = models.ManyToManyField(Site, blank=True, related_name="questions")
     localization = models.JSONField(default=dict)
@@ -89,11 +89,11 @@ class Question(models.Model):
 
 class Team(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    name = models.CharField(max_length=30)
+    name = models.CharField(_("Name"), max_length=30)
     global_team = models.BooleanField(default=False)
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     sites = models.ManyToManyField(Site)
-    categories = MultiSelectField(choices=app_settings.TICKET_CATEGORIES.choices)
+    categories = MultiSelectField(_("Categories"), choices=app_settings.TICKET_CATEGORIES.choices)
 
     def __str__(self):
         return self.name
@@ -110,7 +110,7 @@ class Ticket(CreateUpdateModelBase):
     subject = models.CharField(_("Subject"), max_length=120)
     description = models.TextField(_("Message"))
     assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="assigned_tickets")
-    dev_ticket = models.CharField(max_length=30, blank=True, null=True)
+    dev_ticket = models.CharField(_("Developer Ticket"), max_length=30, blank=True, null=True)
     related_to = models.ManyToManyField("self", blank=True)
     site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, blank=True, null=True, on_delete=models.SET_NULL)
