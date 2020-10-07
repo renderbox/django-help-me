@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<table class="table table-hover table-bordered table-responsive-sm">
+    <thead class="bg-info text-white">
+	<th>
+	    {% trans "Reporter Meta" %}
+	</th>
+	<th></th>
+    </thead>
+    <tbody>
+	<tr>
+	    <td>
+		{% trans "Mobile/Tablet/PC" %}:
+	    </td>
+	    <td>
+		{% if user_meta.mobile_tablet_or_pc == "pc" %}
+		{% trans user_meta.mobile_tablet_or_pc|upper %}
+		{% else %}
+		{% trans user_meta.mobile_tablet_or_pc|title %}
+		{% endif %}
+	    </td>
+	</tr>
+	<tr>
+	    <td>
+		{% trans "Device" %}:
+	    </td>
+	    <td>
+		{% trans user_meta.device|title %}
+	    </td>
+	</tr>
+	<tr>
+	    <td>
+		{% trans "Operating System" %}:
+	    </td>
+	    <td>
+		{{user_meta.os.family|title}} {{user_meta.os.version}}
+	    </td>
+	</tr>
+	<tr>
+	    <td>
+		{% trans "Browser" %}:
+	    </td>
+	    <td>
+		{{user_meta.browser.family|title}} {{user_meta.browser.version}}
+	    </td>
+	</tr>
+	<tr>
+	    <td>
+		{% trans "IP Address" %}:
+	    </td>
+	    <td>
+		{{user_meta.ip_address}}
+	    </td>
+	</tr>
+    </tbody>
+</table>

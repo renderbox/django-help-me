@@ -1,0 +1,463 @@
+# Translation file for the helpme project
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the HELPME package.
+# Mackenzie Camisa <mackenziec@whitemoondreams.com>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-07 10:31-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: forms.py:18
+msgid "Enter Subject Title"
+msgstr "件名を入力してください"
+
+#: forms.py:19
+msgid "Enter Details"
+msgstr "詳細を入力"
+
+#: forms.py:31 models.py:113
+msgid "Developer Ticket"
+msgstr "開発者チケット"
+
+#: forms.py:32
+msgid "Related Frequently Asked Question"
+msgstr "関連するよくある質問"
+
+#: forms.py:33
+msgid "Assigned to"
+msgstr "に割り当てられた"
+
+#: forms.py:34
+msgid "Teams"
+msgstr "チーム"
+
+#: forms.py:41 models.py:41 models.py:111
+msgid "Message"
+msgstr "メッセージ"
+
+#: forms.py:41
+msgid "Enter a message"
+msgstr "メッセージを入力してください"
+
+#: forms.py:42
+msgid "Visibility (Who can see this message)"
+msgstr "可視性（このメッセージを見ることができる人）"
+
+#: forms.py:85 templates/helpme/team_detail.html:40
+msgid "Members"
+msgstr "メンバー"
+
+#: models.py:21
+msgid "Open"
+msgstr "開いた"
+
+#: models.py:22
+msgid "Active"
+msgstr "アクティブ"
+
+#: models.py:23
+msgid "Hold"
+msgstr "ホールド"
+
+#: models.py:24
+msgid "Closed"
+msgstr "閉まっている"
+
+#: models.py:25
+msgid "Canceled"
+msgstr "キャンセル"
+
+#: models.py:28
+msgid "Suggestion"
+msgstr "提案"
+
+#: models.py:29
+msgid "Low"
+msgstr "低"
+
+#: models.py:30
+msgid "Medium"
+msgstr "中"
+
+#: models.py:31
+msgid "High"
+msgstr "高い"
+
+#: models.py:32
+msgid "Urgent"
+msgstr "緊急"
+
+#: models.py:35
+msgid "Reporters"
+msgstr "記者"
+
+#: models.py:36
+msgid "Support Handlers"
+msgstr "サポートハンドラー"
+
+#: models.py:37
+msgid "Developers"
+msgstr "開発者"
+
+#: models.py:38
+msgid "Supervisors"
+msgstr "監督者"
+
+#: models.py:42
+msgid "Event"
+msgstr "イベント"
+
+#: models.py:64 models.py:108 templates/helpme/ticket_detail.html:38
+#: templates/helpme/ticket_list.html:193
+msgid "Category"
+msgstr "カテゴリー"
+
+#: models.py:78
+msgid "Question"
+msgstr "質問"
+
+#: models.py:79
+msgid "Answer"
+msgstr "回答"
+
+#: models.py:92
+msgid "Name"
+msgstr "名前"
+
+#: models.py:96
+msgid "Categories"
+msgstr "カテゴリ"
+
+#: models.py:104 templates/helpme/admin_ticket_list.html:109
+#: templates/helpme/ticket_detail.html:15 templates/helpme/ticket_list.html:131
+#: templates/helpme/ticket_list.html:174
+msgid "Status"
+msgstr "状態"
+
+#: models.py:105 templates/helpme/ticket_detail.html:29
+msgid "Priority"
+msgstr "優先"
+
+#: models.py:110
+msgid "Subject"
+msgstr "件名"
+
+#: models.py:155
+msgid "Content"
+msgstr "コンテンツ"
+
+#: models.py:157 templates/helpme/ticket_detail.html:72
+#: templates/helpme/ticket_detail.html:91
+msgid "Visibility"
+msgstr "可視性"
+
+#: models.py:158
+msgid "Type"
+msgstr "タイプ"
+
+#: settings.py:7
+msgid "Comment"
+msgstr "コメント"
+
+#: settings.py:8
+msgid "Sales"
+msgstr "販売"
+
+#: settings.py:9
+msgid "Help"
+msgstr "助けて"
+
+#: settings.py:10
+msgid "Bug"
+msgstr "バグ"
+
+#: templates/helpme/admin_ticket_list.html:9
+msgid "Help Desk"
+msgstr "ヘルプデスク"
+
+#: templates/helpme/admin_ticket_list.html:17
+#: templates/helpme/admin_ticket_list.html:66
+#: templates/helpme/ticket_detail.html:45
+#: templates/helpme/ticket_detail.html:163 templates/helpme/ticket_list.html:38
+#: templates/helpme/ticket_list.html:88
+msgid "New Help Ticket"
+msgstr "新しいヘルプチケット"
+
+#: templates/helpme/admin_ticket_list.html:26
+#: templates/helpme/ticket_list.html:47
+msgid "Show"
+msgstr "公演"
+
+#: templates/helpme/admin_ticket_list.html:37
+#: templates/helpme/ticket_list.html:58
+msgid "STATUS"
+msgstr "状態"
+
+#: templates/helpme/admin_ticket_list.html:50
+#: templates/helpme/ticket_list.html:71
+msgid "Clear All"
+msgstr "すべてクリア"
+
+#: templates/helpme/admin_ticket_list.html:68
+#: templates/helpme/ticket_detail.html:165 templates/helpme/ticket_list.html:90
+msgid "Please provide clear details about how we can help you."
+msgstr "私たちがどのようにあなたを助けることができるかについて明確な詳細を提供してください。"
+
+#: templates/helpme/admin_ticket_list.html:72
+#: templates/helpme/ticket_detail.html:169 templates/helpme/ticket_list.html:94
+msgid "Create Ticket"
+msgstr "チケットを作成する"
+
+#: templates/helpme/admin_ticket_list.html:73
+#: templates/helpme/ticket_detail.html:170 templates/helpme/ticket_list.html:95
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: templates/helpme/admin_ticket_list.html:86
+msgid "Manage Tickets"
+msgstr "チケットの管理"
+
+#: templates/helpme/admin_ticket_list.html:95
+#: templates/helpme/ticket_detail.html:35 templates/helpme/ticket_list.html:117
+#: templates/helpme/ticket_list.html:190
+msgid "Created"
+msgstr "作成した"
+
+#: templates/helpme/admin_ticket_list.html:129
+#: templates/helpme/ticket_list.html:151
+msgid "You replied %(date)s"
+msgstr "%(date)sと返信しました"
+
+#: templates/helpme/admin_ticket_list.html:131
+#: templates/helpme/ticket_list.html:153
+msgid "%(user)s replied %(date)s"
+msgstr "%(user)sが%(date)sに返信しました"
+
+#: templates/helpme/admin_ticket_list.html:136
+#: templates/helpme/ticket_list.html:158
+msgid "Waiting for a reply"
+msgstr "返信を待っています"
+
+#: templates/helpme/admin_ticket_list.html:143
+#: templates/helpme/ticket_list.html:251
+msgid "You have no active tickets."
+msgstr "アクティブなチケットはありません。"
+
+#: templates/helpme/admin_ticket_list.html:154
+#: templates/helpme/ticket_list.html:262
+msgid "Showing %(start)s to %(end)s of %(entries)s entries"
+msgstr "%(entries)sエントリの%(start)sから%(end)sを表示しています"
+
+#: templates/helpme/admin_ticket_list.html:156
+#: templates/helpme/ticket_list.html:264
+msgid "Support dashboard page navigation"
+msgstr "ダッシュボードページのナビゲーションをサポート"
+
+#: templates/helpme/admin_ticket_list.html:161
+#: templates/helpme/ticket_list.html:269
+msgid "First"
+msgstr "最初"
+
+#: templates/helpme/admin_ticket_list.html:164
+#: templates/helpme/ticket_list.html:272
+msgid "Previous"
+msgstr "前"
+
+#: templates/helpme/admin_ticket_list.html:184
+#: templates/helpme/ticket_list.html:292
+msgid "Next"
+msgstr "次"
+
+#: templates/helpme/admin_ticket_list.html:187
+#: templates/helpme/ticket_list.html:295
+msgid "Last"
+msgstr "最終"
+
+#: templates/helpme/event_comment.txt:5
+msgid "%(user)s updated the %(changed_fields)s fields"
+msgstr "%(user)sが%(changed_fields)sフィールドを更新しました"
+
+#: templates/helpme/event_comment.txt:7
+msgid "%(user)s updated the %(changed_fields)s field"
+msgstr "%(user)sが%(changed_fields)sフィールドを更新しました"
+
+#: templates/helpme/faq.html:9 templates/helpme/ticket_list.html:9
+msgid "HELP DESK"
+msgstr "ヘルプデスク"
+
+#: templates/helpme/faq.html:14 templates/helpme/ticket_list.html:15
+msgid "FAQ"
+msgstr "よくある質問"
+
+#: templates/helpme/faq.html:18 templates/helpme/ticket_list.html:21
+msgid "ASK THE HELP DESK"
+msgstr "ヘルプデスクに問い合わせる"
+
+#: templates/helpme/faq.html:41 templates/helpme/faq_create.html:27
+msgid "There are no Frequently Asked Questions in this category yet."
+msgstr "このカテゴリには、まだよくある質問はありません。"
+
+#: templates/helpme/faq.html:58 templates/helpme/faq_create.html:44
+msgid "There are no Frequently Asked Questions yet."
+msgstr "よくある質問はまだありません。"
+
+#: templates/helpme/faq_create.html:52
+msgid "Create a New Category"
+msgstr "新しいカテゴリを作成する"
+
+#: templates/helpme/faq_create.html:58 templates/helpme/faq_create.html:73
+msgid "Create"
+msgstr "作成する"
+
+#: templates/helpme/faq_create.html:67
+msgid "Create a New Question"
+msgstr "新しい質問を作成する"
+
+#: templates/helpme/includes/user_meta.html:6
+msgid "Reporter Meta"
+msgstr "レポーターメタ"
+
+#: templates/helpme/includes/user_meta.html:13
+msgid "Mobile/Tablet/PC"
+msgstr "モバイル/タブレット/ PC"
+
+#: templates/helpme/includes/user_meta.html:21
+msgid "Device"
+msgstr "端末"
+
+#: templates/helpme/includes/user_meta.html:29
+msgid "Operating System"
+msgstr "オペレーティング・システム"
+
+#: templates/helpme/includes/user_meta.html:37
+msgid "Browser"
+msgstr "ブラウザ"
+
+#: templates/helpme/includes/user_meta.html:45
+msgid "IP Address"
+msgstr "IPアドレス"
+
+#: templates/helpme/team_detail.html:7
+msgid "Manage %(team)s Team"
+msgstr "%(team)sのチームを管理する"
+
+#: templates/helpme/team_detail.html:11 templates/helpme/ticket_detail.html:191
+msgid "Update"
+msgstr "更新"
+
+#: templates/helpme/team_detail.html:14
+msgid "Handles Site(s)"
+msgstr "サイトを処理します"
+
+#: templates/helpme/team_detail.html:26
+msgid "Site(s)"
+msgstr "サイト"
+
+#: templates/helpme/team_detail.html:36
+msgid "Handles Categories"
+msgstr "カテゴリを処理します"
+
+#: templates/helpme/team_detail.html:53
+msgid "Return to Teams Page"
+msgstr "チームページに戻る"
+
+#: templates/helpme/team_form.html:11
+msgid "Manage Teams"
+msgstr "チームを管理する"
+
+#: templates/helpme/team_form.html:23
+msgid "You are not managing any teams yet."
+msgstr "あなたはまだチームを管理していません。"
+
+#: templates/helpme/team_form.html:29
+msgid "Create a new team"
+msgstr "新しいチームを作成する"
+
+#: templates/helpme/team_form.html:33
+msgid "Create Team"
+msgstr "チームを作成する"
+
+#: templates/helpme/team_form.html:40
+msgid "My Teams"
+msgstr "私のチーム"
+
+#: templates/helpme/team_form.html:52
+msgid "You don't belong to any teams yet."
+msgstr "あなたはまだどのチームにも所属していません。"
+
+#: templates/helpme/ticket_detail.html:43
+msgid "Edit Details"
+msgstr "詳細を編集する"
+
+#: templates/helpme/ticket_detail.html:57 templates/helpme/ticket_list.html:201
+msgid "Most recent"
+msgstr "最も最近の"
+
+#: templates/helpme/ticket_detail.html:120
+#: templates/helpme/ticket_list.html:241
+msgid "Reply"
+msgstr "応答"
+
+#: templates/helpme/ticket_detail.html:129
+msgid "Reporter"
+msgstr "レポーター"
+
+#: templates/helpme/ticket_detail.html:136
+msgid "Site"
+msgstr "地点"
+
+#: templates/helpme/ticket_detail.html:140
+msgid "Last Updated"
+msgstr "最終更新"
+
+#: templates/helpme/ticket_detail.html:150
+msgid "Return to Dashboard"
+msgstr "ダッシュボードに戻る"
+
+#: templates/helpme/ticket_detail.html:186
+msgid "Edit Ticket Details"
+msgstr "チケットの詳細を編集する"
+
+#: templates/helpme/ticket_form.html:9
+msgid "Create a Support Request"
+msgstr "サポートリクエストを作成する"
+
+#: templates/helpme/ticket_form.html:15
+msgid "Submit"
+msgstr "参加する"
+
+#: templates/helpme/ticket_list.html:31
+msgid "How can we help you today?"
+msgstr "今日はどのようにお手伝いできますか？"
+
+#: templates/helpme/ticket_list.html:108
+msgid "My Help Tickets"
+msgstr "マイヘルプチケット"
+
+#: views/helpme_admin.py:46 views/helpme_admin.py:138
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr "クエリに一致する%(verbose_name)sが見つかりません"
+
+#~ msgid "Mobile"
+#~ msgstr "モバイル"
+
+#~ msgid "PC"
+#~ msgstr "PC"
+
+#~ msgid "Tablet"
+#~ msgstr "タブレット"
+
+#~ msgid "Unknown"
+#~ msgstr "わからない"

@@ -1,0 +1,9 @@
+{% load i18n %}
+
+{% autoescape off %}
+{% if multiple %}
+{% blocktrans %}{{ user }} updated the {{ changed_fields }} fields{% endblocktrans %}
+{% else %}
+{% blocktrans %}{{ user }} updated the {{ changed_fields }} field{% endblocktrans %}
+{% endif %}
+{% endautoescape %}

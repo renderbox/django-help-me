@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-07 17:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/base.html:25
+msgid "Home"
+msgstr "ホーム"
+
+#: templates/base.html:27
+msgid "Support Tickets"
+msgstr "サポートチケット"
+
+#: templates/base.html:29
+msgid "Support Dashboard"
+msgstr "サポートダッシュボード"
+
+#: templates/base.html:32
+msgid "Teams"
+msgstr "チーム"
+
+#: templates/base.html:35 templates/base.html:37
+msgid "FAQ"
+msgstr "よくある質問"
+
+#: templates/base.html:41
+msgid "Logout"
+msgstr "ログアウト"
+
+#: templates/base.html:43
+msgid "Sign up"
+msgstr "サインアップ"
+
+#: templates/base.html:44
+msgid "Login"
+msgstr "ログインする"
