@@ -1,64 +1,65 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block help_content %}
 
 <div class="container-fluid">
-  <div class="row no-gutters">
-    <h1> HELP DESK </h1>
-  </div>
-  <div class="row no-gutters">
-    <a href="{% url 'helpme:faq' %}" class="mr-3">
-      <h5 class="text-dark">
-	<u> FAQ </u>
-      </h5>
-    </a>
-    <a href="{% url 'helpme:dashboard' %}" class="ml-3">
-      <h5>ASK THE HELP DESK</h5>
-    </a>
-  </div>
-
-  <div class="row">
-    {% for category in categories %}
-    <div class="col-sm-4 my-3">
-      <h5>
-	<b>
-	  {{ category }}
-	</b>
-      </h5>
-      {% for question in category.questions.all %}
-      <p>
-	<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
-	  {{ question.question }}
+    <div class="row no-gutters">
+	<h1> {% trans "HELP DESK" %} </h1>
+    </div>
+    <div class="row no-gutters">
+	<a href="{% url 'helpme:faq' %}" class="mr-3">
+	    <h5 class="text-dark">
+		<u> {% trans "FAQ" %} </u>
+	    </h5>
 	</a>
-      </p>
-      <p class="collapse" id="answer-{{question.pk}}">
-	{{ question.answer }}
-      </p>
-      <hr>
-      {% empty %}
-      There are no Frequently Asked Questions in this category yet.
-      {% endfor %}
+	<a href="{% url 'helpme:dashboard' %}" class="ml-3">
+	    <h5>{% trans "ASK THE HELP DESK" %}</h5>
+	</a>
     </div>
-    {% empty %}
-    {% for question in questions %}
-    <div class="col-sm-4 my-3">
-	<p>
-	    <a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
-		{{ question.question }}
-	    </a>
-	</p>
-	<p class="collapse" id="answer-{{question.pk}}">
-	    {{ question.answer }}
-	</p>
+
+    <div class="row">
+	{% for category in categories %}
+	<div class="col-sm-4 my-3">
+	    <h5>
+		<b>
+		    {{ category }}
+		</b>
+	    </h5>
+	    {% for question in category.questions.all %}
+	    <p>
+		<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+		    {{ question.question }}
+		</a>
+	    </p>
+	    <p class="collapse" id="answer-{{question.pk}}">
+		{{ question.answer }}
+	    </p>
+	    <hr>
+	    {% empty %}
+	    {% trans "There are no Frequently Asked Questions in this category yet." %}
+	    {% endfor %}
+	</div>
+	{% empty %}
+	{% for question in questions %}
+	<div class="col-sm-4 my-3">
+	    <p>
+		<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+		    {{ question.question }}
+		</a>
+	    </p>
+	    <p class="collapse" id="answer-{{question.pk}}">
+		{{ question.answer }}
+	    </p>
+	</div>
+	{% empty %}
+	<div class="col my-3">
+	    {% trans "There are no Frequently Asked Questions yet." %}
+	</div>
+	{% endfor %}
+	{% endfor %}
     </div>
-    {% empty %}
-    <div class="col my-3">
-	There are no Frequently Asked Questions yet.
-    </div>
-    {% endfor %}
-    {% endfor %}
-  </div>
 
 </div>
 {% endblock %}

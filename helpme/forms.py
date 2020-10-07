@@ -30,6 +30,8 @@ class UpdateTicketForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['dev_ticket'].label = _("Developer Ticket")
         self.fields['question'].label = _("Related Frequently Asked Question")
+        self.fields['assigned_to'].label = _("Assigned to")
+        self.fields['teams'].label = _("Teams")
         
         # filter teams by those that are responsible for the site where the ticket was created
         self.fields['teams'].queryset = Team.objects.filter(sites__in=[self.instance.site])
@@ -79,3 +81,5 @@ class TeamForm(ModelForm):
     class Meta:
         model = Team
         fields = ['name', 'categories', 'members']
+
+        labels = {'members': _("Members")}

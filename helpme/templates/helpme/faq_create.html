@@ -1,75 +1,81 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block help_content %}
 
 <div class="container-fluid">
-  <div class="row">
-    {% for category in categories %}
-    <div class="col-sm-4 my-3">
-      <h5>
-	<b>
-	  {{ category }}
-	</b>
-      </h5>
-      {% for question in category.questions.all %}
-      <p>
-	<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
-	  {{ question.question }}
-	</a>
-      </p>
-      <p class="collapse" id="answer-{{question.pk}}">
-	{{ question.answer }}
-      </p>
-      <hr>
-      {% empty %}
-      There are no Frequently Asked Questions in this category yet.
-      {% endfor %}
+    <div class="row">
+	{% for category in categories %}
+	<div class="col-sm-4 my-3">
+	    <h5>
+		<b>
+		    {{ category }}
+		</b>
+	    </h5>
+	    {% for question in category.questions.all %}
+	    <p>
+		<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+		    {{ question.question }}
+		</a>
+	    </p>
+	    <p class="collapse" id="answer-{{question.pk}}">
+		{{ question.answer }}
+	    </p>
+	    <hr>
+	    {% empty %}
+	    {% trans "There are no Frequently Asked Questions in this category yet." %}
+	    {% endfor %}
+	</div>
+	{% empty %}
+	{% for question in questions %}
+	<div class="col-sm-4 my-3">
+	    <p>
+		<a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
+		    {{ question.question }}
+		</a>
+	    </p>
+	    <p class="collapse" id="answer-{{question.pk}}">
+		{{ question.answer }}
+	    </p>
+	</div>
+	{% empty %}
+	<div class="col my-3">
+	    {% trans "There are no Frequently Asked Questions yet." %}
+	</div>
+	{% endfor %}
+	{% endfor %}
     </div>
-    {% empty %}
-    {% for question in questions %}
-    <div class="col-sm-4 my-3">
-	<p>
-	    <a class="question" data-toggle="collapse" href="#answer-{{question.pk}}">
-		{{ question.question }}
-	    </a>
-	</p>
-	<p class="collapse" id="answer-{{question.pk}}">
-	    {{ question.answer }}
-	</p>
-    </div>
-    {% empty %}
-    <div class="col my-3">
-	There are no Frequently Asked Questions yet.
-    </div>
-    {% endfor %}
-    {% endfor %}
-  </div>
 
-  <div class="my-3">
-    <h3> Create a New Category </h3>
-    <div class="row">
-      <div class="col-sm">
-	<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
-          {% csrf_token %}
-          {{ category_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
-	</form>
-      </div>
+    {% if perms.helpme.add_category %}
+    <div class="my-3">
+	<h3> {% trans "Create a New Category" %} </h3>
+	<div class="row">
+	    <div class="col-sm">
+		<form method="post" id="category_form" action="{% url 'helpme-api-create-category' %}">
+		    {% csrf_token %}
+		    {{ category_form|crispy }}
+		    <input type="submit" value="{% trans 'Create' %}" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+		</form>
+	    </div>
+	</div>
     </div>
-  </div>
-  <div class="mt-3">
-    <h3> Create a New Question </h3>
-    <div class="row">
-      <div class="col-sm">
-	<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
-          {% csrf_token %}
-          {{ question_form|crispy }}
-          <input type="submit" value="Create" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
-	</form>
-      </div>
+    {% endif %}
+
+    {% if perms.helpme.add_question %}
+    <div class="mt-3">
+	<h3> {% trans "Create a New Question" %} </h3>
+	<div class="row">
+	    <div class="col-sm">
+		<form method="post" id="question_form" action="{% url 'helpme-api-create-question' %}">
+		    {% csrf_token %}
+		    {{ question_form|crispy }}
+		    <input type="submit" value="{% trans 'Create' %}" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+		</form>
+	    </div>
+	</div>
     </div>
-  </div>
+    {% endif %}
   
 </div>
 {% endblock %}

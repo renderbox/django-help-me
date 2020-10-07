@@ -1,17 +1,18 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block help_content %}
 
   <div class="row">
     <div class="col-sm">
-      <h1>Create a Support Request</h1>
+      <h1>{% trans "Create a Support Request" %}</h1>
     </div>
     <div class="col-sm">
         <form action="{% url 'helpme:submit-request' %}" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" value="Submit" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+            <input type="submit" value="{% trans 'Submit' %}" class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
         </form>
     </div>
   </div>

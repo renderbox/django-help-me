@@ -36,9 +36,11 @@ class ClientTests(TestCase):
         
         support = Permission.objects.get(codename="see_support_tickets")
         view_team = Permission.objects.get(codename="view_team")
+        view_category = Permission.objects.get(codename="view_category")
+        view_question = Permission.objects.get(codename="view_question")
         add_category = Permission.objects.get(codename="add_category")
         add_question = Permission.objects.get(codename="add_question")
-        cls.support.user_permissions.add(support, view_team, add_category, add_question)
+        cls.support.user_permissions.add(support, view_team, add_category, add_question, view_category, view_question)
         
         cls.support_team = Team.objects.create(name="Support", global_team=False, categories=str(app_settings.TICKET_CATEGORIES.HELP))
         site = Site.objects.get(pk=1)
@@ -67,7 +69,7 @@ class ClientTests(TestCase):
         ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
-        self.assertEqual(ticket.user_meta, {'Device': 'Other', 'Browser': 'Other ', 'IP Address': '127.0.0.1', 'Mobile/Tablet/PC': 'Unknown', 'Operating System': 'Other '})
+        self.assertEqual(ticket.user_meta, {'os': {'family': 'Other', 'version': ''}, 'device': 'Other', 'browser': {'family': 'Other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown'})
 
         
     def test_dashboard_support(self):
