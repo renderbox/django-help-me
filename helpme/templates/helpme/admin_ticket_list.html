@@ -43,7 +43,7 @@
 			    <iconify-icon class="status-checkbox text-primary d-block blank" data-icon="mdi:checkbox-blank-outline"></iconify-icon>
 			    <iconify-icon class="status-checkbox text-primary d-none checked" data-icon="mdi:checkbox-marked"></iconify-icon>
 			</div>
-			<label class="form-check-label" for="check-{{ name }}">{{ name }}</label>
+			<label class="form-check-label" for="check-{{ name }}">{% trans name %}</label>
 		    </div>
 		    {% endfor %}
 		    <div class="dropdown-item">
@@ -110,13 +110,13 @@
 			{% if ticket.status in negative_status %}
 			<span class="text-danger">
 			    <b>
-				{{ticket.get_status_display}}
+				{% trans ticket.get_status_display %}
 			    </b>
 			</span>
 			{% else %}
 			<span class="text-success">
 			    <b>
-				{{ticket.get_status_display}}
+				{% trans ticket.get_status_display %}
 			    </b>
 			</span>
 			{% endif %}
