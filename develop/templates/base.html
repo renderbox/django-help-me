@@ -30,8 +30,10 @@
 	{% if perms.helpme.view_team %}
 	<a class="p-2 text-dark" href="{% url 'helpme_admin:team-list' %}">Teams</a>
 	{% endif %}
-	{% if perms.helpme.add_question and perms.helpme.add_category %}
-	<a class="p-2 text-dark" href="{% url 'helpme_admin:faq-create' %}">Create FAQs</a>
+	{% if perms.helpme.view_question and perms.helpme.view_category %}
+	<a class="p-2 text-dark" href="{% url 'helpme_admin:faq-create' %}">FAQ</a>
+	{% else %}
+	<a class="p-2 text-dark" href="{% url 'helpme:faq' %}">FAQ</a>
 	{% endif %}
       </nav>
       {% if request.user.is_authenticated %}

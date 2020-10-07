@@ -1,206 +1,220 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
 {% load helpme_extras %}
+{% load i18n %}
 
 {% block help_content %}
 
 <div class="container-fluid mt-3">
-  <div class="row align-items-end">
-    <div class="col">
-      <h3 class="mt-3">
-	<b> {{ ticket.subject }} </b>
-      </h3>
-      <div>
-	Status: 
-	{% if ticket.status in negative_status %}
-	<span class="text-danger mr-2">
-	{% else %}
-	<span class="text-success mr-2">
-	{% endif %}
-	  <b>
-	    {{ticket.get_status_display}}
-	  </b>
-	</span>
-	Priority:
-	<b>
-	  {{ ticket.get_priority_display }}
-	</b>
-      </div>
-      <small>
-	Created: {{ticket.created}}
-      </small>
-      <div>
-	Category: <b>{{ ticket.get_category_display }}</b>
-      </div>
-      <p class="mt-3"> {{ ticket.description }} </p>
+    <div class="row align-items-end">
+	<div class="col">
+	    <h3 class="mt-3">
+		<b> {{ ticket.subject }} </b>
+	    </h3>
+	    <div>
+		{% trans "Status" %}:
+		{% if ticket.status in negative_status %}
+		<span class="text-danger mr-2">
+		    <b>
+			{{ticket.get_status_display}}
+		    </b>
+		</span>
+		{% else %}
+		<span class="text-success mr-2">
+		    <b>
+			{{ticket.get_status_display}}
+		    </b>
+		</span>
+		{% endif %}
+		{% trans "Priority" %}:
+		<b>
+		    {{ ticket.get_priority_display }}
+		</b>
+	    </div>
+	    <small>
+		{% trans "Created" %}: {{ticket.created}}
+	    </small>
+	    <div>
+		{% trans "Category" %}: <b>{{ ticket.get_category_display }}</b>
+	    </div>
+	    <p class="mt-3"> {{ ticket.description }} </p>
+	</div>
+	<div class="col-sm text-center text-sm-right mb-3">
+	    <a href="" role="button" data-toggle="modal" data-target="#edit" class="text-primary font-weight-bold">{% trans "Edit Details" %}</a>
+	    <button class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 ml-3"  data-toggle="modal" data-target="#request">
+		{% trans "New Help Ticket" %}
+	    </button>
+	</div>
     </div>
-    <div class="col-sm text-center text-sm-right mb-3">
-      <a href="" role="button" data-toggle="modal" data-target="#edit" class="text-primary font-weight-bold"> Edit Details</a>
-      <button class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 ml-3"  data-toggle="modal" data-target="#request">
-	New Help Ticket
-      </button>
-    </div>
-  </div>
 </div>
 
 <hr>
 
 <div class="parent-container d-flex">
-  <div class="container" style="width:66%;">
-    {% if ticket_comments.exists %}
-    <div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
-      <a role="button" class="dropdown-toggle"> Most recent </a>
-    </div>
-    <div class="container overflow-auto" style="max-height:350px;">
-      {% for comment in ticket_comments %}
-    
-      {% if comment in comments %}
-      {% if comment.get_comment_type_display == "Message" %}
-    
-      {% if comment.user == user %}
-      <div class="row mb-3">
-	<div class="col offset-1">
-	  <div class="p-3 alert-primary mb-0 rounded-pill">
-	    {{ comment.content  }}
-	  </div>
-	  <small>
-	    Visibility: {{ comment.get_visibility_display }}
-	  </small>
-	  <small class="float-right">
-	    <b>{{ comment.user.username }}</b>
-	    {{ comment.created }}
-	  </small>
-      {% else %}
-      <div class="row mb-3">
-	<div class="col-11">
-	  <div class="p-3 alert-secondary mb-0 rounded-pill">
-	    {{ comment.content  }}
-	  </div>
-	  <small>
-	    <b>{{ comment.user.username }}</b>
-	    {{ comment.created }}
-	  </small>
-	  <small class="float-right">
-	    Visibility: {{ comment.get_visibility_display }}
-	  </small>
-      {% endif %}
-	
-      {% elif comment.get_comment_type_display == "Event"  %}
-      <div class="row mb-3">
-	<div class="col-sm-6 offset-sm-3 text-center">
-	  <div>
-	    {% if comment.user == user %}
-	    You {{ comment.content  }}
-	    {% else %}
-	    {{ comment.user.username}} {{ comment.content }}
-	    {% endif %}
-	  </div>
-	  <small>
-	    {{ comment.created }}
-	  </small>
-      {% endif %}
+    <div class="container" style="width:66%;">
+	{% if ticket_comments.exists %}
+	<div class="text-primary font-weight-bold dropdown mb-2" id="most_recent">
+	    <a role="button" class="dropdown-toggle"> {% trans "Most recent" %} </a>
 	</div>
-      </div>
-      {% endif %}
-
-      {% endfor %}
-    </div>
-    {% endif %}
+	<div class="container overflow-auto" style="max-height:350px;">
+	    {% for comment in ticket_comments %}
+    
+	    {% if comment in comments %}
+	    {% if comment.get_comment_type_display == "Message" %}
+    
+	    {% if comment.user == user %}
+	    <div class="row mb-3">
+		<div class="col offset-1">
+		    <div class="p-3 alert-primary mb-0 rounded-pill">
+			{{ comment.content  }}
+		    </div>
+		    <small>
+			{% trans "Visibility" %}: {{ comment.get_visibility_display }}
+		    </small>
+		    <small class="float-right">
+			<b>{{ comment.user.username }}</b>
+			{{ comment.created }}
+		    </small>
+		</div>
+	    </div>
+	    {% else %}
+	    <div class="row mb-3">
+		<div class="col-11">
+		    <div class="p-3 alert-secondary mb-0 rounded-pill">
+			{{ comment.content  }}
+		    </div>
+		    <small>
+			<b>{{ comment.user.username }}</b>
+			{{ comment.created }}
+		    </small>
+		    <small class="float-right">
+			{% trans "Visibility" %}: {{ comment.get_visibility_display }}
+		    </small>
+		</div>
+	    </div>
+	    {% endif %}
 	
-    <div class="row">
-      <div class="col">
-	<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" class="mb-3">
-	  {% csrf_token %}
-	  {{ comment_form|crispy }}
-	  <input type="submit" value="Reply" class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 mr-3">
-	</form>
-      </div>
+	    {% elif comment.get_comment_type_display == "Event"  %}
+	    <div class="row mb-3">
+		<div class="col-sm-6 offset-sm-3 text-center">
+		    <div>
+			{{ comment.content }}
+		    </div>
+		    <small>
+			{{ comment.created }}
+		    </small>
+		</div>
+	    </div>
+	    {% endif %}
+	    {% endif %}
+
+	    {% endfor %}
+	</div>
+	{% endif %}
+	
+	<div class="row">
+	    <div class="col">
+		<form action="{% url 'helpme-api-create-comment' ticket.uuid %}" method="POST" class="mb-3">
+		    {% csrf_token %}
+		    {{ comment_form|crispy }}
+		    <input type="submit" value="{% trans 'Reply' %}" class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 mr-3">
+		</form>
+	    </div>
+	</div>
     </div>
-  </div>
-  <div class="container" style="width:33%;">
-    <div class="row">
-      <div class="col-sm">
-        <p>
-          <b>Reporter: </b>
-          {{ticket.user.username}}
-        </p>
-	<p>
-          <table class="table table-hover table-bordered table-responsive-sm">
-	    <thead class="bg-info text-white">
-	      <th>Reporter Meta</th>
-	      <th></th>
-	    </thead>
-            <tbody>
-              {% for key, value in ticket.user_meta.items %}  
-              <tr>
-                <td>{{key}}:</td>
-                <td>{{value}}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </p>
-        <p>
-          <b>Site: </b>
-          {{ticket.site}}
-        </p>
-        <p>
-          <b>Last Updated: </b>
-          {{ticket.updated}}
-        </p>
-      </div>
+    <div class="container" style="width:33%;">
+	<div class="row">
+	    <div class="col-sm">
+		<p>
+		    <b>{% trans "Reporter" %}: </b>
+		    {{ticket.user.username}}
+		</p>
+		<p>
+		    <table class="table table-hover table-bordered table-responsive-sm">
+			<thead class="bg-info text-white">
+			    <th>{% trans "Reporter Meta" %}</th>
+			    <th></th>
+			</thead>
+			<tbody>
+			    {% for key, value in ticket.user_meta.items %}  
+			    <tr>
+				<td>{% trans key %}:</td>
+				<td>
+				    {% if value.items %}
+				    {% for k, val in value.items %}
+				    {% trans val %}
+				    {% endfor %}
+				    
+				    {% else %}
+				    {% trans value %}
+				    {% endif %}
+				</td>
+			    </tr>
+			    {% endfor %}
+			</tbody>
+		    </table>
+		</p>
+		<p>
+		    <b>{% trans "Site" %}: </b>
+		    {{ticket.site}}
+		</p>
+		<p>
+		    <b>{% trans "Last Updated" %}: </b>
+		    {{ticket.updated}}
+		</p>
+	    </div>
+	</div>
     </div>
-  </div>
 </div>
 <div class="row justify-content-center my-3">
-  <a class="text-light" href="{% url 'helpme_admin:dashboard' %}">
-    <button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
-      Return to Dashboard
-    </button>
-  </a>
+    <a class="text-light" href="{% url 'helpme_admin:dashboard' %}">
+	<button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	    {% trans "Return to Dashboard" %}
+	</button>
+    </a>
 </div>
-	
-<div class="modal" id="request">
-  <div class="modal-dialog">
-    <div class="modal-content">
 
-      <!-- Modal body -->
-      <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h3 class="modal-title mt-3">
-	  <b>New Help Ticket</b>
-	</h3>
-	<p> Please provide clear details about how we can help you. </p>
-        <form action="{% url 'helpme-api-create-ticket' %}" method="POST">
-          {% csrf_token %}
-          {{ ticket_form|crispy }}
-          <input type="submit" value="Create Ticket" class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 mr-3">
-	  <a href="" data-dismiss="modal" class="text-primary font-weight-bold">Cancel</a>
-        </form>
-      </div>
-      
+<div class="modal" id="request">
+    <div class="modal-dialog">
+	<div class="modal-content">
+
+	    <!-- Modal body -->
+	    <div class="modal-body">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3 class="modal-title mt-3">
+		    <b>{% trans "New Help Ticket" %}</b>
+		</h3>
+		<p> {% trans "Please provide clear details about how we can help you." %} </p>
+		<form action="{% url 'helpme-api-create-ticket' %}" method="POST">
+		    {% csrf_token %}
+		    {{ ticket_form|crispy }}
+		    <input type="submit" value="{% trans 'Create Ticket' %}" class="btn btn-primary font-weight-bold rounded-pill px-4 py-2 mr-3">
+		    <a href="" data-dismiss="modal" class="text-primary font-weight-bold">{% trans "Cancel" %}</a>
+		</form>
+	    </div>
+	    
+	</div>
     </div>
-  </div>
 </div>
 
 <div class="modal" id="edit">
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-dialog">
+	<div class="modal-content">
 
-      <!-- Modal body -->
-      <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h3 class="modal-title mt-3">
-	  <b>Edit Ticket Details</b>
-	</h3>
-        <form method="post">
-          {% csrf_token %}
-          {{ form|crispy }}
-          <input type="submit" value="Update" class="btn btn-primary rounded-pill font-weight-bold px-4 py-2">
-        </form>
-      </div>
+	    <!-- Modal body -->
+	    <div class="modal-body">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3 class="modal-title mt-3">
+		    <b>{% trans "Edit Ticket Details" %}</b>
+		</h3>
+		<form method="post">
+		    {% csrf_token %}
+		    {{ form|crispy }}
+		    <input type="submit" value="{% trans 'Update' %}" class="btn btn-primary rounded-pill font-weight-bold px-4 py-2">
+		</form>
+	    </div>
+	</div>
     </div>
-  </div>
 </div>
 
 {% endblock %}

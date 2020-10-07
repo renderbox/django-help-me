@@ -2,7 +2,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
-from django.utils.translation import gettext as _
+from django.template.loader import render_to_string
 
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
 from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
@@ -11,7 +11,7 @@ from .helpme import FAQView, SupportDashboardView
 
 class FAQCreateView(PermissionRequiredMixin, FAQView):
     template_name = "helpme/faq_create.html"
-    permission_required = ["helpme.add_question", "helpme.add_category"]
+    permission_required = ["helpme.view_question", "helpme.view_category"]
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,20 +85,12 @@ class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        action = _(" updated the ")
-        cd = form.changed_data
-        length = len(cd)
-        for field in cd:
-            if length > 1:
-                if field == cd[-1]:
-                    action += _("and ") + field + _(" fields")
-                else:
-                    if length == 2:
-                        action += field + " "
-                    else:
-                        action += field + ", "
-            else:
-                action += field + _(" field")  
+        context = {
+            "changed_fields": form.changed_data,
+            "user": self.request.user.username,
+            "multiple": len(form.changed_data) > 1
+        }
+        action = render_to_string('helpme/event_comment.txt', context)
         Comment.objects.create(content=action, user=self.request.user, ticket=self.get_object(), comment_type=CommentTypeChoices.EVENT, visibility=VisibilityChoices.SUPPORT)
         
         response = super().form_valid(form)

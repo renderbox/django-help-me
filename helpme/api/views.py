@@ -24,8 +24,14 @@ class CreateTicketAPIView(LoginRequiredMixin, CreateAPIView):
             device = "Unknown"
 
         user_meta = {
-            "Browser": user_agent.browser.family + " " + user_agent.browser.version_string,
-            "Operating System": user_agent.os.family + " " + user_agent.os.version_string,
+            "Browser": {
+                "family": user_agent.browser.family,
+                "version": user_agent.browser.version_string
+            },
+            "Operating System": {
+                "family": user_agent.os.family,
+                "version": user_agent.os.version_string
+            },
             "Device": user_agent.device.family,
             "Mobile/Tablet/PC": device,
             "IP Address": self.request.META['REMOTE_ADDR']

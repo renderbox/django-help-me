@@ -4,7 +4,6 @@ from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
-from django.utils.translation import gettext as _
 
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
 from helpme.forms import TicketForm, CommentForm
@@ -35,20 +34,26 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
         user_agent = self.request.user_agent
 
         if user_agent.is_mobile:
-            device = _("Mobile"),
+            device = "Mobile"
         elif user_agent.is_pc:
-            device = _("PC")
+            device = "PC"
         elif user_agent.is_tablet:
-            device = _("Tablet")
+            device = "Tablet"
         else:
-            device = _("Unknown")
+            device = "Unknown"
 
         form.instance.user_meta = {
-            _("Browser"): user_agent.browser.family + " " + user_agent.browser.version_string,
-            _("Operating System"): user_agent.os.family + " " + user_agent.os.version_string,
-            _("Device"): user_agent.device.family,
-            _("Mobile/Tablet/PC"): device,
-            _("IP Address"): self.request.META['REMOTE_ADDR']
+            "Browser": {
+                "family": user_agent.browser.family,
+                "version": user_agent.browser.version_string
+            },
+            "Operating System": {
+                "family": user_agent.os.family,
+                "version": user_agent.os.version_string
+            },
+            "Device": user_agent.device.family,
+            "Mobile/Tablet/PC": device,
+            "IP Address": self.request.META['REMOTE_ADDR']
         }
 
         response = super().form_valid(form)

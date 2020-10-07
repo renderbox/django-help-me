@@ -1,16 +1,17 @@
 {% extends "helpme/base.html" %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block help_content %}
 {% if admin %}
-<h1 class="my-2">Manage {{team.name}} Team</h1>
+<h1 class="my-2">{% blocktrans with team=team.name %} Manage {{team}} Team {% endblocktrans %}</h1>
 <form method="POST">
     {% csrf_token %}
     {{ form|crispy }}
-    <input type="submit" value="Update" class="btn btn-primary font-weight-bold py-2 px-4 mt-3 rounded-pill">
+    <input type="submit" value="{% trans 'Update' %}" class="btn btn-primary font-weight-bold py-2 px-4 mt-3 rounded-pill">
 </form>
 <p>
-    <b>Handles Site(s): </b>
+    <b>{% trans "Handles Site(s)" %}: </b>
     <ul class="list-group">
 	{% for site in team.sites.all %}
 	<li class="list-group-item">
@@ -22,7 +23,7 @@
 {% else %}
 <h1 class="my-2">{{team.name}}</h1>
 <p>
-    <b>Site(s): </b>
+    <b>{% trans "Site(s)" %}: </b>
     <ul class="list-group">
     {% for site in team.sites.all %}
         <li class="list-group-item">
@@ -32,26 +33,26 @@
     </ul>
 </p>
 <p>
-  <b>Handles Categories: </b>
+  <b>{% trans "Handles Categories" %}: </b>
   {{ team.categories }}
 </p>
 <p>
-    <b>Members: </b>
+    <b>{% trans "Members" %}: </b>
     <ul class="list-group">
-    {% for member in team.members.all %}
+	{% for member in team.members.all %}
         <li class="list-group-item">
             {{member}}
         </li>
-    {% endfor %}
+	{% endfor %}
     </ul>
 </p>
 {% endif %}
 <div class="row justify-content-center mb-2">
-  <a class="text-light" href="{% url 'helpme_admin:team-list' %}">
-    <button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
-      Return to Teams Page
-    </button>
-  </a>
+    <a class="text-light" href="{% url 'helpme_admin:team-list' %}">
+	<button class="btn btn-primary font-weight-bold px-4 py-2 rounded-pill">
+	    {% trans "Return to Teams Page" %}
+	</button>
+    </a>
 </div>
 {% endblock %}
 
