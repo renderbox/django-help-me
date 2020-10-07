@@ -2,8 +2,8 @@
 
 {% autoescape off %}
 {% if multiple %}
-{% blocktrans %}{{ user }} updated the {{ changed_fields }} fields {% endblocktrans %}
+{% blocktrans %}{{ user }} updated the {{ changed_fields }} fields{% endblocktrans %}
 {% else %}
-{% blocktrans %}{{ user }} updated the {{ changed_fields }} field {% endblocktrans %}
+{% blocktrans %}{{ user }} updated the {{ changed_fields }} field{% endblocktrans %}
 {% endif %}
 {% endautoescape %}

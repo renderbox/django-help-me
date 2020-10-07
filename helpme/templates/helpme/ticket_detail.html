@@ -130,29 +130,7 @@
 		    {{ticket.user.username}}
 		</p>
 		<p>
-		    <table class="table table-hover table-bordered table-responsive-sm">
-			<thead class="bg-info text-white">
-			    <th>{% trans "Reporter Meta" %}</th>
-			    <th></th>
-			</thead>
-			<tbody>
-			    {% for key, value in ticket.user_meta.items %}  
-			    <tr>
-				<td>{% trans key %}:</td>
-				<td>
-				    {% if value.items %}
-				    {% for k, val in value.items %}
-				    {% trans val %}
-				    {% endfor %}
-				    
-				    {% else %}
-				    {% trans value %}
-				    {% endif %}
-				</td>
-			    </tr>
-			    {% endfor %}
-			</tbody>
-		    </table>
+		    {% include "./includes/user_meta.html" with user_meta=ticket.user_meta %}
 		</p>
 		<p>
 		    <b>{% trans "Site" %}: </b>

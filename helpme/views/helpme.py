@@ -34,26 +34,26 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
         user_agent = self.request.user_agent
 
         if user_agent.is_mobile:
-            device = "Mobile"
+            device = "mobile"
         elif user_agent.is_pc:
-            device = "PC"
+            device = "pc"
         elif user_agent.is_tablet:
-            device = "Tablet"
+            device = "tablet"
         else:
-            device = "Unknown"
+            device = "unknown"
 
         form.instance.user_meta = {
-            "Browser": {
+            "browser": {
                 "family": user_agent.browser.family,
                 "version": user_agent.browser.version_string
             },
-            "Operating System": {
+            "os": {
                 "family": user_agent.os.family,
                 "version": user_agent.os.version_string
             },
-            "Device": user_agent.device.family,
-            "Mobile/Tablet/PC": device,
-            "IP Address": self.request.META['REMOTE_ADDR']
+            "device": user_agent.device.family,
+            "mobile_tablet_or_pc": device,
+            "ip_address": self.request.META['REMOTE_ADDR']
         }
 
         response = super().form_valid(form)

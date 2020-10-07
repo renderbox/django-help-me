@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-06 18:05-0700\n"
+"POT-Creation-Date: 2020-10-07 10:31-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -189,7 +189,7 @@ msgstr "ヘルプデスク"
 #: templates/helpme/admin_ticket_list.html:17
 #: templates/helpme/admin_ticket_list.html:66
 #: templates/helpme/ticket_detail.html:45
-#: templates/helpme/ticket_detail.html:185 templates/helpme/ticket_list.html:38
+#: templates/helpme/ticket_detail.html:163 templates/helpme/ticket_list.html:38
 #: templates/helpme/ticket_list.html:88
 msgid "New Help Ticket"
 msgstr "新しいヘルプチケット"
@@ -210,17 +210,17 @@ msgid "Clear All"
 msgstr "すべてクリア"
 
 #: templates/helpme/admin_ticket_list.html:68
-#: templates/helpme/ticket_detail.html:187 templates/helpme/ticket_list.html:90
+#: templates/helpme/ticket_detail.html:165 templates/helpme/ticket_list.html:90
 msgid "Please provide clear details about how we can help you."
 msgstr "私たちがどのようにあなたを助けることができるかについて明確な詳細を提供してください。"
 
 #: templates/helpme/admin_ticket_list.html:72
-#: templates/helpme/ticket_detail.html:191 templates/helpme/ticket_list.html:94
+#: templates/helpme/ticket_detail.html:169 templates/helpme/ticket_list.html:94
 msgid "Create Ticket"
 msgstr "チケットを作成する"
 
 #: templates/helpme/admin_ticket_list.html:73
-#: templates/helpme/ticket_detail.html:192 templates/helpme/ticket_list.html:95
+#: templates/helpme/ticket_detail.html:170 templates/helpme/ticket_list.html:95
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -236,14 +236,12 @@ msgstr "作成した"
 
 #: templates/helpme/admin_ticket_list.html:129
 #: templates/helpme/ticket_list.html:151
-#, python-format
-msgid " You replied %(date)s "
+msgid "You replied %(date)s"
 msgstr "%(date)sと返信しました"
 
 #: templates/helpme/admin_ticket_list.html:131
 #: templates/helpme/ticket_list.html:153
-#, python-format
-msgid " %(user)s replied %(date)s "
+msgid "%(user)s replied %(date)s"
 msgstr "%(user)sが%(date)sに返信しました"
 
 #: templates/helpme/admin_ticket_list.html:136
@@ -258,8 +256,7 @@ msgstr "アクティブなチケットはありません。"
 
 #: templates/helpme/admin_ticket_list.html:154
 #: templates/helpme/ticket_list.html:262
-#, python-format
-msgid " Showing %(start)s to %(end)s of %(entries)s entries "
+msgid "Showing %(start)s to %(end)s of %(entries)s entries"
 msgstr "%(entries)sエントリの%(start)sから%(end)sを表示しています"
 
 #: templates/helpme/admin_ticket_list.html:156
@@ -288,13 +285,11 @@ msgid "Last"
 msgstr "最終"
 
 #: templates/helpme/event_comment.txt:5
-#, python-format
-msgid "%(user)s updated the %(changed_fields)s fields "
+msgid "%(user)s updated the %(changed_fields)s fields"
 msgstr "%(user)sが%(changed_fields)sフィールドを更新しました"
 
 #: templates/helpme/event_comment.txt:7
-#, python-format
-msgid "%(user)s updated the %(changed_fields)s field "
+msgid "%(user)s updated the %(changed_fields)s field"
 msgstr "%(user)sが%(changed_fields)sフィールドを更新しました"
 
 #: templates/helpme/faq.html:9 templates/helpme/ticket_list.html:9
@@ -329,12 +324,35 @@ msgstr "作成する"
 msgid "Create a New Question"
 msgstr "新しい質問を作成する"
 
+#: templates/helpme/includes/user_meta.html:6
+msgid "Reporter Meta"
+msgstr "レポーターメタ"
+
+#: templates/helpme/includes/user_meta.html:13
+msgid "Mobile/Tablet/PC"
+msgstr "モバイル/タブレット/ PC"
+
+#: templates/helpme/includes/user_meta.html:21
+msgid "Device"
+msgstr "端末"
+
+#: templates/helpme/includes/user_meta.html:29
+msgid "Operating System"
+msgstr "オペレーティング・システム"
+
+#: templates/helpme/includes/user_meta.html:37
+msgid "Browser"
+msgstr "ブラウザ"
+
+#: templates/helpme/includes/user_meta.html:45
+msgid "IP Address"
+msgstr "IPアドレス"
+
 #: templates/helpme/team_detail.html:7
-#, python-format
-msgid " Manage %(team)s Team "
+msgid "Manage %(team)s Team"
 msgstr "%(team)sのチームを管理する"
 
-#: templates/helpme/team_detail.html:11 templates/helpme/ticket_detail.html:213
+#: templates/helpme/team_detail.html:11 templates/helpme/ticket_detail.html:191
 msgid "Update"
 msgstr "更新"
 
@@ -395,23 +413,19 @@ msgstr "応答"
 msgid "Reporter"
 msgstr "レポーター"
 
-#: templates/helpme/ticket_detail.html:135
-msgid "Reporter Meta"
-msgstr "レポーターメタ"
-
-#: templates/helpme/ticket_detail.html:158
+#: templates/helpme/ticket_detail.html:136
 msgid "Site"
 msgstr "地点"
 
-#: templates/helpme/ticket_detail.html:162
+#: templates/helpme/ticket_detail.html:140
 msgid "Last Updated"
 msgstr "最終更新"
 
-#: templates/helpme/ticket_detail.html:172
+#: templates/helpme/ticket_detail.html:150
 msgid "Return to Dashboard"
 msgstr "ダッシュボードに戻る"
 
-#: templates/helpme/ticket_detail.html:208
+#: templates/helpme/ticket_detail.html:186
 msgid "Edit Ticket Details"
 msgstr "チケットの詳細を編集する"
 
@@ -447,18 +461,3 @@ msgstr "クエリに一致する%(verbose_name)sが見つかりません"
 
 #~ msgid "Unknown"
 #~ msgstr "わからない"
-
-#~ msgid "Browser"
-#~ msgstr "ブラウザ"
-
-#~ msgid "Operating System"
-#~ msgstr "オペレーティング・システム"
-
-#~ msgid "Device"
-#~ msgstr "端末"
-
-#~ msgid "Mobile/Tablet/PC"
-#~ msgstr "モバイル/タブレット/ PC"
-
-#~ msgid "IP Address"
-#~ msgstr "IPアドレス"

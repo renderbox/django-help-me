@@ -69,7 +69,7 @@ class ClientTests(TestCase):
         ticket = Ticket.objects.get(subject="Test subject")
         self.assertEqual(ticket.user, self.support)
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
-        self.assertEqual(ticket.user_meta, {'Device': 'Other', 'Browser': {'family': 'Other', 'version': ''}, 'IP Address': '127.0.0.1', 'Mobile/Tablet/PC': 'Unknown', 'Operating System': {'family': 'Other', 'version': ''}})
+        self.assertEqual(ticket.user_meta, {'os': {'family': 'Other', 'version': ''}, 'device': 'Other', 'browser': {'family': 'Other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown'})
 
         
     def test_dashboard_support(self):

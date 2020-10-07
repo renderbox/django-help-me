@@ -148,9 +148,9 @@
 
 			{% with ticket.comments.all|last_visible:comments as comment %}
 			{% if comment.user == user %}
-			{% blocktrans with date=comment.created.date %} You replied {{ date }} {% endblocktrans %}
+			{% blocktrans with date=comment.created.date %}You replied {{ date }}{% endblocktrans %}
 			{% else %}
-			{% blocktrans with user=comment.user date=comment.created.date %} {{ user }} replied {{ date }} {% endblocktrans %}
+			{% blocktrans with user=comment.user date=comment.created.date %}{{ user }} replied {{ date }}{% endblocktrans %}
 			{% endif %}
 			{% endwith %}
 	    
@@ -259,7 +259,7 @@
 	{% if paginator.num_pages > 1 or object_list.count > 1 %}
 	<div>
 	    {% multiply object_list.count paginator.num_pages as entries %}
-	    {% blocktrans with start=page_obj.start_index end=page_obj.end_index %} Showing {{ start }} to {{ end }} of {{ entries }} entries {% endblocktrans %}
+	    {% blocktrans with start=page_obj.start_index end=page_obj.end_index %}Showing {{ start }} to {{ end }} of {{ entries }} entries{% endblocktrans %}
 	</div>
 	<nav aria-label="{% trans 'Support dashboard page navigation' %}">
 	    <ul class="pagination float-right mt-3">
