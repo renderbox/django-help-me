@@ -16,13 +16,13 @@
 		{% if ticket.status in negative_status %}
 		<span class="text-danger mr-2">
 		    <b>
-			{{ticket.get_status_display}}
+			{{ ticket.get_status_display }}
 		    </b>
 		</span>
 		{% else %}
 		<span class="text-success mr-2">
 		    <b>
-			{{ticket.get_status_display}}
+			{{ ticket.get_status_display }}
 		    </b>
 		</span>
 		{% endif %}
@@ -35,7 +35,7 @@
 		{% trans "Created" %}: {{ticket.created}}
 	    </small>
 	    <div>
-		{% trans "Category" %}: <b>{{ ticket.get_category_display }}</b>
+		{% trans "Category" %}: <b>{{ ticket.get_category_display  }}</b>
 	    </div>
 	    <p class="mt-3"> {{ ticket.description }} </p>
 	</div>

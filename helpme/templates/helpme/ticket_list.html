@@ -132,13 +132,13 @@
 			{% if ticket.status in negative_status %}
 			<span class="text-danger">
 			    <b>
-				{{ticket.get_status_display}}
+				{{ ticket.get_status_display }}
 			    </b>
 			</span>
 			{% else %}
 			<span class="text-success">
 			    <b>
-				{{ticket.get_status_display}}
+				{{ ticket.get_status_display }}
 			    </b>
 			</span>
 			{% endif %}
@@ -175,13 +175,13 @@
 				    {% if ticket.status in negative_status %}
 				    <span class="text-danger mr-2">
 					<b>
-					    {{ticket.get_status_display}}
+					    {{ ticket.get_status_display }}
 					</b>
 				    </span>
 				    {% else %}
 				    <span class="text-success mr-2">
 					<b>
-					    {{ticket.get_status_display}}
+					    {{ ticket.get_status_display }}
 					</b>
 				    </span>
 				    {% endif %}

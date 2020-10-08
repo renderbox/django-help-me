@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
 from django.contrib.auth import get_user_model
 
@@ -70,6 +70,7 @@ class QuestionForm(ModelForm):
         # limit the possible categories to the current site
         current_site = Site.objects.get_current()
         self.fields['category'].queryset = Category.objects.filter(category_sites__in=[current_site])
+        self.fields['category'].label = _("Category")
 
 
 class TeamForm(ModelForm):
@@ -82,4 +83,6 @@ class TeamForm(ModelForm):
         model = Team
         fields = ['name', 'categories', 'members']
 
-        labels = {'members': _("Members")}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['members'].label = _("Members")
