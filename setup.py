@@ -41,7 +41,7 @@ package_metadata = {
 setup(
     **package_metadata,
     packages=find_packages(),
-    package_data={'helpme': ['templates/helpme/*.html', 'static/js/support/*.js', 'locale/*/LC_MESSAGES/django.po']},
+    package_data={'helpme': ['templates/helpme/*.html', 'templates/helpme/*.txt', 'templates/helpme/includes/*.html', 'static/js/support/*.js', 'locale/*/LC_MESSAGES/django.po']},
     include_package_data=True,
     python_requires=">=3.6",
     install_requires=[
