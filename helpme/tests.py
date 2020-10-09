@@ -1,8 +1,11 @@
+from io import StringIO
+
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.sites.models import Site
 from django.urls import reverse
+from django.core.management import call_command
 
 from .models import Ticket, Comment, Team, Category, Question, StatusChoices, PriorityChoices, VisibilityChoices, CommentTypeChoices
 from .settings import app_settings
@@ -266,3 +269,21 @@ class ClientTests(TestCase):
         self.assertEqual(response.redirect_chain, [(reverse("helpme_admin:faq-create"), 302)])
         self.assertContains(response, "What color is the sky?")
         self.assertContains(response, "Blue")
+
+
+class ModuleTests(TestCase):
+    '''
+    Tests to make sure basic elements are not missing from the package
+    '''
+    def test_for_missing_migrations(self):
+        output = StringIO()
+
+        try:
+            call_command('makemigrations', interactive=False, dry_run=True, check=True, stdout=output)
+
+        except SystemExit as e:
+            # The exit code will be 1 when there are no missing migrations
+            try:
+                assert e == '1'
+            except:
+                self.fail("\n\nHey, There are missing migrations!\n\n %s" % output.getvalue())
