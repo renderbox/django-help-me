@@ -60,7 +60,9 @@
 	    {% for comment in ticket_comments %}
     
 	    {% if comment in comments %}
-	    {% if comment.get_comment_type_display == "Message" %}
+	    {% trans "Message" as message %}
+	    {% trans "Event" as event %}
+	    {% if comment.get_comment_type_display == message %}
     
 	    {% if comment.user == user %}
 	    <div class="row mb-3">
@@ -94,7 +96,7 @@
 	    </div>
 	    {% endif %}
 	
-	    {% elif comment.get_comment_type_display == "Event"  %}
+	    {% elif comment.get_comment_type_display == event  %}
 	    <div class="row mb-3">
 		<div class="col-sm-6 offset-sm-3 text-center">
 		    <div>
