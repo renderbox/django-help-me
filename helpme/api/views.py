@@ -3,39 +3,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
 from django.shortcuts import redirect
 
+from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Category, Question, Team
 from helpme.api.serializers import TicketSerializer, CommentSerializer, CategorySerializer, QuestionSerializer
 
 
-class CreateTicketAPIView(LoginRequiredMixin, CreateAPIView):
+class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
 
     def perform_create(self, serializer):
-        user_agent = self.request.user_agent
-        
-        if user_agent.is_mobile:
-            device = "mobile"
-        elif user_agent.is_pc:
-            device = "pc"
-        elif user_agent.is_tablet:
-            device = "tablet"
-        else:
-            device = "unknown"
-
-        user_meta = {
-            "browser": {
-                "family": str.lower(user_agent.browser.family),
-                "version": user_agent.browser.version_string
-            },
-            "os": {
-                "family": str.lower(user_agent.os.family),
-                "version": user_agent.os.version_string
-            },
-            "device": str.lower(user_agent.device.family),
-            "mobile_tablet_or_pc": device,
-            "ip_address": self.request.META['REMOTE_ADDR']
-        }
+        user_meta = self.get_ticket_request_meta(self.request)
         
         instance = serializer.save(user=self.request.user, site=Site.objects.get_current(), user_meta=user_meta)
 
