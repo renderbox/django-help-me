@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
 
 from .settings import app_settings
 
@@ -114,6 +115,9 @@ class Ticket(CreateUpdateModelBase):
     related_to = models.ManyToManyField("self", blank=True)
     site = models.ForeignKey(Site, default=1, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, blank=True, null=True, on_delete=models.SET_NULL)
+
+    objects = models.Manager() 
+    on_site = CurrentSiteManager()
 
     class Meta:
         permissions = (

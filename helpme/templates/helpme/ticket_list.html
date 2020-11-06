@@ -256,10 +256,9 @@
 	    </tbody>
 	</table>
 
-	{% if paginator.num_pages > 1 or object_list.count > 1 %}
+	{% if paginator.count > 1 %}
 	<div>
-	    {% multiply object_list.count paginator.num_pages as entries %}
-	    {% blocktrans with start=page_obj.start_index end=page_obj.end_index %}Showing {{ start }} to {{ end }} of {{ entries }} entries{% endblocktrans %}
+	    {% blocktrans with start=page_obj.start_index end=page_obj.end_index entries=paginator.count %}Showing {{ start }} to {{ end }} of {{ entries }} entries{% endblocktrans %}
 	</div>
 	<nav aria-label="{% trans 'Support dashboard page navigation' %}">
 	    <ul class="pagination float-right mt-3">

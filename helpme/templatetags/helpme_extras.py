@@ -32,7 +32,3 @@ def url_replace(request, field, value):
 
     return dict_.urlencode()
 
-@register.simple_tag
-def multiply(a, b):
-    return a * b
-
