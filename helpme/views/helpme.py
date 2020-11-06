@@ -59,16 +59,16 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         if self.request.user.is_staff or self.request.user.is_superuser:
             queryset = Ticket.objects.all()
         elif self.request.user.has_perm('helpme.see_all_tickets'):
-            queryset = Ticket.objects.filter(site=site)
+            queryset = Ticket.on_site.all()
         # support team member
         # sees tickets that are assigned to them or to a team they belong to
         # but are not assigned to a specific user yet
         elif self.request.user.has_perm('helpme.see_support_tickets'):
-            tickets = Ticket.objects.filter(assigned_to=self.request.user) | Ticket.objects.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
-            queryset = tickets.distinct().filter(site=site)
+            tickets = Ticket.on_site.filter(assigned_to=self.request.user) | Ticket.on_site.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
+            queryset = tickets.distinct()
         # platform user
         else:
-            queryset = Ticket.objects.filter(user=self.request.user, site=site)
+            queryset = Ticket.on_site.filter(user=self.request.user)
 
         # filter by status
         s = self.request.GET.get('s', '')
