@@ -95,6 +95,33 @@ class ClientTests(TestCase):
         self.assertContains(response, "Open")
 
 
+    def test_dashboard_filter_by_site(self):
+        self.client.force_login(self.student)
+        site = Site.objects.create(domain="site2.com", name="Site 2")
+        Ticket.objects.create(subject="Other site", description="Other site description", user=self.student, category=app_settings.TICKET_CATEGORIES.HELP, site=site)
+        uri = reverse("helpme:dashboard")
+        response = self.client.get(uri)
+
+        self.assertContains(response, "ABC")
+        self.assertNotContains(response, "Other site")
+
+
+    def test_dashboard_superuser(self):
+        """
+        Superuser should be able to see all tickets, including on other sites
+        """
+        
+        self.client.force_login(self.admin)
+
+        site = Site.objects.create(domain="site2.com", name="Site 2")
+        Ticket.objects.create(subject="Other site", description="Other site description", user=self.support, category=app_settings.TICKET_CATEGORIES.HELP, site=site)
+        uri = reverse("helpme_admin:dashboard")
+        response = self.client.get(uri)
+
+        self.assertContains(response, "testuser - ABC")
+        self.assertContains(response, "supportuser - Other site")
+
+
     def test_dashboard_filter_by_status(self):
         active_ticket = Ticket.objects.create(subject="Active ticket", description="Test filter", category=app_settings.TICKET_CATEGORIES.HELP, status=StatusChoices.ACTIVE, user=self.support)
         active_ticket.teams.add(self.support_team)

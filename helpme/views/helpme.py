@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
 
+from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
 from helpme.forms import TicketForm, CommentForm
 
@@ -22,7 +23,7 @@ class FAQView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class SupportRequestView(LoginRequiredMixin, CreateView):
+class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
     model = Ticket
     success_url = reverse_lazy('helpme:dashboard')
     form_class = TicketForm
@@ -30,31 +31,7 @@ class SupportRequestView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.site = Site.objects.get_current()
-
-        user_agent = self.request.user_agent
-
-        if user_agent.is_mobile:
-            device = "mobile"
-        elif user_agent.is_pc:
-            device = "pc"
-        elif user_agent.is_tablet:
-            device = "tablet"
-        else:
-            device = "unknown"
-
-        form.instance.user_meta = {
-            "browser": {
-                "family": str.lower(user_agent.browser.family),
-                "version": user_agent.browser.version_string
-            },
-            "os": {
-                "family": str.lower(user_agent.os.family),
-                "version": user_agent.os.version_string
-            },
-            "device": str.lower(user_agent.device.family),
-            "mobile_tablet_or_pc": device,
-            "ip_address": self.request.META['REMOTE_ADDR']
-        }
+        form.instance.user_meta = self.get_ticket_request_meta(self.request)
 
         response = super().form_valid(form)
 
@@ -77,18 +54,21 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         return self.paginate_by
 
     def get_queryset(self, **kwargs):
+        site = Site.objects.get_current()
         # admin
-        if self.request.user.has_perm('helpme.see_all_tickets'):
+        if self.request.user.is_staff or self.request.user.is_superuser:
             queryset = Ticket.objects.all()
+        elif self.request.user.has_perm('helpme.see_all_tickets'):
+            queryset = Ticket.objects.filter(site=site)
         # support team member
         # sees tickets that are assigned to them or to a team they belong to
         # but are not assigned to a specific user yet
         elif self.request.user.has_perm('helpme.see_support_tickets'):
             tickets = Ticket.objects.filter(assigned_to=self.request.user) | Ticket.objects.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
-            queryset = tickets.distinct()
+            queryset = tickets.distinct().filter(site=site)
         # platform user
         else:
-            queryset = Ticket.objects.filter(user=self.request.user)
+            queryset = Ticket.objects.filter(user=self.request.user, site=site)
 
         # filter by status
         s = self.request.GET.get('s', '')
