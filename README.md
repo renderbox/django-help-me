@@ -2,6 +2,8 @@
 
 ![Help Me Develop](https://github.com/renderbox/django-help-me/workflows/Help%20Me%20Develop/badge.svg?branch=develop)
 
+[![Documentation Status](https://readthedocs.org/projects/django-help-me/badge/?version=latest)](https://django-help-me.readthedocs.io/en/latest/?badge=latest)
+
 # Help Me
 
 A simple app for providing a simple help desk for users.

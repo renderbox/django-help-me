@@ -1,6 +1,6 @@
 Views
 =====
 
-.. automodule:: vendor.views
+.. automodule:: helpme.views
    :members:
    :undoc-members:
