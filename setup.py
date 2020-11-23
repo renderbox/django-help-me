@@ -72,11 +72,14 @@ setup(
             'm2r',
         ],
         'docs': [
+            'recommonmark',
+            'm2r',
+            'django-extensions',
             'coverage',
             'Sphinx',
-            'sphinx-rtd-theme',
             'recommonmark',
             'rstcheck',
+            'sphinx-rtd-theme',  # Assumes a Read The Docs theme for opensource projects
         ],
     }
 )

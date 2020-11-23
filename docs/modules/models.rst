@@ -1,6 +1,6 @@
 Models
 ======
 
-.. automodule:: vendor.models
+.. automodule:: helpme.models
    :members:
    :undoc-members:
