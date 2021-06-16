@@ -52,5 +52,25 @@
 		{{user_meta.ip_address}}
 	    </td>
 	</tr>
+        {% if user_meta.email %}
+        <tr>
+	    <td>
+		{% trans "Email Address" %}:
+	    </td>
+	    <td>
+		{{ user_meta.email }}
+	    </td>
+	</tr>
+        {% endif %}
+        {% if user_meta.phone_number %}
+        <tr>
+	    <td>
+		{% trans "Phone Number" %}:
+	    </td>
+	    <td>
+		{{ user_meta.phone_number }}
+	    </td>
+	</tr>
+        {% endif %}
     </tbody>
 </table>

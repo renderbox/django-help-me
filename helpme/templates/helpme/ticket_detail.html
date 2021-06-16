@@ -129,7 +129,11 @@
 	    <div class="col-sm">
 		<p>
 		    <b>{% trans "Reporter" %}: </b>
+                    {% if ticket.user %}
 		    {{ticket.user.username}}
+                    {% else %}
+                    {{ ticket.user_meta.full_name }}
+                    {% endif %}
 		</p>
 		<p>
 		    {% include "./includes/user_meta.html" with user_meta=ticket.user_meta %}
