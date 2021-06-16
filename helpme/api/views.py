@@ -14,8 +14,11 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
 
     def perform_create(self, serializer):
         user_meta = self.get_ticket_request_meta(self.request)
-        
-        instance = serializer.save(user=self.request.user, site=Site.objects.get_current(), user_meta=user_meta)
+
+        current_site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            current_site = self.request.site
+        instance = serializer.save(user=self.request.user, site=current_site, user_meta=user_meta)
 
         # filter and assign teams by site and category
         teams = Team.objects.filter(sites__in=[instance.site])
@@ -55,7 +58,10 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
         if instance.global_category:
             instance.category_sites.set(Site.objects.exclude(id__in=instance.category_excluded_sites.all()))
         elif not instance.category_sites.exists():
-            instance.category_sites.add(Site.objects.get_current())
+            current_site = Site.objects.get_current()
+            if hasattr(self.request, 'site'):
+                current_site = self.request.site
+            instance.category_sites.add(current_site)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -71,7 +77,10 @@ class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
         if instance.global_question:
             instance.sites.set(Site.objects.exclude(id__in=instance.excluded_sites.all()))
         elif not instance.sites.exists():
-            instance.sites.add(Site.objects.get_current())
+            current_site = Site.objects.get_current()
+            if hasattr(self.request, 'site'):
+                current_site = self.request.site
+            instance.sites.add(current_site)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

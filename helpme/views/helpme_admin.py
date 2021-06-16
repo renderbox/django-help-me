@@ -107,13 +107,19 @@ class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['admin'] = self.request.user.has_perm('helpme.add_team')
         context['user_teams'] = self.request.user.team_set.all()
-        context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
+        current_site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            current_site = self.request.site
+        context['teams'] = Team.objects.filter(sites__in=[current_site])
         return context
     
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.instance.sites.add(Site.objects.get_current())
+        current_site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            current_site = self.request.site
+        form.instance.sites.add(current_site)
         return response
     
     

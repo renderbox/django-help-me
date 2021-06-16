@@ -16,6 +16,8 @@ class FAQView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         current_site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            current_site = self.request.site
         categories = Category.objects.filter(category_sites__in=[current_site])
         context['categories'] = categories
         if not categories.exists():
@@ -31,6 +33,8 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            form.instance.site = self.request.site
         form.instance.user_meta = self.get_ticket_request_meta(self.request)
 
         response = super().form_valid(form)
@@ -55,20 +59,22 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, **kwargs):
         site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            site = self.request.site
         # admin
         if self.request.user.is_staff or self.request.user.is_superuser:
             queryset = Ticket.objects.all()
         elif self.request.user.has_perm('helpme.see_all_tickets'):
-            queryset = Ticket.on_site.all()
+            queryset = Ticket.objects.filter(site=site)
         # support team member
         # sees tickets that are assigned to them or to a team they belong to
         # but are not assigned to a specific user yet
         elif self.request.user.has_perm('helpme.see_support_tickets'):
-            tickets = Ticket.on_site.filter(assigned_to=self.request.user) | Ticket.on_site.filter(teams__in=self.request.user.team_set.all(), assigned_to=None)
+            tickets = Ticket.objects.filter(site=site, assigned_to=self.request.user) | Ticket.objects.filter(site=site, teams__in=self.request.user.team_set.all(), assigned_to=None)
             queryset = tickets.distinct()
         # platform user
         else:
-            queryset = Ticket.on_site.filter(user=self.request.user)
+            queryset = Ticket.objects.filter(site=site, user=self.request.user)
 
         # filter by status
         s = self.request.GET.get('s', '')
