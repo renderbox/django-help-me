@@ -80,10 +80,13 @@ class QuestionForm(ModelForm):
         fields = ['question', 'answer', 'category']
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
         super().__init__(*args, **kwargs)
 
         # limit the possible categories to the current site
         current_site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            current_site = self.request.site
         self.fields['category'].queryset = Category.objects.filter(category_sites__in=[current_site])
         self.fields['category'].label = _("Category")
 

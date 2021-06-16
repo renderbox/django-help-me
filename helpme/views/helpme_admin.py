@@ -15,7 +15,7 @@ class FAQCreateView(PermissionRequiredMixin, FAQView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['question_form'] = QuestionForm
+        context['question_form'] = QuestionForm(request=self.request)
         context['category_form'] = CategoryForm
         return context
     
