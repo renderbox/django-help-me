@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-09 09:58-0700\n"
+"POT-Creation-Date: 2021-06-16 22:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,152 +18,180 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: forms.py:18
+#: forms.py:11
+msgid "Full Name"
+msgstr "フルネーム"
+
+#: forms.py:11
+msgid "Enter name"
+msgstr "名前を入力"
+
+#: forms.py:12 templates/helpme/includes/user_meta.html:58
+msgid "Email Address"
+msgstr "電子メールアドレス"
+
+#: forms.py:12
+msgid "Enter email"
+msgstr "メールアドレスを入力して"
+
+#: forms.py:13
+msgid "Phone Number (Optional)"
+msgstr "電話番号（オプション）"
+
+#: forms.py:21
+msgid "How Can We Help You?"
+msgstr "お手伝いしましょうか？"
+
+#: forms.py:22
+msgid "Enter Message"
+msgstr "メッセージを入力してください"
+
+#: forms.py:33
 msgid "Enter Subject Title"
 msgstr "件名を入力してください"
 
-#: forms.py:19
+#: forms.py:34
 msgid "Enter Details"
 msgstr "詳細を入力"
 
-#: forms.py:31 models.py:113
+#: forms.py:46 models.py:114
 msgid "Developer Ticket"
 msgstr "開発者チケット"
 
-#: forms.py:32
+#: forms.py:47
 msgid "Related Frequently Asked Question"
 msgstr "関連するよくある質問"
 
-#: forms.py:33
+#: forms.py:48
 msgid "Assigned to"
 msgstr "に割り当てられた"
 
-#: forms.py:34
+#: forms.py:49
 msgid "Teams"
 msgstr "チーム"
 
-#: forms.py:41 models.py:41 models.py:111
+#: forms.py:56 models.py:42 models.py:112
 #: templates/helpme/ticket_detail.html:63
 msgid "Message"
 msgstr "メッセージ"
 
-#: forms.py:41
+#: forms.py:56
 msgid "Enter a message"
 msgstr "メッセージを入力してください"
 
-#: forms.py:42
+#: forms.py:57
 msgid "Visibility (Who can see this message)"
 msgstr "可視性（このメッセージを見ることができる人）"
 
-#: forms.py:73 models.py:64 models.py:108
+#: forms.py:88 models.py:65 models.py:109
 #: templates/helpme/ticket_detail.html:38 templates/helpme/ticket_list.html:193
 msgid "Category"
 msgstr "カテゴリー"
 
-#: forms.py:88 templates/helpme/team_detail.html:40
+#: forms.py:103 templates/helpme/team_detail.html:40
 msgid "Members"
 msgstr "メンバー"
 
-#: models.py:21
+#: models.py:22
 msgid "Open"
 msgstr "開いた"
 
-#: models.py:22
+#: models.py:23
 msgid "Active"
 msgstr "アクティブ"
 
-#: models.py:23
+#: models.py:24
 msgid "Hold"
 msgstr "ホールド"
 
-#: models.py:24
+#: models.py:25
 msgid "Closed"
 msgstr "閉まっている"
 
-#: models.py:25
+#: models.py:26
 msgid "Canceled"
 msgstr "キャンセル"
 
-#: models.py:28
+#: models.py:29
 msgid "Suggestion"
 msgstr "提案"
 
-#: models.py:29
+#: models.py:30
 msgid "Low"
 msgstr "低"
 
-#: models.py:30
+#: models.py:31
 msgid "Medium"
 msgstr "中"
 
-#: models.py:31
+#: models.py:32
 msgid "High"
 msgstr "高い"
 
-#: models.py:32
+#: models.py:33
 msgid "Urgent"
 msgstr "緊急"
 
-#: models.py:35
+#: models.py:36
 msgid "Reporters"
 msgstr "記者"
 
-#: models.py:36
+#: models.py:37
 msgid "Support Handlers"
 msgstr "サポートハンドラー"
 
-#: models.py:37
+#: models.py:38
 msgid "Developers"
 msgstr "開発者"
 
-#: models.py:38
+#: models.py:39
 msgid "Supervisors"
 msgstr "監督者"
 
-#: models.py:42 templates/helpme/ticket_detail.html:64
+#: models.py:43 templates/helpme/ticket_detail.html:64
 msgid "Event"
 msgstr "イベント"
 
-#: models.py:78
+#: models.py:79
 msgid "Question"
 msgstr "質問"
 
-#: models.py:79
+#: models.py:80
 msgid "Answer"
 msgstr "回答"
 
-#: models.py:92
+#: models.py:93
 msgid "Name"
 msgstr "名前"
 
-#: models.py:96
+#: models.py:97
 msgid "Categories"
 msgstr "カテゴリ"
 
-#: models.py:104 templates/helpme/admin_ticket_list.html:109
+#: models.py:105 templates/helpme/admin_ticket_list.html:109
 #: templates/helpme/ticket_detail.html:15 templates/helpme/ticket_list.html:131
 #: templates/helpme/ticket_list.html:174
 msgid "Status"
 msgstr "状態"
 
-#: models.py:105 templates/helpme/ticket_detail.html:29
+#: models.py:106 templates/helpme/ticket_detail.html:29
 msgid "Priority"
 msgstr "優先"
 
-#: models.py:110
+#: models.py:111
 msgid "Subject"
 msgstr "件名"
 
-#: models.py:155
+#: models.py:164
 msgid "Content"
 msgstr "コンテンツ"
 
-#: models.py:157 templates/helpme/ticket_detail.html:74
+#: models.py:166 templates/helpme/ticket_detail.html:74
 #: templates/helpme/ticket_detail.html:93
 msgid "Visibility"
 msgstr "可視性"
 
-#: models.py:158
+#: models.py:167
 msgid "Type"
 msgstr "タイプ"
 
@@ -183,6 +211,10 @@ msgstr "助けて"
 msgid "Bug"
 msgstr "バグ"
 
+#: settings.py:11
+msgid "Contact"
+msgstr "連絡先"
+
 #: templates/helpme/admin_ticket_list.html:9
 msgid "Help Desk"
 msgstr "ヘルプデスク"
@@ -190,7 +222,7 @@ msgstr "ヘルプデスク"
 #: templates/helpme/admin_ticket_list.html:17
 #: templates/helpme/admin_ticket_list.html:66
 #: templates/helpme/ticket_detail.html:45
-#: templates/helpme/ticket_detail.html:165 templates/helpme/ticket_list.html:38
+#: templates/helpme/ticket_detail.html:169 templates/helpme/ticket_list.html:38
 #: templates/helpme/ticket_list.html:88
 msgid "New Help Ticket"
 msgstr "新しいヘルプチケット"
@@ -211,19 +243,19 @@ msgid "Clear All"
 msgstr "すべてクリア"
 
 #: templates/helpme/admin_ticket_list.html:68
-#: templates/helpme/ticket_detail.html:167 templates/helpme/ticket_list.html:90
+#: templates/helpme/ticket_detail.html:171 templates/helpme/ticket_list.html:90
 msgid "Please provide clear details about how we can help you."
 msgstr ""
 "私たちがどのようにあなたを助けることができるかについて明確な詳細を提供してく"
 "ださい。"
 
 #: templates/helpme/admin_ticket_list.html:72
-#: templates/helpme/ticket_detail.html:171 templates/helpme/ticket_list.html:94
+#: templates/helpme/ticket_detail.html:175 templates/helpme/ticket_list.html:94
 msgid "Create Ticket"
 msgstr "チケットを作成する"
 
 #: templates/helpme/admin_ticket_list.html:73
-#: templates/helpme/ticket_detail.html:172 templates/helpme/ticket_list.html:95
+#: templates/helpme/ticket_detail.html:176 templates/helpme/ticket_list.html:95
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -259,36 +291,40 @@ msgstr "返信を待っています"
 msgid "You have no active tickets."
 msgstr "アクティブなチケットはありません。"
 
-#: templates/helpme/admin_ticket_list.html:154
-#: templates/helpme/ticket_list.html:262
+#: templates/helpme/admin_ticket_list.html:153
+#: templates/helpme/ticket_list.html:261
 #, python-format
 msgid "Showing %(start)s to %(end)s of %(entries)s entries"
 msgstr "%(entries)sエントリの%(start)sから%(end)sを表示しています"
 
-#: templates/helpme/admin_ticket_list.html:156
-#: templates/helpme/ticket_list.html:264
+#: templates/helpme/admin_ticket_list.html:155
+#: templates/helpme/ticket_list.html:263
 msgid "Support dashboard page navigation"
 msgstr "ダッシュボードページのナビゲーションをサポート"
 
-#: templates/helpme/admin_ticket_list.html:161
-#: templates/helpme/ticket_list.html:269
+#: templates/helpme/admin_ticket_list.html:160
+#: templates/helpme/ticket_list.html:268
 msgid "First"
 msgstr "最初"
 
-#: templates/helpme/admin_ticket_list.html:164
-#: templates/helpme/ticket_list.html:272
+#: templates/helpme/admin_ticket_list.html:163
+#: templates/helpme/ticket_list.html:271
 msgid "Previous"
 msgstr "前"
 
-#: templates/helpme/admin_ticket_list.html:184
-#: templates/helpme/ticket_list.html:292
+#: templates/helpme/admin_ticket_list.html:183
+#: templates/helpme/ticket_list.html:291
 msgid "Next"
 msgstr "次"
 
-#: templates/helpme/admin_ticket_list.html:187
-#: templates/helpme/ticket_list.html:295
+#: templates/helpme/admin_ticket_list.html:186
+#: templates/helpme/ticket_list.html:294
 msgid "Last"
 msgstr "最終"
+
+#: templates/helpme/anonymous_ticket.html:9
+msgid "Send"
+msgstr "送信"
 
 #: templates/helpme/event_comment.txt:5
 #, python-format
@@ -356,12 +392,16 @@ msgstr "ブラウザ"
 msgid "IP Address"
 msgstr "IPアドレス"
 
+#: templates/helpme/includes/user_meta.html:68
+msgid "Phone Number"
+msgstr "電話番号"
+
 #: templates/helpme/team_detail.html:7
 #, python-format
 msgid "Manage %(team)s Team"
 msgstr "%(team)sのチームを管理する"
 
-#: templates/helpme/team_detail.html:11 templates/helpme/ticket_detail.html:193
+#: templates/helpme/team_detail.html:11 templates/helpme/ticket_detail.html:197
 msgid "Update"
 msgstr "更新"
 
@@ -422,19 +462,19 @@ msgstr "応答"
 msgid "Reporter"
 msgstr "レポーター"
 
-#: templates/helpme/ticket_detail.html:138
+#: templates/helpme/ticket_detail.html:142
 msgid "Site"
 msgstr "地点"
 
-#: templates/helpme/ticket_detail.html:142
+#: templates/helpme/ticket_detail.html:146
 msgid "Last Updated"
 msgstr "最終更新"
 
-#: templates/helpme/ticket_detail.html:152
+#: templates/helpme/ticket_detail.html:156
 msgid "Return to Dashboard"
 msgstr "ダッシュボードに戻る"
 
-#: templates/helpme/ticket_detail.html:188
+#: templates/helpme/ticket_detail.html:192
 msgid "Edit Ticket Details"
 msgstr "チケットの詳細を編集する"
 
@@ -454,7 +494,11 @@ msgstr "今日はどのようにお手伝いできますか？"
 msgid "My Help Tickets"
 msgstr "マイヘルプチケット"
 
-#: views/helpme_admin.py:46 views/helpme_admin.py:138
+#: views/helpme.py:48
+msgid "Contact Us"
+msgstr "お問い合わせ"
+
+#: views/helpme_admin.py:46 views/helpme_admin.py:144
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr "クエリに一致する%(verbose_name)sが見つかりません"
