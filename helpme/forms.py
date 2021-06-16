@@ -7,6 +7,21 @@ from django.contrib.auth import get_user_model
 from helpme.models import Ticket, Comment, Category, Question, Team, VisibilityChoices
 
 
+class AnonymousTicketForm(ModelForm):
+    full_name = forms.CharField(label=_("Full Name"), widget=forms.TextInput(attrs={"placeholder": _("Enter name")}))
+    email = forms.EmailField(label=_("Email Address"), widget=forms.EmailInput(attrs={"placeholder": _("Enter email")}))
+    phone_number = forms.CharField(label=_("Phone Number (Optional)"), required=False)
+    
+    class Meta:
+        model = Ticket
+        fields = ['full_name', 'email', 'phone_number', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].label = _("How Can We Help You?")
+        self.fields['description'].widget.attrs.update({'placeholder': _('Enter Message'), 'rows': 4})
+
+        
 class TicketForm(ModelForm):
 
     class Meta:

@@ -8,6 +8,7 @@ class CategoryChoices(models.IntegerChoices):
     SALES = 2, _("Sales")
     HELP = 3, _("Help")
     BUG = 4, _("Bug")
+    CONTACT = 5, _("Contact")
 
     
 class AppSettings(object):

@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LOGIN_REDIRECT_URL = "/support/"
+LOGIN_REDIRECT_URL = "/support/dashboard/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

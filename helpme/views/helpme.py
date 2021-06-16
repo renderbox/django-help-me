@@ -4,10 +4,12 @@ from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
+from django.utils.translation import gettext_lazy as _
 
 from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
-from helpme.forms import TicketForm, CommentForm
+from helpme.forms import TicketForm, CommentForm, AnonymousTicketForm
+from helpme.settings import app_settings
 
 
 class FAQView(LoginRequiredMixin, TemplateView):
@@ -23,6 +25,35 @@ class FAQView(LoginRequiredMixin, TemplateView):
         if not categories.exists():
             context['questions'] = Question.objects.filter(sites__in=[current_site])
         return context
+
+
+class AnonymousTicketView(TicketMetaMixin, CreateView):
+    model = Ticket
+    form_class = AnonymousTicketForm
+    success_url = reverse_lazy("helpme:anonymous")
+    template_name = "helpme/anonymous_ticket.html"
+
+    def form_valid(self, form):
+        user_meta = self.get_ticket_request_meta(self.request)
+        user_meta["full_name"] = form.cleaned_data.get("full_name")
+        user_meta["email"] = form.cleaned_data.get("email")
+        user_meta["phone_number"] = form.cleaned_data.get("phone_number")
+        form.instance.user_meta = user_meta
+
+        form.instance.site = Site.objects.get_current()
+        if hasattr(self.request, 'site'):
+            form.instance.site = self.request.site
+
+        form.instance.category = app_settings.TICKET_CATEGORIES.CONTACT
+        form.instance.subject = _("Contact Us")
+
+        response = super().form_valid(form)
+
+        # filter and assign teams by site and category
+        teams = Team.objects.filter(sites__in=[form.instance.site])
+        form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
+
+        return response
 
 
 class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
