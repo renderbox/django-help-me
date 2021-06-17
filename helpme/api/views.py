@@ -43,7 +43,8 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
         teams = Team.objects.filter(sites__in=[instance.site])
         instance.teams.set(teams.filter(categories__contains=instance.category))
 
-        self.send_email(instance)
+        if app_settings.MAIL_LIST:
+            self.send_email(instance)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
