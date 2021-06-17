@@ -1,10 +1,13 @@
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.models import Site
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.sites.models import Site
-from django.utils.translation import gettext_lazy as _
 
 from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
@@ -39,6 +42,22 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
     success_url = reverse_lazy("helpme:anonymous")
     template_name = "helpme/anonymous_ticket.html"
 
+    # make separate function so it can be overriden with a different template
+    def send_email(self, instance):
+        user_meta = instance.user_meta
+        context = {
+            "full_name": user_meta["full_name"],
+            "email": user_meta["email"],
+            "phone_number": user_meta["phone_number"],
+            "description": instance.description
+        }
+        send_mail(
+            _("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), user_meta["email"])),
+            render_to_string("helpme/email/anonymous_ticket.txt", context),
+            settings.DEFAULT_FROM_EMAIL,
+            [app_settings.MAIL_LIST]
+        )
+
     def form_valid(self, form):
         user_meta = self.get_ticket_request_meta(self.request)
         user_meta["full_name"] = form.cleaned_data.get("full_name")
@@ -57,6 +76,9 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
+        if app_settings.MAIL_LIST:
+            self.send_email(form.instance)
+
         return response
 
 
@@ -64,6 +86,20 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
     model = Ticket
     success_url = reverse_lazy('helpme:dashboard')
     form_class = TicketForm
+
+    # make separate function so it can be overriden with a different template
+    def send_email(self, instance):
+        context = {
+            "category": instance.get_category_display(),
+            "subject": instance.subject,
+            "description": instance.description
+        }
+        send_mail(
+            _("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user)),
+            render_to_string("helpme/email/user_ticket.txt", context),
+            settings.DEFAULT_FROM_EMAIL,
+            [app_settings.MAIL_LIST]
+        )
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -75,6 +111,9 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
         # filter and assign teams by site and category
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
+
+        if app_settings.MAIL_LIST:
+            self.send_email(form.instance)
 
         return response
 
@@ -118,7 +157,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
             # exclude closed tickets by default
             queryset = queryset.exclude(status=StatusChoices.CLOSED)
             
-        return queryset.order_by('-priority')
+        return queryset.order_by('-priority', '-updated')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

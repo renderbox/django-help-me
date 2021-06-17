@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% trans "Full Name" %}: {{ full_name }}
+
+{% trans "Email Address" %}: {{ email }}
+
+{% if phone_number %}
+{% trans "Phone Number" %}: {{ phone_number }}
+{% endif %}
+
+{% trans "Message" %}: {{ description }}

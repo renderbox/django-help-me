@@ -24,5 +24,10 @@ class AppSettings(object):
         """ Category choices for a support request ticket """
         return self._setting('TICKET_CATEGORIES', CategoryChoices)
 
+    @property
+    def MAIL_LIST(self):
+        """ Mailing list to send an email to when tickets are created """
+        return self._setting('MAIL_LIST', None)
+
 
 app_settings = AppSettings('HELPME_')
