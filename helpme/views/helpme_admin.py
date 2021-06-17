@@ -6,7 +6,8 @@ from django.template.loader import render_to_string
 
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
 from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
-from .helpme import FAQView, SupportDashboardView, get_current_site
+from helpme.utils import get_current_site
+from .helpme import FAQView, SupportDashboardView
 
 
 class FAQCreateView(PermissionRequiredMixin, FAQView):

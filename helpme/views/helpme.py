@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -13,14 +12,7 @@ from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
 from helpme.forms import TicketForm, CommentForm, AnonymousTicketForm
 from helpme.settings import app_settings
-
-
-def get_current_site(request):
-    if hasattr(request, 'site'):
-        current_site = request.site
-    else:
-        current_site = Site.objects.get_current()
-    return current_site
+from helpme.utils import get_current_site
 
 
 class FAQView(LoginRequiredMixin, TemplateView):

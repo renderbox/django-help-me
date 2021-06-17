@@ -12,7 +12,7 @@ from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Category, Question, Team
 from helpme.api.serializers import TicketSerializer, CommentSerializer, CategorySerializer, QuestionSerializer
 from helpme.settings import app_settings
-from helpme.views.helpme import get_current_site
+from helpme.utils import get_current_site
 
 
 class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):

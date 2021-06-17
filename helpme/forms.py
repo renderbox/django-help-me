@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from django.contrib.auth import get_user_model
 
 from helpme.models import Ticket, Comment, Category, Question, Team, VisibilityChoices
+from helpme.utils import get_current_site
 
 
 class AnonymousTicketForm(ModelForm):
@@ -84,10 +85,7 @@ class QuestionForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         # limit the possible categories to the current site
-        if hasattr(self.request, 'site'):
-            current_site = self.request.site
-        else:
-            current_site = Site.objects.get_current()
+        current_site = get_current_site(self.request)
         self.fields['category'].queryset = Category.objects.filter(category_sites__in=[current_site])
         self.fields['category'].label = _("Category")
 
