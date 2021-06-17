@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-16 22:05+0000\n"
+"POT-Creation-Date: 2021-06-17 18:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: forms.py:11
+#: api/views.py:30 views/helpme.py:55 views/helpme.py:98
+#, python-brace-format
+msgid "[{0} {1}] {2} Ticket from {3}"
+msgstr "[{0} {1}] {2} {3}からのチケット"
+
+#: forms.py:11 templates/helpme/email/anonymous_ticket.txt:3
 msgid "Full Name"
 msgstr "フルネーム"
 
@@ -26,7 +31,8 @@ msgstr "フルネーム"
 msgid "Enter name"
 msgstr "名前を入力"
 
-#: forms.py:12 templates/helpme/includes/user_meta.html:58
+#: forms.py:12 templates/helpme/email/anonymous_ticket.txt:5
+#: templates/helpme/includes/user_meta.html:58
 msgid "Email Address"
 msgstr "電子メールアドレス"
 
@@ -71,6 +77,8 @@ msgid "Teams"
 msgstr "チーム"
 
 #: forms.py:56 models.py:42 models.py:112
+#: templates/helpme/email/anonymous_ticket.txt:11
+#: templates/helpme/email/user_ticket.txt:7
 #: templates/helpme/ticket_detail.html:63
 msgid "Message"
 msgstr "メッセージ"
@@ -83,12 +91,13 @@ msgstr "メッセージを入力してください"
 msgid "Visibility (Who can see this message)"
 msgstr "可視性（このメッセージを見ることができる人）"
 
-#: forms.py:88 models.py:65 models.py:109
+#: forms.py:92 models.py:65 models.py:109
+#: templates/helpme/email/user_ticket.txt:3
 #: templates/helpme/ticket_detail.html:38 templates/helpme/ticket_list.html:193
 msgid "Category"
 msgstr "カテゴリー"
 
-#: forms.py:103 templates/helpme/team_detail.html:40
+#: forms.py:107 templates/helpme/team_detail.html:40
 msgid "Members"
 msgstr "メンバー"
 
@@ -178,7 +187,7 @@ msgstr "状態"
 msgid "Priority"
 msgstr "優先"
 
-#: models.py:111
+#: models.py:111 templates/helpme/email/user_ticket.txt:5
 msgid "Subject"
 msgstr "件名"
 
@@ -326,6 +335,11 @@ msgstr "最終"
 msgid "Send"
 msgstr "送信"
 
+#: templates/helpme/email/anonymous_ticket.txt:8
+#: templates/helpme/includes/user_meta.html:68
+msgid "Phone Number"
+msgstr "電話番号"
+
 #: templates/helpme/event_comment.txt:5
 #, python-format
 msgid "%(user)s updated the %(changed_fields)s fields"
@@ -391,10 +405,6 @@ msgstr "ブラウザ"
 #: templates/helpme/includes/user_meta.html:49
 msgid "IP Address"
 msgstr "IPアドレス"
-
-#: templates/helpme/includes/user_meta.html:68
-msgid "Phone Number"
-msgstr "電話番号"
 
 #: templates/helpme/team_detail.html:7
 #, python-format
@@ -494,11 +504,11 @@ msgstr "今日はどのようにお手伝いできますか？"
 msgid "My Help Tickets"
 msgstr "マイヘルプチケット"
 
-#: views/helpme.py:48
+#: views/helpme.py:71
 msgid "Contact Us"
 msgstr "お問い合わせ"
 
-#: views/helpme_admin.py:46 views/helpme_admin.py:144
+#: views/helpme_admin.py:46 views/helpme_admin.py:140
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr "クエリに一致する%(verbose_name)sが見つかりません"
