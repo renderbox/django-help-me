@@ -20,7 +20,7 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
     queryset = Ticket.objects.all()
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, instance):
+    def send_email(self, serializer, instance):
         context = {
             "category": instance.get_category_display(),
             "subject": instance.subject,
@@ -44,7 +44,7 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
         instance.teams.set(teams.filter(categories__contains=instance.category))
 
         if app_settings.MAIL_LIST:
-            self.send_email(instance)
+            self.send_email(serializer, instance)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

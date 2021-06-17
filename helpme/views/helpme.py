@@ -43,7 +43,8 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
     template_name = "helpme/anonymous_ticket.html"
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, instance):
+    def send_email(self, form):
+        instance = form.instance
         user_meta = instance.user_meta
         context = {
             "full_name": user_meta["full_name"],
@@ -77,7 +78,7 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
         if app_settings.MAIL_LIST:
-            self.send_email(form.instance)
+            self.send_email(form)
 
         return response
 
@@ -88,7 +89,8 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
     form_class = TicketForm
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, instance):
+    def send_email(self, form):
+        instance = form.instance
         context = {
             "category": instance.get_category_display(),
             "subject": instance.subject,
@@ -113,7 +115,7 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
         if app_settings.MAIL_LIST:
-            self.send_email(form.instance)
+            self.send_email(form)
 
         return response
 
