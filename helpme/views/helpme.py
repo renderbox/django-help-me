@@ -12,14 +12,20 @@ from helpme.forms import TicketForm, CommentForm, AnonymousTicketForm
 from helpme.settings import app_settings
 
 
+def get_current_site(request):
+    if hasattr(request, 'site'):
+        current_site = request.site
+    else:
+        current_site = Site.objects.get_current()
+    return current_site
+
+
 class FAQView(LoginRequiredMixin, TemplateView):
     template_name = "helpme/faq.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_site = Site.objects.get_current()
-        if hasattr(self.request, 'site'):
-            current_site = self.request.site
+        current_site = get_current_site(self.request)
         categories = Category.objects.filter(category_sites__in=[current_site])
         context['categories'] = categories
         if not categories.exists():
@@ -40,9 +46,7 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
         user_meta["phone_number"] = form.cleaned_data.get("phone_number")
         form.instance.user_meta = user_meta
 
-        form.instance.site = Site.objects.get_current()
-        if hasattr(self.request, 'site'):
-            form.instance.site = self.request.site
+        form.instance.site = get_current_site(self.request)
 
         form.instance.category = app_settings.TICKET_CATEGORIES.CONTACT
         form.instance.subject = _("Contact Us")
@@ -63,9 +67,7 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.site = Site.objects.get_current()
-        if hasattr(self.request, 'site'):
-            form.instance.site = self.request.site
+        form.instance.site = get_current_site(self.request)
         form.instance.user_meta = self.get_ticket_request_meta(self.request)
 
         response = super().form_valid(form)
@@ -89,9 +91,7 @@ class SupportDashboardView(LoginRequiredMixin, ListView):
         return self.paginate_by
 
     def get_queryset(self, **kwargs):
-        site = Site.objects.get_current()
-        if hasattr(self.request, 'site'):
-            site = self.request.site
+        site = get_current_site(self.request)
         # admin
         if self.request.user.is_staff or self.request.user.is_superuser:
             queryset = Ticket.objects.all()
