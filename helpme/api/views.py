@@ -1,25 +1,50 @@
 from rest_framework.generics import CreateAPIView
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.models import Site
+from django.core.mail import send_mail
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Category, Question, Team
 from helpme.api.serializers import TicketSerializer, CommentSerializer, CategorySerializer, QuestionSerializer
+from helpme.settings import app_settings
+from helpme.utils import get_current_site
 
 
 class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
 
+    # make separate function so it can be overriden with a different template
+    def send_email(self, serializer, instance):
+        context = {
+            "category": instance.get_category_display(),
+            "subject": instance.subject,
+            "description": instance.description
+        }
+        send_mail(
+            _("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user)),
+            render_to_string("helpme/email/user_ticket.txt", context),
+            settings.DEFAULT_FROM_EMAIL,
+            [app_settings.MAIL_LIST]
+        )
+
     def perform_create(self, serializer):
         user_meta = self.get_ticket_request_meta(self.request)
-        
-        instance = serializer.save(user=self.request.user, site=Site.objects.get_current(), user_meta=user_meta)
+
+        current_site = get_current_site(self.request)
+        instance = serializer.save(user=self.request.user, site=current_site, user_meta=user_meta)
 
         # filter and assign teams by site and category
         teams = Team.objects.filter(sites__in=[instance.site])
         instance.teams.set(teams.filter(categories__contains=instance.category))
+
+        if app_settings.MAIL_LIST:
+            self.send_email(serializer, instance)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -55,7 +80,8 @@ class CreateCategoryAPIView(LoginRequiredMixin, CreateAPIView):
         if instance.global_category:
             instance.category_sites.set(Site.objects.exclude(id__in=instance.category_excluded_sites.all()))
         elif not instance.category_sites.exists():
-            instance.category_sites.add(Site.objects.get_current())
+            current_site = get_current_site(self.request)
+            instance.category_sites.add(current_site)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -71,7 +97,8 @@ class CreateQuestionAPIView(LoginRequiredMixin, CreateAPIView):
         if instance.global_question:
             instance.sites.set(Site.objects.exclude(id__in=instance.excluded_sites.all()))
         elif not instance.sites.exists():
-            instance.sites.add(Site.objects.get_current())
+            current_site = get_current_site(self.request)
+            instance.sites.add(current_site)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

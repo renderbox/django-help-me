@@ -74,6 +74,19 @@ class ClientTests(TestCase):
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
         self.assertEqual(ticket.user_meta, {'os': {'family': 'other', 'version': ''}, 'device': 'other', 'browser': {'family': 'other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown'})
 
+
+    def test_create_anonymous_ticket(self):
+        uri = reverse("helpme:anonymous")
+        self.assertEqual(Ticket.objects.all().count(), 1)
+        
+        response = self.client.post(uri, {"description": "Hello world", "full_name": "Test User", "email": "test@test.com"}, follow=True)
+        self.assertEqual(Ticket.objects.all().count(), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [(reverse("helpme:anonymous"), 302)])
+        ticket = Ticket.objects.get(subject="Contact Us")
+        self.assertEqual(ticket.description, "Hello world")
+        self.assertDictEqual(ticket.user_meta, {'os': {'family': 'other', 'version': ''}, 'device': 'other', 'browser': {'family': 'other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown', 'full_name': 'Test User', 'email': 'test@test.com', 'phone_number': ''})
+
         
     def test_dashboard_support(self):
         uri = reverse("helpme_admin:dashboard")

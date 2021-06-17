@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
 from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
+from helpme.utils import get_current_site
 from .helpme import FAQView, SupportDashboardView
 
 
@@ -15,7 +16,7 @@ class FAQCreateView(PermissionRequiredMixin, FAQView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['question_form'] = QuestionForm
+        context['question_form'] = QuestionForm(request=self.request)
         context['category_form'] = CategoryForm
         return context
     
@@ -107,13 +108,15 @@ class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['admin'] = self.request.user.has_perm('helpme.add_team')
         context['user_teams'] = self.request.user.team_set.all()
-        context['teams'] = Team.objects.filter(sites__in=[Site.objects.get_current()])
+        current_site = get_current_site(self.request)
+        context['teams'] = Team.objects.filter(sites__in=[current_site])
         return context
     
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.instance.sites.add(Site.objects.get_current())
+        current_site = get_current_site(self.request)
+        form.instance.sites.add(current_site)
         return response
     
     
