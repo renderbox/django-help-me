@@ -74,6 +74,19 @@ class ClientTests(TestCase):
         self.assertQuerysetEqual(ticket.teams.all(), ['<Team: Support>'])
         self.assertEqual(ticket.user_meta, {'os': {'family': 'other', 'version': ''}, 'device': 'other', 'browser': {'family': 'other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown'})
 
+
+    def test_create_anonymous_ticket(self):
+        uri = reverse("helpme:anonymous")
+        self.assertEqual(Ticket.objects.all().count(), 1)
+        
+        response = self.client.post(uri, {"description": "Hello world", "full_name": "Test User", "email": "test@test.com"}, follow=True)
+        self.assertEqual(Ticket.objects.all().count(), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [(reverse("helpme:anonymous"), 302)])
+        ticket = Ticket.objects.get(subject="Contact Us")
+        self.assertEqual(ticket.description, "Hello world")
+        self.assertDictEqual(ticket.user_meta, {'os': {'family': 'other', 'version': ''}, 'device': 'other', 'browser': {'family': 'other', 'version': ''}, 'ip_address': '127.0.0.1', 'mobile_tablet_or_pc': 'unknown', 'full_name': 'Test User', 'email': 'test@test.com', 'phone_number': ''})
+
         
     def test_dashboard_support(self):
         uri = reverse("helpme_admin:dashboard")
@@ -149,7 +162,7 @@ class ClientTests(TestCase):
         self.assertContains(response, '<select name="status"')
         self.assertContains(response, '<option value="3" selected>Medium</option>')
         self.assertContains(response, '<option value="1" selected>Comment</option>')
-        self.assertContains(response, 'checked="checked" name="teams"')
+        self.assertContains(response, 'name="teams"')
         self.assertContains(response, '<select name="assigned_to"')
         self.assertContains(response, '<input type="text" name="dev_ticket"')
         self.assertContains(response, "Reporter:")
@@ -255,8 +268,8 @@ class ClientTests(TestCase):
         # form to update team details
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<input type="text" name="name"')
-        self.assertContains(response, 'checked="checked" name="categories"')
-        self.assertContains(response, 'checked="checked" name="members"')
+        self.assertContains(response, 'name="categories"')
+        self.assertContains(response, 'name="members"')
         self.assertContains(response, '<input type="submit" value="Update"')
         
 

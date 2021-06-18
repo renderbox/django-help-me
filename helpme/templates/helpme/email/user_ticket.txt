@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% trans "Category" %}: {{ category }}
+
+{% trans "Subject" %}: {{ subject }}
+
+{% trans "Message" %}: {{ description }}

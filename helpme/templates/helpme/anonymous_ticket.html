@@ -1,0 +1,11 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block help_content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="{% trans 'Send' %}" class="btn btn-primary">
+</form>
+{% endblock %}

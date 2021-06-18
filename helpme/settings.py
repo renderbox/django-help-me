@@ -8,6 +8,7 @@ class CategoryChoices(models.IntegerChoices):
     SALES = 2, _("Sales")
     HELP = 3, _("Help")
     BUG = 4, _("Bug")
+    CONTACT = 5, _("Contact")
 
     
 class AppSettings(object):
@@ -22,6 +23,11 @@ class AppSettings(object):
     def TICKET_CATEGORIES(self):
         """ Category choices for a support request ticket """
         return self._setting('TICKET_CATEGORIES', CategoryChoices)
+
+    @property
+    def MAIL_LIST(self):
+        """ Mailing list to send an email to when tickets are created """
+        return self._setting('MAIL_LIST', None)
 
 
 app_settings = AppSettings('HELPME_')

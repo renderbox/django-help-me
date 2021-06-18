@@ -127,7 +127,12 @@ class Ticket(CreateUpdateModelBase):
         ) 
 
     def __str__(self):
-        return "{0} - {1}".format(self.user.username, self.subject)
+        if self.user:
+            return "{0} - {1}".format(self.user.username, self.subject)
+        elif self.user_meta.get("full_name"):
+            return "{0} - {1}".format(self.user_meta["full_name"], self.subject)
+        else:
+            return "{0}".format(self.subject)
 
     def log_history_event(self, action, user=None, notes=None, isotime=None):
         '''
