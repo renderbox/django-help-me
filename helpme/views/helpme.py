@@ -45,10 +45,10 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
             "description": instance.description
         }
         send_mail(
-            _("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), user_meta["email"])),
+            str(_("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), user_meta["email"]))),
             render_to_string("helpme/email/anonymous_ticket.txt", context),
             settings.DEFAULT_FROM_EMAIL,
-            [app_settings.MAIL_LIST]
+            app_settings.MAIL_LIST
         )
 
     def form_valid(self, form):
@@ -89,10 +89,10 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
             "description": instance.description
         }
         send_mail(
-            _("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user)),
+            str(_("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user))),
             render_to_string("helpme/email/user_ticket.txt", context),
             settings.DEFAULT_FROM_EMAIL,
-            [app_settings.MAIL_LIST]
+            app_settings.MAIL_LIST
         )
 
     def form_valid(self, form):

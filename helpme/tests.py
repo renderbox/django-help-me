@@ -162,7 +162,7 @@ class ClientTests(TestCase):
         self.assertContains(response, '<select name="status"')
         self.assertContains(response, '<option value="3" selected>Medium</option>')
         self.assertContains(response, '<option value="1" selected>Comment</option>')
-        self.assertContains(response, 'checked="checked" name="teams"')
+        self.assertContains(response, 'name="teams"')
         self.assertContains(response, '<select name="assigned_to"')
         self.assertContains(response, '<input type="text" name="dev_ticket"')
         self.assertContains(response, "Reporter:")
@@ -268,8 +268,8 @@ class ClientTests(TestCase):
         # form to update team details
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<input type="text" name="name"')
-        self.assertContains(response, 'checked="checked" name="categories"')
-        self.assertContains(response, 'checked="checked" name="members"')
+        self.assertContains(response, 'name="categories"')
+        self.assertContains(response, 'name="members"')
         self.assertContains(response, '<input type="submit" value="Update"')
         
 
