@@ -15,7 +15,7 @@ from helpme.settings import app_settings
 from helpme.utils import get_current_site
 
 
-class FAQView(LoginRequiredMixin, TemplateView):
+class FAQView(TemplateView):
     template_name = "helpme/faq.html"
     
     def get_context_data(self, **kwargs):
