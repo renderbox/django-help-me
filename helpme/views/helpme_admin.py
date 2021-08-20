@@ -1,12 +1,14 @@
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 
+from helpme.config import SupportEmailClass
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
-from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm
+from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm, SupportEmailForm
 from helpme.utils import get_current_site
+from siteconfigs.models import SiteConfigModel
 from .helpme import FAQView, SupportDashboardView
 
 
@@ -24,6 +26,31 @@ class FAQCreateView(PermissionRequiredMixin, FAQView):
 class AdminSupportDashboardView(PermissionRequiredMixin, SupportDashboardView):
     permission_required = "helpme.see_support_tickets"
     template_name = "helpme/admin_ticket_list.html"
+
+
+class SupportEmailView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
+    permission_required = "helpme.see_all_tickets"
+    template_name = "helpme/support_email.html"
+    form_class = SupportEmailForm
+    success_url = reverse_lazy("helpme_admin:support-email")
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        site = get_current_site(self.request)
+        config, created = SiteConfigModel.objects.get_or_create(site=site, key="helpme.config.SupportEmailClass")
+        config.value = {
+            "support_email": form.cleaned_data["email"]
+        }
+        config.save()
+        return result
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        config = SupportEmailClass(self.request)
+        support_email = config.get_key_value().get("support_email")
+        form = config.form_class(initial={"email": support_email})
+        context["form"] = form
+        return context
     
 
 class TicketDetailView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

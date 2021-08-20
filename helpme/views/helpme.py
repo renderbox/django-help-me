@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 
+from helpme.config import SupportEmailClass
 from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Team, Question, Category, VisibilityChoices, StatusChoices
 from helpme.forms import TicketForm, CommentForm, AnonymousTicketForm
@@ -35,7 +36,7 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
     template_name = "helpme/anonymous_ticket.html"
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, form):
+    def send_email(self, form, support_email):
         instance = form.instance
         user_meta = instance.user_meta
         context = {
@@ -48,7 +49,7 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
             str(_("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), user_meta["email"]))),
             render_to_string("helpme/email/anonymous_ticket.txt", context),
             settings.DEFAULT_FROM_EMAIL,
-            app_settings.MAIL_LIST
+            [support_email]
         )
 
     def form_valid(self, form):
@@ -69,8 +70,9 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
-        if app_settings.MAIL_LIST:
-            self.send_email(form)
+        support_email = SupportEmailClass(self.request).get_key_value().get("support_email")
+        if support_email:
+            self.send_email(form, support_email)
 
         return response
 
@@ -81,7 +83,7 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
     form_class = TicketForm
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, form):
+    def send_email(self, form, support_email):
         instance = form.instance
         context = {
             "category": instance.get_category_display(),
@@ -92,7 +94,7 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
             str(_("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user))),
             render_to_string("helpme/email/user_ticket.txt", context),
             settings.DEFAULT_FROM_EMAIL,
-            app_settings.MAIL_LIST
+            [support_email]
         )
 
     def form_valid(self, form):
@@ -106,8 +108,9 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
-        if app_settings.MAIL_LIST:
-            self.send_email(form)
+        support_email = SupportEmailClass(self.request).get_key_value().get("support_email")
+        if support_email:
+            self.send_email(form, support_email)
 
         return response
 

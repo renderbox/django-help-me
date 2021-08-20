@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'django_user_agents',
+    'siteconfigs',
     'helpme',
 ]
 
@@ -149,3 +150,5 @@ STATICFILES_FINDERS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

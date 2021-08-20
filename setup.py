@@ -50,6 +50,7 @@ setup(
         'django-multiselectfield',
         'django-crispy-forms',
         'django-user-agents',
+        'django-site-configs',
     ],
     extras_require={
         'dev': [

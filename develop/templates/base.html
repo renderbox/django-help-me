@@ -31,6 +31,9 @@
 	{% if perms.helpme.view_team %}
 	<a class="p-2 text-dark" href="{% url 'helpme_admin:team-list' %}">{% trans "Teams" %}</a>
 	{% endif %}
+        {% if perms.helpme.see_all_tickets %}
+        <a class="p-2 text-dark" href="{% url 'helpme_admin:support-email' %}">{% trans "Email" %}</a>
+        {% endif %}
 	{% if perms.helpme.view_question and perms.helpme.view_category %}
 	<a class="p-2 text-dark" href="{% url 'helpme_admin:faq-create' %}">{% trans "FAQ" %}</a>
 	{% else %}
