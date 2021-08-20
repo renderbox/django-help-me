@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from siteconfigs.config import SiteConfigBaseClass
 from .forms import SupportEmailForm
-from .utils import get_current_site
+
 
 class SupportEmailClass(SiteConfigBaseClass):
     label = _("Support Email")
