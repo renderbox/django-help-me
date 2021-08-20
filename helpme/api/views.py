@@ -43,7 +43,7 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
         teams = Team.objects.filter(sites__in=[instance.site])
         instance.teams.set(teams.filter(categories__contains=instance.category))
 
-        config = SupportEmailClass(get_current_site(self.request))
+        config = SupportEmailClass(current_site)
         support_email = config.get_key_value().get("support_email")
         if support_email:
             self.send_email(serializer, instance, support_email)

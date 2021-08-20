@@ -70,7 +70,7 @@ class AnonymousTicketView(TicketMetaMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
-        config = SupportEmailClass(get_current_site(self.request))
+        config = SupportEmailClass(form.instance.site)
         support_email = config.get_key_value().get("support_email")
         if support_email:
             self.send_email(form, support_email)
@@ -109,7 +109,7 @@ class SupportRequestView(LoginRequiredMixin, TicketMetaMixin, CreateView):
         teams = Team.objects.filter(sites__in=[form.instance.site])
         form.instance.teams.set(teams.filter(categories__contains=form.instance.category))
 
-        config = SupportEmailClass(get_current_site(self.request))
+        config = SupportEmailClass(form.instance.site)
         support_email = config.get_key_value().get("support_email")
         if support_email:
             self.send_email(form, support_email)
