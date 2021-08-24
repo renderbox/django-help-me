@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'django_user_agents',
+    'siteconfigs',
     'helpme',
 ]
 

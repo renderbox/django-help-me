@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-17 18:45+0000\n"
+"POT-Creation-Date: 2021-08-20 00:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,86 +18,90 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: api/views.py:30 views/helpme.py:55 views/helpme.py:98
+#: api/views.py:30 views/helpme.py:49 views/helpme.py:94
 #, python-brace-format
 msgid "[{0} {1}] {2} Ticket from {3}"
 msgstr "[{0} {1}] {2} {3}からのチケット"
 
-#: forms.py:11 templates/helpme/email/anonymous_ticket.txt:3
+#: config.py:7 forms.py:109 templates/helpme/support_email.html:10
+msgid "Support Email"
+msgstr "サポートメール"
+
+#: forms.py:12 templates/helpme/email/anonymous_ticket.txt:3
 msgid "Full Name"
 msgstr "フルネーム"
 
-#: forms.py:11
+#: forms.py:12
 msgid "Enter name"
 msgstr "名前を入力"
 
-#: forms.py:12 templates/helpme/email/anonymous_ticket.txt:5
+#: forms.py:13 templates/helpme/email/anonymous_ticket.txt:5
 #: templates/helpme/includes/user_meta.html:58
 msgid "Email Address"
 msgstr "電子メールアドレス"
 
-#: forms.py:12
+#: forms.py:13
 msgid "Enter email"
 msgstr "メールアドレスを入力して"
 
-#: forms.py:13
+#: forms.py:14
 msgid "Phone Number (Optional)"
 msgstr "電話番号（オプション）"
 
-#: forms.py:21
+#: forms.py:22
 msgid "How Can We Help You?"
 msgstr "お手伝いしましょうか？"
 
-#: forms.py:22
+#: forms.py:23
 msgid "Enter Message"
 msgstr "メッセージを入力してください"
 
-#: forms.py:33
+#: forms.py:34
 msgid "Enter Subject Title"
 msgstr "件名を入力してください"
 
-#: forms.py:34
+#: forms.py:35
 msgid "Enter Details"
 msgstr "詳細を入力"
 
-#: forms.py:46 models.py:114
+#: forms.py:47 models.py:114
 msgid "Developer Ticket"
 msgstr "開発者チケット"
 
-#: forms.py:47
+#: forms.py:48
 msgid "Related Frequently Asked Question"
 msgstr "関連するよくある質問"
 
-#: forms.py:48
+#: forms.py:49
 msgid "Assigned to"
 msgstr "に割り当てられた"
 
-#: forms.py:49
+#: forms.py:50
 msgid "Teams"
 msgstr "チーム"
 
-#: forms.py:56 models.py:42 models.py:112
+#: forms.py:57 models.py:42 models.py:112
 #: templates/helpme/email/anonymous_ticket.txt:11
 #: templates/helpme/email/user_ticket.txt:7
 #: templates/helpme/ticket_detail.html:63
 msgid "Message"
 msgstr "メッセージ"
 
-#: forms.py:56
+#: forms.py:57
 msgid "Enter a message"
 msgstr "メッセージを入力してください"
 
-#: forms.py:57
+#: forms.py:58
 msgid "Visibility (Who can see this message)"
 msgstr "可視性（このメッセージを見ることができる人）"
 
-#: forms.py:92 models.py:65 models.py:109
+#: forms.py:90 models.py:65 models.py:109
 #: templates/helpme/email/user_ticket.txt:3
 #: templates/helpme/ticket_detail.html:38 templates/helpme/ticket_list.html:193
 msgid "Category"
 msgstr "カテゴリー"
 
-#: forms.py:107 templates/helpme/team_detail.html:40
+#: forms.py:105 templates/helpme/team_detail.html:40
 msgid "Members"
 msgstr "メンバー"
 
@@ -406,6 +410,14 @@ msgstr "ブラウザ"
 msgid "IP Address"
 msgstr "IPアドレス"
 
+#: templates/helpme/support_email.html:13
+msgid "Set an email address to be notified when a new ticket is created."
+msgstr "新しいチケットが作成されたときに通知されるメールアドレスを設定します。"
+
+#: templates/helpme/support_email.html:18
+msgid "Save"
+msgstr "保存する"
+
 #: templates/helpme/team_detail.html:7
 #, python-format
 msgid "Manage %(team)s Team"
@@ -504,11 +516,11 @@ msgstr "今日はどのようにお手伝いできますか？"
 msgid "My Help Tickets"
 msgstr "マイヘルプチケット"
 
-#: views/helpme.py:71
+#: views/helpme.py:65
 msgid "Contact Us"
 msgstr "お問い合わせ"
 
-#: views/helpme_admin.py:46 views/helpme_admin.py:140
+#: views/helpme_admin.py:74 views/helpme_admin.py:168
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
 msgstr "クエリに一致する%(verbose_name)sが見つかりません"

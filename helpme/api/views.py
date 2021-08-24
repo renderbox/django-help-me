@@ -8,10 +8,10 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
+from helpme.config import SupportEmailClass
 from helpme.mixins import TicketMetaMixin
 from helpme.models import Ticket, Comment, Category, Question, Team
 from helpme.api.serializers import TicketSerializer, CommentSerializer, CategorySerializer, QuestionSerializer
-from helpme.settings import app_settings
 from helpme.utils import get_current_site
 
 
@@ -20,7 +20,7 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
     queryset = Ticket.objects.all()
 
     # make separate function so it can be overriden with a different template
-    def send_email(self, serializer, instance):
+    def send_email(self, serializer, instance, support_email):
         context = {
             "category": instance.get_category_display(),
             "subject": instance.subject,
@@ -30,7 +30,7 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
             str(_("[{0} {1}] {2} Ticket from {3}".format(instance.site.name, instance.pk, instance.get_category_display(), instance.user))),
             render_to_string("helpme/email/user_ticket.txt", context),
             settings.DEFAULT_FROM_EMAIL,
-            app_settings.MAIL_LIST
+            [support_email]
         )
 
     def perform_create(self, serializer):
@@ -43,8 +43,10 @@ class CreateTicketAPIView(LoginRequiredMixin, TicketMetaMixin, CreateAPIView):
         teams = Team.objects.filter(sites__in=[instance.site])
         instance.teams.set(teams.filter(categories__contains=instance.category))
 
-        if app_settings.MAIL_LIST:
-            self.send_email(serializer, instance)
+        config = SupportEmailClass(current_site)
+        support_email = config.get_key_value().get("support_email")
+        if support_email:
+            self.send_email(serializer, instance, support_email)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

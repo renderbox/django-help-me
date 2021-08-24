@@ -103,3 +103,7 @@ class TeamForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['members'].label = _("Members")
+
+
+class SupportEmailForm(forms.Form):
+    email = forms.EmailField(label=_("Support Email"), required=False)

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ 
 
 
 class CategoryChoices(models.IntegerChoices):
@@ -23,11 +23,6 @@ class AppSettings(object):
     def TICKET_CATEGORIES(self):
         """ Category choices for a support request ticket """
         return self._setting('TICKET_CATEGORIES', CategoryChoices)
-
-    @property
-    def MAIL_LIST(self):
-        """ Mailing list to send an email to when tickets are created """
-        return self._setting('MAIL_LIST', None)
 
 
 app_settings = AppSettings('HELPME_')
