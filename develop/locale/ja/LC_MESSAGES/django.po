@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-07 17:41+0000\n"
+"POT-Creation-Date: 2021-08-20 00:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,18 +34,22 @@ msgstr "サポートダッシュボード"
 msgid "Teams"
 msgstr "チーム"
 
-#: templates/base.html:35 templates/base.html:37
+#: templates/base.html:35
+msgid "Email"
+msgstr "Eメール"
+
+#: templates/base.html:38 templates/base.html:40
 msgid "FAQ"
 msgstr "よくある質問"
 
-#: templates/base.html:41
+#: templates/base.html:44
 msgid "Logout"
 msgstr "ログアウト"
 
-#: templates/base.html:43
+#: templates/base.html:46
 msgid "Sign up"
 msgstr "サインアップ"
 
-#: templates/base.html:44
+#: templates/base.html:47
 msgid "Login"
 msgstr "ログインする"

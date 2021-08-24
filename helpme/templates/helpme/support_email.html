@@ -1,0 +1,24 @@
+{% extends "helpme/base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block help_content %}
+
+<div class="row">
+    <div class="col">
+        <h2>
+            {% trans "Support Email" %}
+        </h2>
+        <p>
+            {% trans "Set an email address to be notified when a new ticket is created." %}
+        </p>
+        <form action="{% url 'helpme_admin:support-email' %}" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary font-weight-bold">
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
