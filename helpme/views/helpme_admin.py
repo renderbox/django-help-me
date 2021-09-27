@@ -8,7 +8,6 @@ from helpme.config import SupportEmailClass
 from helpme.models import Ticket, Comment, Team, VisibilityChoices, StatusChoices, CommentTypeChoices
 from helpme.forms import TicketForm, UpdateTicketForm, CommentForm, QuestionForm, CategoryForm, TeamForm, SupportEmailForm
 from helpme.utils import get_current_site
-from siteconfigs.models import SiteConfigModel
 from .helpme import FAQView, SupportDashboardView
 
 
@@ -37,11 +36,7 @@ class SupportEmailView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         result = super().form_valid(form)
         site = get_current_site(self.request)
-        config, created = SiteConfigModel.objects.get_or_create(site=site, key="helpme.config.SupportEmailClass")
-        config.value = {
-            "support_email": form.cleaned_data["email"]
-        }
-        config.save()
+        SupportEmailClass(site).save(form.cleaned_data["email"], "support_email")
         return result
 
     def get_context_data(self, *args, **kwargs):
