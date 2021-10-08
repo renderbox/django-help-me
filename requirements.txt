@@ -3,7 +3,7 @@ Django==3.1.3
 django-autoslug==1.9.8
 django-crispy-forms==1.12.0
 django-multiselectfield==0.1.12
-django-site-configs==0.1.2
+django-site-configs==0.1.3
 django-user-agents==0.4.0
 pytz==2020.4
 sqlparse==0.4.1
