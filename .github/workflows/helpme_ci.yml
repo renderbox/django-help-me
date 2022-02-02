@@ -48,7 +48,7 @@ jobs:
     - name: Run Tests
       run: |
         cd develop
-        python manage.py makemigrations --check --dry-run
+        python manage.py makemigrations
         python manage.py test helpme
       env: 
         DJANGO_DEBUG: 1
