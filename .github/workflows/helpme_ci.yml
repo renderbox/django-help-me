@@ -48,8 +48,8 @@ jobs:
     - name: Run Tests
       run: |
         cd develop
-        python manage.py test helpme
         python manage.py makemigrations --check --dry-run
+        python manage.py test helpme
       env: 
         DJANGO_DEBUG: 1
         DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/helpme
