@@ -6,6 +6,6 @@ django-multiselectfield==0.1.12
 django-site-configs==0.1.5
 django-user-agents==0.4.0
 pytz==2020.4
-sqlparse==0.4.1
+sqlparse==0.4.2
 ua-parser==0.10.0
 user-agents==2.2.0
