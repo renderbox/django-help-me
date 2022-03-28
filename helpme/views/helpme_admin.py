@@ -42,7 +42,7 @@ class SupportEmailView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         config = SupportEmailClass(get_current_site(self.request))
-        support_email = config.get_key_value().get("support_email")
+        support_email = config.get_key_value("support_email")
         form = config.form_class(initial={"email": support_email})
         context["form"] = form
         return context
